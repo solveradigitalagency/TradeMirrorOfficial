@@ -3,13 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+
 import { login } from "./actions";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
-  // Add handleGoogleSignIn
   const handleGoogleSignIn = async () => {
     const supabase = createClient();
 
@@ -21,51 +21,41 @@ export default function LoginPage() {
     });
   };
 
-  // Placeholder for error handling in client component
-  // Could use URLSearchParams to grab errors from the client side if needed
-
   return (
-    <main className="min-h-screen bg-[#080b12] flex items-center justify-center px-6">
-      <div className="w-full max-w-md">
+    <main className="min-h-screen overflow-x-hidden bg-[#080b12] px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col justify-center">
         {/* Logo */}
-        <div className="text-center mb-10">
-          <Link href="/" className="inline-flex items-center justify-center">
+        <div className="mb-6 text-center sm:mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center"
+          >
             <img
               src="/logo/trade-mirror-logo.png"
               alt="TradeMirror"
-              className="h-25 w-auto object-contain"
+              className="h-20 w-auto object-contain sm:h-25"
             />
           </Link>
 
-          <p className="mt-3 text-sm text-zinc-400">
+          <p className="mt-2 text-xs text-zinc-400 sm:mt-3 sm:text-sm">
             Reflect on your trades. Find your edge.
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/30 backdrop-blur-xl">
-          <div className="mb-7">
-            <h1 className="text-2xl font-semibold text-white">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-8">
+          <div className="mb-6 sm:mb-7">
+            <h1 className="text-xl font-semibold text-white sm:text-2xl">
               Welcome back
             </h1>
 
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-1.5 text-xs text-zinc-400 sm:mt-2 sm:text-sm">
               Sign in to continue to TradeMirror.
             </p>
           </div>
 
-          {/* 
-            For actual usage, you'd likely want to show this error
-            using state or URL params on the client (ex: URLSearchParams).
-            Kept here as a placeholder for error feedback:
-          */}
-          {/* {error === "invalid" && (
-            <div className="mb-5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-              Invalid email or password.
-            </div>
-          )} */}
-
-          <form action={login} className="space-y-5">
+          <form action={login} className="space-y-4 sm:space-y-5">
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
@@ -85,6 +75,7 @@ export default function LoginPage() {
               />
             </div>
 
+            {/* Password */}
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <label
@@ -93,7 +84,6 @@ export default function LoginPage() {
                 >
                   Password
                 </label>
-                {/* Forgot password button removed */}
               </div>
 
               <div className="relative">
@@ -110,8 +100,10 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-zinc-300"
+                  aria-label={
+                    showPassword ? "Hide password" : "Show password"
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-500 transition-colors hover:text-zinc-300"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" strokeWidth={1.8} />
@@ -122,6 +114,7 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Sign In */}
             <button
               type="submit"
               className="h-12 w-full rounded-xl bg-blue-500 font-medium text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400 active:scale-[0.99]"
@@ -129,6 +122,7 @@ export default function LoginPage() {
               Sign In
             </button>
 
+            {/* Google */}
             <button
               type="button"
               onClick={handleGoogleSignIn}
@@ -136,7 +130,7 @@ export default function LoginPage() {
             >
               <span className="flex items-center justify-center gap-3">
                 <svg
-                  className="h-5 w-5"
+                  className="h-5 w-5 shrink-0"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
@@ -163,13 +157,15 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="my-7 flex items-center gap-4">
+          {/* Divider */}
+          <div className="my-6 flex items-center gap-4 sm:my-7">
             <div className="h-px flex-1 bg-white/10" />
             <span className="text-xs text-zinc-600">OR</span>
             <div className="h-px flex-1 bg-white/10" />
           </div>
 
-          <p className="text-center text-sm text-zinc-400">
+          {/* Signup */}
+          <p className="text-center text-xs text-zinc-400 sm:text-sm">
             Don't have an account?{" "}
             <Link
               href="/signup"
@@ -180,7 +176,8 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-zinc-600">
+        {/* Footer */}
+        <p className="mt-5 text-center text-[11px] text-zinc-600 sm:mt-6 sm:text-xs">
           © {new Date().getFullYear()} TradeMirror
         </p>
       </div>
