@@ -8,6 +8,7 @@ import {
   Users,
   MessageCircle,
 } from "lucide-react";
+
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -103,7 +104,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
 
   if (sortedTrades.length === 0) {
     return (
-      <div className="relative mt-5 flex h-[250px] items-center justify-center overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#08121c]/70">
+      <div className="relative mt-4 flex h-[210px] items-center justify-center overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#08121c]/70 sm:h-[250px]">
         <p className="text-[11px] text-white/25">
           No public trade data available.
         </p>
@@ -141,7 +142,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
   const areaPoints = `0,${height} ${points} ${width},${height}`;
 
   return (
-    <div className="relative mt-5 h-[250px] overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#08121c]/70">
+    <div className="relative mt-4 h-[210px] overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#08121c]/70 sm:h-[250px]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-0 right-0 top-1/4 border-t border-white/[0.035]" />
         <div className="absolute left-0 right-0 top-1/2 border-t border-white/[0.035]" />
@@ -207,7 +208,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
         />
       </svg>
 
-      <div className="absolute left-3 top-4 flex flex-col gap-[48px] text-[10px] text-white/25">
+      <div className="absolute left-3 top-4 flex flex-col gap-[36px] text-[9px] text-white/25 sm:gap-[48px] sm:text-[10px]">
         <span>
           ${Math.round(max).toLocaleString()}
         </span>
@@ -225,7 +226,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
         </span>
       </div>
 
-      <div className="absolute bottom-3 left-14 right-4 flex justify-between text-[9px] text-white/25">
+      <div className="absolute bottom-3 left-12 right-4 flex justify-between text-[8px] text-white/25 sm:left-14 sm:text-[9px]">
         <span>Start</span>
         <span>30D</span>
       </div>
@@ -270,9 +271,7 @@ function TraderRow({
       <div className="min-w-0 flex-1">
         <p
           className={`truncate text-[12px] font-semibold ${
-            active
-              ? "text-blue-300"
-              : "text-white/60"
+            active ? "text-blue-300" : "text-white/60"
           }`}
         >
           {username}
@@ -390,16 +389,13 @@ export default function DiscoverPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Current logged-in user
   const [currentUserId, setCurrentUserId] =
     useState<string | null>(null);
 
-  // Stores which traders the current user follows
   const [following, setFollowing] = useState<
     Record<string, boolean>
   >({});
 
-  // Prevents multiple clicks while Supabase is processing
   const [followLoading, setFollowLoading] =
     useState(false);
 
@@ -411,10 +407,6 @@ export default function DiscoverPage() {
       setLoading(true);
       setFollowError("");
 
-      // --------------------------------------------------
-      // CURRENT USER
-      // --------------------------------------------------
-
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -422,7 +414,6 @@ export default function DiscoverPage() {
       if (user) {
         setCurrentUserId(user.id);
 
-        // Load everyone this user currently follows
         const {
           data: follows,
           error: followsError,
@@ -446,10 +437,6 @@ export default function DiscoverPage() {
           setFollowing(followingMap);
         }
       }
-
-      // --------------------------------------------------
-      // PUBLIC PROFILES
-      // --------------------------------------------------
 
       const { data: profiles, error } =
         await supabase
@@ -478,10 +465,6 @@ export default function DiscoverPage() {
         setLoading(false);
         return;
       }
-
-      // --------------------------------------------------
-      // PUBLIC TRADES
-      // --------------------------------------------------
 
       const profileIds = profiles.map(
         (profile) => profile.id
@@ -539,23 +522,26 @@ export default function DiscoverPage() {
     loadDiscover();
   }, [supabase]);
 
-  // --------------------------------------------------
-  // MESSAGE TRADER
-  // --------------------------------------------------
-
   async function startMessage(traderId: string) {
     if (!currentUserId) {
-      setFollowError("You need to be logged in to message traders.");
+      setFollowError(
+        "You need to be logged in to message traders."
+      );
       return;
     }
 
     if (currentUserId === traderId) {
-      setFollowError("You can't message yourself.");
+      setFollowError(
+        "You can't message yourself."
+      );
       return;
     }
 
     try {
-      const { data: conversationId, error } = await supabase.rpc(
+      const {
+        data: conversationId,
+        error,
+      } = await supabase.rpc(
         "start_direct_conversation",
         {
           p_other_user_id: traderId,
@@ -563,13 +549,23 @@ export default function DiscoverPage() {
       );
 
       if (error) {
-        console.error("START CONVERSATION ERROR:", error.message);
-        setFollowError("We couldn't start this conversation.");
+        console.error(
+          "START CONVERSATION ERROR:",
+          error.message
+        );
+
+        setFollowError(
+          "We couldn't start this conversation."
+        );
+
         return;
       }
 
       if (!conversationId) {
-        setFollowError("We couldn't start this conversation.");
+        setFollowError(
+          "We couldn't start this conversation."
+        );
+
         return;
       }
 
@@ -578,27 +574,27 @@ export default function DiscoverPage() {
       );
     } catch (error) {
       console.error("MESSAGE ERROR:", error);
-      setFollowError("We couldn't start this conversation.");
+
+      setFollowError(
+        "We couldn't start this conversation."
+      );
     }
   }
-
-  // --------------------------------------------------
-  // FOLLOW / UNFOLLOW
-  // --------------------------------------------------
 
   async function toggleFollow(traderId: string) {
     if (!currentUserId) {
       setFollowError(
         "You need to be logged in to follow traders."
       );
+
       return;
     }
 
-    // Prevent following yourself
     if (currentUserId === traderId) {
       setFollowError(
         "You can't follow your own profile."
       );
+
       return;
     }
 
@@ -611,10 +607,6 @@ export default function DiscoverPage() {
       !!following[traderId];
 
     if (isCurrentlyFollowing) {
-      // ----------------------------------------------
-      // UNFOLLOW
-      // ----------------------------------------------
-
       const { error } = await supabase
         .from("follows")
         .delete()
@@ -641,10 +633,6 @@ export default function DiscoverPage() {
         return updated;
       });
     } else {
-      // ----------------------------------------------
-      // FOLLOW
-      // ----------------------------------------------
-
       const { error } = await supabase
         .from("follows")
         .insert({
@@ -674,10 +662,6 @@ export default function DiscoverPage() {
 
     setFollowLoading(false);
   }
-
-  // --------------------------------------------------
-  // SEARCH
-  // --------------------------------------------------
 
   const filteredTraders = useMemo(() => {
     const query = search.toLowerCase().trim();
@@ -709,10 +693,6 @@ export default function DiscoverPage() {
       ? selectedTrader.trades
       : [];
 
-  // --------------------------------------------------
-  // TOP SETUPS
-  // --------------------------------------------------
-
   const topSetups = useMemo(() => {
     if (!selectedTrader) return [];
 
@@ -743,24 +723,23 @@ export default function DiscoverPage() {
     selectedTrader.profile.id === currentUserId;
 
   return (
-    <main className="h-screen overflow-hidden bg-[#03070d] px-4 py-4 text-white lg:px-5">
-      <div className="mx-auto flex h-full max-w-[1600px] flex-col">
-
+    <main className="min-h-screen overflow-x-hidden bg-[#03070d] px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-4">
+      <div className="mx-auto flex min-h-[calc(100vh-24px)] max-w-[1600px] flex-col sm:min-h-[calc(100vh-32px)] lg:h-full">
         {/* HEADER */}
-        <div className="shrink-0 px-2 pb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-[25px] font-semibold tracking-[-0.045em] text-white/90">
+        <div className="shrink-0 px-1 pb-3 sm:px-2 sm:pb-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-[23px] font-semibold tracking-[-0.045em] text-white/90 sm:text-[25px]">
                 Discover
               </h1>
 
-              <p className="mt-1 text-[12px] text-white/30">
+              <p className="mt-1 max-w-[280px] text-[11px] leading-4 text-white/30 sm:max-w-none sm:text-[12px]">
                 Explore traders, strategies, and performance.
               </p>
             </div>
 
             <div className="hidden items-center gap-2 sm:flex">
-              <div className="flex h-9 items-center gap-2 rounded-[9px] border border-white/[0.07] bg-white/[0.018] px-3 text-[11px] text-white/35">
+              <div className="flex h-9 shrink-0 items-center gap-2 rounded-[9px] border border-white/[0.07] bg-white/[0.018] px-3 text-[11px] text-white/35">
                 <Users
                   className="h-3.5 w-3.5"
                   strokeWidth={1.7}
@@ -772,11 +751,10 @@ export default function DiscoverPage() {
         </div>
 
         {/* MAIN PANEL */}
-        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] border border-white/[0.10] bg-[#09121c]/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_30px_80px_rgba(0,0,0,0.28)]">
-
+        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-[#09121c]/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_30px_80px_rgba(0,0,0,0.28)] sm:rounded-[18px]">
           {/* SEARCH */}
-          <div className="flex shrink-0 items-center gap-3 border-b border-white/[0.055] px-5 py-3">
-            <div className="relative flex-1">
+          <div className="flex shrink-0 flex-col gap-2 border-b border-white/[0.055] px-3 py-3 sm:flex-row sm:items-center sm:gap-3 sm:px-5">
+            <div className="relative min-w-0 flex-1">
               <Search
                 className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/25"
                 strokeWidth={1.8}
@@ -788,11 +766,14 @@ export default function DiscoverPage() {
                   setSearch(event.target.value)
                 }
                 placeholder="Search traders..."
-                className="h-9 w-full rounded-[9px] border border-white/[0.055] bg-white/[0.018] pl-9 pr-3 text-[11px] text-white/70 outline-none transition placeholder:text-white/25 focus:border-blue-400/25 focus:bg-white/[0.025]"
+                className="h-10 w-full rounded-[9px] border border-white/[0.055] bg-white/[0.018] pl-9 pr-3 text-[11px] text-white/70 outline-none transition placeholder:text-white/25 focus:border-blue-400/25 focus:bg-white/[0.025] sm:h-9"
               />
             </div>
 
-            <button className="flex h-9 shrink-0 items-center gap-2 rounded-[9px] border border-white/[0.055] bg-white/[0.018] px-4 text-[11px] text-white/45 transition hover:bg-white/[0.035] hover:text-white/70">
+            <button
+              type="button"
+              className="flex h-10 w-full shrink-0 items-center justify-between gap-2 rounded-[9px] border border-white/[0.055] bg-white/[0.018] px-3 text-[11px] text-white/45 transition hover:bg-white/[0.035] hover:text-white/70 sm:h-9 sm:w-auto sm:min-w-[132px] sm:justify-center sm:px-4"
+            >
               Most Recent
 
               <ChevronDown
@@ -802,11 +783,77 @@ export default function DiscoverPage() {
             </button>
           </div>
 
-          {/* CONTENT */}
-          <div className="grid min-h-0 flex-1 grid-cols-[300px_minmax(0,1fr)]">
+          {/* MOBILE TRADER SELECTOR */}
+          <div className="shrink-0 border-b border-white/[0.055] lg:hidden">
+            <div className="overflow-x-auto px-3 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex w-max gap-2">
+                {loading ? (
+                  <div className="px-1 py-2 text-[10px] text-white/25">
+                    Loading traders...
+                  </div>
+                ) : filteredTraders.length === 0 ? (
+                  <div className="px-1 py-2 text-[10px] text-white/25">
+                    No public traders found.
+                  </div>
+                ) : (
+                  filteredTraders.map((trader) => {
+                    const active =
+                      selectedTrader?.profile.id ===
+                      trader.profile.id;
 
-            {/* TRADER LIST */}
-            <aside className="min-h-0 overflow-y-auto border-r border-white/[0.055]">
+                    return (
+                      <button
+                        key={trader.profile.id}
+                        type="button"
+                        onClick={() =>
+                          setSelectedTrader(trader)
+                        }
+                        className={`flex min-w-[138px] items-center gap-2.5 rounded-[12px] border px-3 py-2.5 text-left transition ${
+                          active
+                            ? "border-blue-400/20 bg-blue-500/[0.10]"
+                            : "border-white/[0.06] bg-white/[0.018]"
+                        }`}
+                      >
+                        <Avatar
+                          initials={getInitials(
+                            trader.profile.display_name,
+                            trader.profile.username
+                          )}
+                          avatarUrl={
+                            trader.profile.avatar_url
+                          }
+                        />
+
+                        <div className="min-w-0">
+                          <p
+                            className={`truncate text-[11px] font-semibold ${
+                              active
+                                ? "text-blue-300"
+                                : "text-white/60"
+                            }`}
+                          >
+                            {trader.profile.username
+                              ? `@${trader.profile.username}`
+                              : "@trader"}
+                          </p>
+
+                          <p className="mt-0.5 truncate text-[9px] text-white/25">
+                            {trader.profile.trading_style ||
+                              "Trader"}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* CONTENT */}
+          <div className="grid min-h-0 flex-1 lg:grid-cols-[300px_minmax(0,1fr)]">
+            {/* DESKTOP TRADER LIST */}
+            <aside className="hidden min-h-0 overflow-y-auto border-r border-white/[0.055] lg:block">
               {loading ? (
                 <div className="px-5 py-10 text-center text-[11px] text-white/25">
                   Loading traders...
@@ -844,11 +891,10 @@ export default function DiscoverPage() {
             {/* TRADER PROFILE */}
             <div className="min-h-0 overflow-y-auto">
               {selectedTrader ? (
-                <div className="p-7 xl:p-8">
-
+                <div className="p-4 sm:p-6 lg:p-7 xl:p-8">
                   {/* PROFILE HEADER */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-5">
+                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex min-w-0 items-center gap-4 sm:gap-5">
                       <Avatar
                         initials={selectedTrader.avatar}
                         large
@@ -857,27 +903,27 @@ export default function DiscoverPage() {
                         }
                       />
 
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h2 className="text-[20px] font-semibold tracking-[-0.04em] text-white/90">
+                      <div className="min-w-0">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <h2 className="truncate text-[18px] font-semibold tracking-[-0.04em] text-white/90 sm:text-[20px]">
                             @
-                            {selectedTrader.profile
-                              .username || "trader"}
+                            {selectedTrader.profile.username ||
+                              "trader"}
                           </h2>
 
-                          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500/20 text-[8px] text-blue-300">
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-[8px] text-blue-300">
                             ✓
                           </span>
                         </div>
 
-                        <p className="mt-1 text-[12px] text-white/35">
-                          {selectedTrader.profile
-                            .trading_style || "Trader"}
+                        <p className="mt-1 truncate text-[11px] text-white/35 sm:text-[12px]">
+                          {selectedTrader.profile.trading_style ||
+                            "Trader"}
                         </p>
 
                         {selectedTrader.profile
                           .experience_level && (
-                          <p className="mt-2 text-[10px] text-white/25">
+                          <p className="mt-1.5 text-[9px] text-white/25 sm:mt-2 sm:text-[10px]">
                             {
                               selectedTrader.profile
                                 .experience_level
@@ -887,16 +933,18 @@ export default function DiscoverPage() {
                       </div>
                     </div>
 
-                    {/* FOLLOW AND MESSAGE BUTTONS */}
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="flex items-center gap-2">
+                    {/* FOLLOW AND MESSAGE */}
+                    <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:items-end">
+                      <div className="flex w-full items-center gap-2 sm:w-auto">
                         <button
                           type="button"
                           disabled={viewingOwnProfile}
                           onClick={() =>
-                            startMessage(selectedTrader.profile.id)
+                            startMessage(
+                              selectedTrader.profile.id
+                            )
                           }
-                          className={`flex h-10 items-center justify-center gap-2 rounded-[9px] border px-4 text-[12px] font-semibold transition ${
+                          className={`flex h-10 flex-1 items-center justify-center gap-2 rounded-[9px] border px-3 text-[11px] font-semibold transition sm:flex-none sm:px-4 sm:text-[12px] ${
                             viewingOwnProfile
                               ? "cursor-default border-white/[0.06] bg-white/[0.025] text-white/20"
                               : "border-white/[0.08] bg-white/[0.035] text-white/65 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
@@ -906,6 +954,7 @@ export default function DiscoverPage() {
                             className="h-3.5 w-3.5"
                             strokeWidth={1.8}
                           />
+
                           Message
                         </button>
 
@@ -920,7 +969,7 @@ export default function DiscoverPage() {
                               selectedTrader.profile.id
                             )
                           }
-                          className={`flex h-10 min-w-[104px] items-center justify-center gap-2 rounded-[9px] px-5 text-[12px] font-semibold transition ${
+                          className={`flex h-10 flex-1 items-center justify-center gap-2 rounded-[9px] px-4 text-[11px] font-semibold transition sm:min-w-[104px] sm:flex-none sm:px-5 sm:text-[12px] ${
                             viewingOwnProfile
                               ? "cursor-default border border-white/[0.06] bg-white/[0.025] text-white/25"
                               : selectedIsFollowing
@@ -945,7 +994,7 @@ export default function DiscoverPage() {
                       </div>
 
                       {followError && (
-                        <p className="max-w-[250px] text-right text-[9px] text-red-400/75">
+                        <p className="max-w-full text-left text-[9px] text-red-400/75 sm:max-w-[250px] sm:text-right">
                           {followError}
                         </p>
                       )}
@@ -960,12 +1009,12 @@ export default function DiscoverPage() {
                   )}
 
                   {/* METRICS */}
-                  <div className="mt-8 grid grid-cols-3 border-y border-white/[0.055] py-5">
-                    <div>
+                  <div className="mt-6 grid grid-cols-3 border-y border-white/[0.055] py-4 sm:mt-8 sm:py-5">
+                    <div className="min-w-0 pr-3">
                       {selectedTrader.profile.show_pnl ? (
                         <>
                           <p
-                            className={`text-[22px] font-semibold tracking-[-0.04em] ${
+                            className={`truncate text-[18px] font-semibold tracking-[-0.04em] sm:text-[22px] ${
                               selectedTrader.pnl >= 0
                                 ? "text-emerald-400"
                                 : "text-red-400"
@@ -976,72 +1025,72 @@ export default function DiscoverPage() {
                             )}
                           </p>
 
-                          <p className="mt-1 text-[10px] text-white/30">
+                          <p className="mt-1 text-[9px] text-white/30 sm:text-[10px]">
                             Total P&L
                           </p>
                         </>
                       ) : (
                         <>
-                          <p className="text-[22px] font-semibold text-white/30">
+                          <p className="text-[18px] font-semibold text-white/30 sm:text-[22px]">
                             —
                           </p>
 
-                          <p className="mt-1 text-[10px] text-white/30">
+                          <p className="mt-1 text-[9px] text-white/30 sm:text-[10px]">
                             P&L hidden
                           </p>
                         </>
                       )}
                     </div>
 
-                    <div className="border-l border-white/[0.055] pl-6">
+                    <div className="min-w-0 border-l border-white/[0.055] px-3 sm:pl-6">
                       {selectedTrader.profile
                         .show_analytics ? (
                         <>
-                          <p className="text-[22px] font-semibold tracking-[-0.04em] text-white/80">
+                          <p className="text-[18px] font-semibold tracking-[-0.04em] text-white/80 sm:text-[22px]">
                             {selectedTrader.winRate.toFixed(
                               1
                             )}
                             %
                           </p>
 
-                          <p className="mt-1 text-[10px] text-white/30">
+                          <p className="mt-1 text-[9px] text-white/30 sm:text-[10px]">
                             Win Rate
                           </p>
                         </>
                       ) : (
                         <>
-                          <p className="text-[22px] font-semibold text-white/30">
+                          <p className="text-[18px] font-semibold text-white/30 sm:text-[22px]">
                             —
                           </p>
 
-                          <p className="mt-1 text-[10px] text-white/30">
+                          <p className="mt-1 text-[9px] text-white/30 sm:text-[10px]">
                             Hidden
                           </p>
                         </>
                       )}
                     </div>
 
-                    <div className="border-l border-white/[0.055] pl-6">
+                    <div className="min-w-0 border-l border-white/[0.055] pl-3 sm:pl-6">
                       {selectedTrader.profile
                         .show_analytics ? (
                         <>
-                          <p className="text-[22px] font-semibold tracking-[-0.04em] text-white/80">
+                          <p className="text-[18px] font-semibold tracking-[-0.04em] text-white/80 sm:text-[22px]">
                             {selectedTrader.profitFactor.toFixed(
                               2
                             )}
                           </p>
 
-                          <p className="mt-1 text-[10px] text-white/30">
+                          <p className="mt-1 text-[9px] text-white/30 sm:text-[10px]">
                             Profit Factor
                           </p>
                         </>
                       ) : (
                         <>
-                          <p className="text-[22px] font-semibold text-white/30">
+                          <p className="text-[18px] font-semibold text-white/30 sm:text-[22px]">
                             —
                           </p>
 
-                          <p className="mt-1 text-[10px] text-white/30">
+                          <p className="mt-1 text-[9px] text-white/30 sm:text-[10px]">
                             Hidden
                           </p>
                         </>
@@ -1052,17 +1101,17 @@ export default function DiscoverPage() {
                   {/* EQUITY */}
                   {selectedTrader.profile
                     .show_analytics && (
-                    <div className="mt-7">
-                      <div className="flex items-center justify-between">
+                    <div className="mt-6 sm:mt-7">
+                      <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
                           <TrendingUpIcon />
 
-                          <h3 className="text-[12px] font-medium text-white/55">
+                          <h3 className="text-[11px] font-medium text-white/55 sm:text-[12px]">
                             Equity Curve
                           </h3>
                         </div>
 
-                        <span className="text-[10px] text-white/25">
+                        <span className="text-[9px] text-white/25 sm:text-[10px]">
                           All Time
                         </span>
                       </div>
@@ -1077,9 +1126,9 @@ export default function DiscoverPage() {
                   {selectedTrader.profile
                     .show_trades &&
                     topSetups.length > 0 && (
-                      <div className="mt-7">
+                      <div className="mt-6 sm:mt-7">
                         <div className="flex items-center gap-1.5">
-                          <h3 className="text-[12px] font-medium text-white/55">
+                          <h3 className="text-[11px] font-medium text-white/55 sm:text-[12px]">
                             Top Setups
                           </h3>
 
@@ -1092,7 +1141,7 @@ export default function DiscoverPage() {
                           {topSetups.map((setup) => (
                             <span
                               key={setup}
-                              className="rounded-full border border-blue-400/[0.10] bg-blue-500/[0.035] px-3 py-1.5 text-[10px] font-medium text-white/45"
+                              className="max-w-full truncate rounded-full border border-blue-400/[0.10] bg-blue-500/[0.035] px-3 py-1.5 text-[9px] font-medium text-white/45 sm:text-[10px]"
                             >
                               {setup}
                             </span>
@@ -1103,7 +1152,7 @@ export default function DiscoverPage() {
 
                   {/* TRADING STYLE */}
                   <div className="mt-6">
-                    <h3 className="text-[12px] font-medium text-white/55">
+                    <h3 className="text-[11px] font-medium text-white/55 sm:text-[12px]">
                       Trading Style
                     </h3>
 
@@ -1112,13 +1161,14 @@ export default function DiscoverPage() {
                         selectedTrader.profile
                           .trading_style ||
                           "Not specified",
+
                         selectedTrader.profile
                           .experience_level ||
                           "Experience not specified",
                       ].map((style) => (
                         <span
                           key={style}
-                          className="rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-[10px] font-medium text-white/40"
+                          className="max-w-full truncate rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-[9px] font-medium text-white/40 sm:text-[10px]"
                         >
                           {style}
                         </span>
@@ -1127,7 +1177,7 @@ export default function DiscoverPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex h-full items-center justify-center text-[12px] text-white/25">
+                <div className="flex min-h-[400px] items-center justify-center px-6 text-center text-[12px] text-white/25">
                   Select a trader to view their profile.
                 </div>
               )}
@@ -1135,6 +1185,12 @@ export default function DiscoverPage() {
           </div>
         </section>
       </div>
+
+      {followError && (
+        <div className="fixed bottom-20 left-3 right-3 z-[60] rounded-xl border border-red-500/20 bg-[#0b1119]/95 px-4 py-3 text-[10px] text-red-400 shadow-2xl backdrop-blur-xl sm:bottom-5 sm:left-auto sm:right-5 sm:max-w-[320px]">
+          {followError}
+        </div>
+      )}
     </main>
   );
 }

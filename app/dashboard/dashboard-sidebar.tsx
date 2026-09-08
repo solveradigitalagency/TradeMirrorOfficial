@@ -142,7 +142,9 @@ export default function DashboardSidebar() {
   ];
 
   return (
-    <aside className="fixed left-3 top-3 bottom-3 z-40 flex w-[242px] flex-col overflow-hidden rounded-[26px] border border-white/[0.08] bg-[#070d15]/95 shadow-[14px_0_45px_rgba(0,0,0,0.32),4px_0_18px_rgba(59,130,246,0.035),inset_-1px_0_0_rgba(255,255,255,0.025)] backdrop-blur-xl">
+    <aside
+      className="fixed left-3 top-3 bottom-3 z-40 hidden w-[242px] flex-col overflow-hidden rounded-[26px] border border-white/[0.08] bg-[#070d15]/95 shadow-[14px_0_45px_rgba(0,0,0,0.32),4px_0_18px_rgba(59,130,246,0.035),inset_-1px_0_0_rgba(255,255,255,0.025)] backdrop-blur-xl lg:flex"
+    >
       <div className="pointer-events-none absolute inset-y-5 right-0 w-px bg-gradient-to-b from-transparent via-white/[0.09] to-transparent" />
 
       {/* Logo */}

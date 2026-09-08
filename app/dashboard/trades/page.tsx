@@ -185,7 +185,7 @@ function FilterButton({
     <button
       type="button"
       onClick={onClick}
-      className={`h-8 border-r border-white/[0.05] px-3 text-[10px] font-medium transition-colors last:border-r-0 ${
+      className={`h-8 shrink-0 border-r border-white/[0.05] px-3 text-[10px] font-medium transition-colors last:border-r-0 ${
         active
           ? "bg-blue-500/[0.12] text-white"
           : "text-white/35 hover:bg-white/[0.025] hover:text-white/65"
@@ -286,8 +286,8 @@ function AddTradeModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 p-4 backdrop-blur-md">
-      <div className="w-full max-w-[500px] overflow-hidden rounded-[18px] border border-white/[0.09] bg-[#08111a] shadow-[0_35px_100px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/65 p-0 backdrop-blur-md sm:items-center sm:p-4">
+      <div className="w-full max-w-[500px] max-h-[94vh] overflow-hidden rounded-t-[20px] border border-white/[0.09] bg-[#08111a] shadow-[0_35px_100px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[18px]">
         {/* HEADER */}
         <div className="border-b border-white/[0.055] px-6 py-5">
           <div className="flex items-start justify-between">
@@ -315,7 +315,7 @@ function AddTradeModal({
         </div>
 
         {/* FORM */}
-        <div className="max-h-[72vh] overflow-y-auto px-6 py-6">
+        <div className="max-h-[calc(94vh-125px)] overflow-y-auto px-4 py-5 sm:max-h-[72vh] sm:px-6 sm:py-6">
           {/* TRADE DATE */}
           <label className="block">
             <span className="mb-2 block text-[10px] font-medium text-white/40">
@@ -615,7 +615,7 @@ function AddTradeModal({
         </div>
 
         {/* FOOTER */}
-        <div className="flex items-center justify-end gap-2 border-t border-white/[0.055] px-6 py-4">
+        <div className="flex items-center justify-end gap-2 border-t border-white/[0.055] px-4 py-3.5 sm:px-6 sm:py-4">
           <button
             type="button"
             onClick={onClose}
@@ -920,11 +920,11 @@ export default function TradesPage() {
     null;
 
   return (
-    <main className="h-screen overflow-hidden bg-[#03070d] px-4 py-4 text-white lg:px-5">
-      <div className="mx-auto flex h-full max-w-[1500px] flex-col">
+    <main className="min-h-screen overflow-x-hidden bg-[#03070d] px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-0">
+      <div className="mx-auto flex min-h-[calc(100vh-24px)] max-w-[1500px] flex-col sm:min-h-[calc(100vh-32px)] lg:h-full">
         {/* HEADER */}
-        <div className="flex shrink-0 items-center justify-between">
-          <h1 className="text-[20px] font-semibold tracking-[-0.035em] text-white">
+        <div className="flex shrink-0 items-center justify-between gap-3">
+          <h1 className="text-[19px] font-semibold tracking-[-0.035em] text-white sm:text-[20px]">
             Trades
           </h1>
 
@@ -935,7 +935,7 @@ export default function TradesPage() {
               setFormError("");
               setShowAddTrade(true);
             }}
-            className="flex h-9 items-center gap-2 rounded-lg bg-[#2385f5] px-4 text-[11px] font-semibold text-white shadow-[0_8px_25px_rgba(35,133,245,0.18)] transition hover:bg-[#318ff7]"
+            className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-[#2385f5] px-3 text-[10px] font-semibold text-white shadow-[0_8px_25px_rgba(35,133,245,0.18)] transition hover:bg-[#318ff7] sm:gap-2 sm:px-4 sm:text-[11px]"
           >
             <Plus
               className="h-3.5 w-3.5"
@@ -946,8 +946,8 @@ export default function TradesPage() {
         </div>
 
         {/* FILTERS */}
-        <div className="mt-3 flex shrink-0 items-center justify-between">
-          <div className="flex overflow-hidden rounded-lg border border-white/[0.07] bg-[#08111a]">
+        <div className="mt-3 flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex w-full overflow-x-auto rounded-lg border border-white/[0.07] bg-[#08111a] sm:w-auto">
             {(
               [
                 "All",
@@ -969,14 +969,14 @@ export default function TradesPage() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="relative">
+          <div className="flex w-full items-center gap-2 sm:w-auto">
+            <div className="relative flex-1 sm:flex-none">
               <select
                 value={symbolFilter}
                 onChange={(event) =>
                   setSymbolFilter(event.target.value)
                 }
-                className="h-8 appearance-none rounded-lg border border-white/[0.07] bg-[#09111b] px-3 pr-8 text-[10px] font-medium text-white/45 outline-none"
+                className="h-8 min-w-0 flex-1 appearance-none rounded-lg border border-white/[0.07] bg-[#09111b] px-3 pr-8 text-[10px] font-medium text-white/45 outline-none sm:flex-none"
               >
                 <option>All Symbols</option>
 
@@ -990,13 +990,13 @@ export default function TradesPage() {
               <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-white/25" />
             </div>
 
-            <div className="relative">
+            <div className="relative flex-1 sm:flex-none">
               <select
                 value={sortOrder}
                 onChange={(event) =>
                   setSortOrder(event.target.value)
                 }
-                className="h-8 appearance-none rounded-lg border border-white/[0.07] bg-[#09111b] px-3 pr-8 text-[10px] font-medium text-white/45 outline-none"
+                className="h-8 min-w-0 flex-1 appearance-none rounded-lg border border-white/[0.07] bg-[#09111b] px-3 pr-8 text-[10px] font-medium text-white/45 outline-none sm:flex-none"
               >
                 <option>Recent</option>
                 <option>Oldest</option>
@@ -1015,115 +1015,117 @@ export default function TradesPage() {
         )}
 
         {/* TRADE TABLE */}
-        <div className="mt-3 shrink-0 overflow-hidden rounded-[12px] border border-white/[0.065] bg-[#071019]/85 shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
-          {/* TABLE HEADER */}
-          <div className="grid grid-cols-[0.7fr_0.9fr_1.05fr_1.05fr_0.75fr_0.65fr_0.75fr_0.7fr] border-b border-white/[0.055] bg-white/[0.012] px-4 py-2.5">
-            {[
-              "Symbol",
-              "Direction",
-              "Entry",
-              "Exit",
-              "P&L",
-              "R:R",
-              "Setup",
-              "Date",
-            ].map((heading) => (
-              <span
-                key={heading}
-                className="text-[9px] font-medium text-white/30"
-              >
-                {heading}
-              </span>
-            ))}
-          </div>
-
-          {/* SCROLLABLE TRADE LIST */}
-          <div className="max-h-[155px] overflow-y-auto">
-            {loading ? (
-              <div className="flex h-[115px] items-center justify-center">
-                <Loader2 className="h-5 w-5 animate-spin text-blue-400/60" />
-              </div>
-            ) : filteredTrades.length === 0 ? (
-              <div className="flex h-[115px] flex-col items-center justify-center">
-                <p className="text-[11px] font-medium text-white/45">
-                  No trades found
-                </p>
-
-                <p className="mt-1 text-[9px] text-white/25">
-                  Add your first trade to start building your journal.
-                </p>
-              </div>
-            ) : (
-              filteredTrades.map((trade) => (
-                <button
-                  type="button"
-                  key={trade.id}
-                  onClick={() =>
-                    setSelectedTrade(trade.id)
-                  }
-                  className={`grid w-full grid-cols-[0.7fr_0.9fr_1.05fr_1.05fr_0.75fr_0.65fr_0.75fr_0.7fr] border-b border-white/[0.045] px-4 py-2.5 text-left transition-colors last:border-b-0 ${
-                    selectedTrade === trade.id
-                      ? "bg-blue-500/[0.035]"
-                      : "hover:bg-white/[0.018]"
-                  }`}
+        <div className="mt-3 shrink-0 overflow-x-auto overflow-y-hidden rounded-[12px] border border-white/[0.065] bg-[#071019]/85 shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
+          <div className="min-w-[720px]">
+            {/* TABLE HEADER */}
+            <div className="grid grid-cols-[0.7fr_0.9fr_1.05fr_1.05fr_0.75fr_0.65fr_0.75fr_0.7fr] border-b border-white/[0.055] bg-white/[0.012] px-4 py-2.5">
+              {[
+                "Symbol",
+                "Direction",
+                "Entry",
+                "Exit",
+                "P&L",
+                "R:R",
+                "Setup",
+                "Date",
+              ].map((heading) => (
+                <span
+                  key={heading}
+                  className="text-[9px] font-medium text-white/30"
                 >
-                  <span className="text-[10px] font-medium text-white/70">
-                    {trade.symbol}
-                  </span>
+                  {heading}
+                </span>
+              ))}
+            </div>
 
-                  <Direction
-                    direction={trade.direction}
-                  />
+            {/* SCROLLABLE TRADE LIST */}
+            <div className="max-h-[155px] overflow-y-auto">
+              {loading ? (
+                <div className="flex h-[115px] items-center justify-center">
+                  <Loader2 className="h-5 w-5 animate-spin text-blue-400/60" />
+                </div>
+              ) : filteredTrades.length === 0 ? (
+                <div className="flex h-[115px] flex-col items-center justify-center">
+                  <p className="text-[11px] font-medium text-white/45">
+                    No trades found
+                  </p>
 
-                  <span className="text-[10px] text-white/45">
-                    {formatPrice(
-                      trade.entry_price
-                    )}
-                  </span>
-
-                  <span className="text-[10px] text-white/45">
-                    {formatPrice(
-                      trade.exit_price
-                    )}
-                  </span>
-
-                  <span
-                    className={`text-[10px] font-semibold ${
-                      Number(trade.pnl) >= 0
-                        ? "text-emerald-400"
-                        : "text-red-400"
+                  <p className="mt-1 text-[9px] text-white/25">
+                    Add your first trade to start building your journal.
+                  </p>
+                </div>
+              ) : (
+                filteredTrades.map((trade) => (
+                  <button
+                    type="button"
+                    key={trade.id}
+                    onClick={() =>
+                      setSelectedTrade(trade.id)
+                    }
+                    className={`grid w-full grid-cols-[0.7fr_0.9fr_1.05fr_1.05fr_0.75fr_0.65fr_0.75fr_0.7fr] border-b border-white/[0.045] px-4 py-2.5 text-left transition-colors last:border-b-0 ${
+                      selectedTrade === trade.id
+                        ? "bg-blue-500/[0.035]"
+                        : "hover:bg-white/[0.018]"
                     }`}
                   >
-                    {formatMoney(trade.pnl)}
-                  </span>
+                    <span className="text-[10px] font-medium text-white/70">
+                      {trade.symbol}
+                    </span>
 
-                  <span
-                    className={`text-[10px] ${
-                      Number(trade.pnl) >= 0
-                        ? "text-white/45"
-                        : "text-red-400/80"
-                    }`}
-                  >
-                    {formatR(trade.r_multiple)}
-                  </span>
+                    <Direction
+                      direction={trade.direction}
+                    />
 
-                  <span className="truncate pr-2 text-[10px] text-white/45">
-                    {trade.setup || "—"}
-                  </span>
+                    <span className="text-[10px] text-white/45">
+                      {formatPrice(
+                        trade.entry_price
+                      )}
+                    </span>
 
-                  <span className="text-[10px] text-white/40">
-                    {formatDate(
-                      trade.trade_date
-                    )}
-                  </span>
-                </button>
-              ))
-            )}
+                    <span className="text-[10px] text-white/45">
+                      {formatPrice(
+                        trade.exit_price
+                      )}
+                    </span>
+
+                    <span
+                      className={`text-[10px] font-semibold ${
+                        Number(trade.pnl) >= 0
+                          ? "text-emerald-400"
+                          : "text-red-400"
+                      }`}
+                    >
+                      {formatMoney(trade.pnl)}
+                    </span>
+
+                    <span
+                      className={`text-[10px] ${
+                        Number(trade.pnl) >= 0
+                          ? "text-white/45"
+                          : "text-red-400/80"
+                      }`}
+                    >
+                      {formatR(trade.r_multiple)}
+                    </span>
+
+                    <span className="truncate pr-2 text-[10px] text-white/45">
+                      {trade.setup || "—"}
+                    </span>
+
+                    <span className="text-[10px] text-white/40">
+                      {formatDate(
+                        trade.trade_date
+                      )}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
         {/* SELECTED TRADE */}
-        <section className="mt-3 min-h-0 flex-1 overflow-hidden rounded-[13px] border border-white/[0.075] bg-[#071019]/90 shadow-[0_25px_80px_rgba(0,0,0,0.24)]">
+        <section className="mt-3 min-h-[520px] overflow-hidden rounded-[13px] border border-white/[0.075] bg-[#071019]/90 shadow-[0_25px_80px_rgba(0,0,0,0.24)] lg:min-h-0 lg:flex-1">
           {!selected ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
@@ -1139,8 +1141,8 @@ export default function TradesPage() {
           ) : (
             <>
               {/* TITLE */}
-              <div className="flex items-center justify-between border-b border-white/[0.05] px-4 py-3">
-                <div className="flex items-center gap-2">
+              <div className="flex items-start justify-between gap-3 border-b border-white/[0.05] px-3 py-3 sm:px-4">
+                <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
                   <h2 className="text-[13px] font-semibold text-white/85">
                     Trade
                   </h2>
@@ -1182,10 +1184,10 @@ export default function TradesPage() {
                 </span>
               </div>
 
-              <div className="grid h-[calc(100%-53px)] grid-cols-[1fr_1fr] gap-5 p-4 xl:grid-cols-[1.05fr_0.95fr]">
+              <div className="grid min-h-0 gap-4 overflow-y-auto p-3 sm:p-4 lg:h-[calc(100%-53px)] lg:grid-cols-[1fr_1fr] lg:gap-5 xl:grid-cols-[1.05fr_0.95fr]">
                 {/* DETAILS */}
                 <div className="flex h-full flex-col">
-                  <div className="grid grid-cols-6 gap-3">
+                  <div className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-6">
                     <div>
                       <p className="text-[8px] text-white/25">
                         Entry
@@ -1261,7 +1263,7 @@ export default function TradesPage() {
                     </div>
                   </div>
 
-                  <div className="mt-5 grid grid-cols-3 gap-4 border-t border-white/[0.05] pt-4">
+                  <div className="mt-5 grid grid-cols-2 gap-4 border-t border-white/[0.05] pt-4 sm:grid-cols-3">
                     <div>
                       <p className="text-[8px] text-white/25">
                         Market Condition
@@ -1311,7 +1313,7 @@ export default function TradesPage() {
                     </p>
                   </div>
 
-                  <div className="mt-auto border-t border-white/[0.05] pt-4">
+                  <div className="mt-5 border-t border-white/[0.05] pt-4 lg:mt-auto">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[8px] text-white/25">
@@ -1345,7 +1347,7 @@ export default function TradesPage() {
                 </div>
 
                 {/* CHART / SCREENSHOT */}
-                <div className="relative h-full min-h-[150px] overflow-hidden rounded-lg border border-white/[0.06] bg-[#050b12]">
+                <div className="relative h-[210px] min-h-[210px] overflow-hidden rounded-lg border border-white/[0.06] bg-[#050b12] sm:h-[240px] sm:min-h-[240px] lg:h-full lg:min-h-[150px]">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(35,133,245,0.08),transparent_55%)]" />
 
                   <div className="absolute inset-0 opacity-40">

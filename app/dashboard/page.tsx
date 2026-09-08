@@ -991,19 +991,19 @@ export default function DashboardPage({
         <div className="absolute bottom-[-220px] right-[-180px] h-[500px] w-[500px] rounded-full bg-blue-500/[0.025] blur-[150px]" />
       </div>
 
-      <div className="relative mx-auto max-w-[1700px] px-5 py-4 xl:px-7">
+      <div className="relative mx-auto max-w-[1700px] px-3 py-3 sm:px-5 sm:py-4 xl:px-7">
 
-        <div className="min-h-[calc(100vh-32px)] overflow-hidden rounded-[22px] border border-white/[0.07] bg-[#050b13]/80 shadow-[0_35px_100px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.025)] backdrop-blur-2xl">
+        <div className="min-h-[calc(100vh-24px)] overflow-hidden rounded-[18px] border border-white/[0.07] bg-[#050b13]/80 shadow-[0_35px_100px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.025)] backdrop-blur-2xl">
 
           {/* HEADER */}
 
-          <header className="flex items-center justify-between px-7 pb-5 pt-7 xl:px-8">
+          <header className="flex items-start justify-between gap-3 px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-7 xl:px-8">
 
             <DashboardGreeting
               name={displayName}
             />
 
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
 
               {/* RANGE */}
 
@@ -1146,11 +1146,11 @@ export default function DashboardPage({
 
           {/* CONTENT */}
 
-          <div className="px-7 pb-8 xl:px-8">
+          <div className="px-3 pb-6 sm:px-6 sm:pb-8 xl:px-8">
 
             {/* KPI ROW */}
 
-            <div className="grid gap-4 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
 
               <MetricCard
                 title="Net P&L"
@@ -1282,11 +1282,11 @@ export default function DashboardPage({
 
             {/* MAIN ANALYTICS */}
 
-            <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(360px,0.9fr)]">
+            <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(360px,0.9fr)]">
 
               {/* P&L PERFORMANCE */}
 
-              <section className="h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#111b2a] via-[#0b131f] to-[#08101a] shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
+              <section className="h-[330px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#111b2a] via-[#0b131f] to-[#08101a] shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
 
                 <div className="flex items-center justify-between px-6 pt-5">
 
@@ -1306,7 +1306,7 @@ export default function DashboardPage({
 
                 </div>
 
-                <div className="relative mt-5 h-[330px] px-6">
+                <div className="relative mt-4 h-[235px] px-3 sm:mt-5 sm:h-[330px] sm:px-6">
 
                   <div className="absolute left-0 top-0 flex h-full flex-col justify-between py-2 text-[10px] text-white/25">
                     <span>$12K</span>
@@ -1316,13 +1316,13 @@ export default function DashboardPage({
                     <span>-$4K</span>
                   </div>
 
-                  <div className="ml-12 h-[275px]">
+                  <div className="ml-8 h-[190px] sm:ml-12 sm:h-[275px]">
                     <EquityChart
                       trades={filteredTrades}
                     />
                   </div>
 
-                  <div className="ml-12 mt-[-2px] flex justify-between text-[10px] text-white/25">
+                  <div className="ml-8 mt-[-2px] flex justify-between text-[10px] text-white/25 sm:ml-12">
                     <span>
                       {filteredTrades.length > 0
                         ? filteredTrades.at(-1)?.trade_date
@@ -1348,7 +1348,7 @@ export default function DashboardPage({
 
               {/* RECENT TRADES */}
 
-              <section className="h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#111b2a] via-[#0b131f] to-[#08101a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
+              <section className="h-[400px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#111b2a] via-[#0b131f] to-[#08101a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
 
                 <div className="flex items-center justify-between">
 
