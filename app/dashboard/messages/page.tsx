@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import {
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -129,7 +130,7 @@ function Avatar({
   );
 }
 
-export default function MessagesPage() {
+function MessagesContent() {
   const supabase = useMemo(() => createClient(), []);
 
   const searchParams = useSearchParams();
@@ -1188,5 +1189,13 @@ export default function MessagesPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={null}>
+      <MessagesContent />
+    </Suspense>
   );
 }

@@ -335,7 +335,8 @@ async function createJournalPng(
 
   y += 28;
 
-  const details = [
+  // --- REPLACED details DEFINITION PER INSTRUCTIONS ---
+  const details: Array<[string, string]> = [
     ["Setup", trade.setup],
     ["Emotion", trade.emotion],
     ["Execution", trade.execution_rating],
@@ -347,7 +348,11 @@ async function createJournalPng(
           ? "Not followed"
           : "Not recorded",
     ],
-  ].filter(([, value]) => Boolean(value));
+  ].filter(
+    (item): item is [string, string] =>
+      Boolean(item[1]),
+  );
+  // ---------------------------------------------------
 
   const detailRows = Math.ceil(details.length / 2);
 
