@@ -109,6 +109,7 @@ export default function CalendarPage() {
   const [selectedDay, setSelectedDay] = useState<number | null>(
     now.getDate()
   );
+
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -406,6 +407,7 @@ export default function CalendarPage() {
   return (
     <main className="min-h-screen bg-[#03070d] px-3 py-3 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5">
       <div className="mx-auto flex min-h-full max-w-[1600px] flex-col gap-3 sm:gap-4 lg:h-full">
+
         {/* KPI ROW */}
         <div className="grid shrink-0 grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
           <MetricCard
@@ -522,8 +524,10 @@ export default function CalendarPage() {
 
         {/* MAIN AREA */}
         <div className="grid min-h-0 flex-1 gap-3 sm:gap-4 xl:grid-cols-[minmax(0,3.25fr)_minmax(300px,1.25fr)]">
+
           {/* CALENDAR */}
           <section className="flex min-h-[520px] flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-[#0d1823]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_20px_60px_rgba(0,0,0,0.20)] sm:min-h-[600px] sm:rounded-[17px] lg:min-h-0">
+
             {/* Calendar Header */}
             <div className="shrink-0 px-4 pb-4 pt-5 sm:px-7 sm:pb-5 sm:pt-7">
               <div className="flex items-center justify-between gap-3">
@@ -587,7 +591,7 @@ export default function CalendarPage() {
                   key={day}
                   className={`m-0.5 flex h-7 items-center justify-center rounded-[7px] border text-[8px] font-medium tracking-wide sm:m-1 sm:h-9 sm:rounded-[9px] sm:text-[10px] ${
                     index === 7
-                      ? "hidden xl:flex border-blue-400/[0.08] bg-blue-500/[0.025] text-[9px] font-semibold tracking-[0.04em] text-blue-300/45"
+                      ? "hidden border-blue-400/[0.08] bg-blue-500/[0.025] text-[9px] font-semibold tracking-[0.04em] text-blue-300/45 xl:flex"
                       : "border-white/[0.055] bg-white/[0.018] text-white/30"
                   }`}
                 >
@@ -601,8 +605,15 @@ export default function CalendarPage() {
               <div
                 className="grid h-full overflow-hidden rounded-[11px] border border-white/[0.055] sm:rounded-[13px] xl:grid-cols-[repeat(7,minmax(0,1fr))_120px]"
                 style={{
-                  gridTemplateColumns:
-                    "repeat(7, minmax(0, 1fr))",
+                  /*
+                   * IMPORTANT:
+                   * Do not set gridTemplateColumns here.
+                   *
+                   * The xl:grid-cols class above creates:
+                   * 7 calendar columns + 1 Weekly P&L column.
+                   *
+                   * On mobile/tablet it remains a 7-column calendar.
+                   */
                   gridTemplateRows: `repeat(${calendarWeeks.length}, minmax(0, 1fr))`,
                 }}
               >
@@ -794,6 +805,7 @@ export default function CalendarPage() {
 
           {/* SELECTED DAY */}
           <section className="flex min-h-[420px] flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-[#0d1823]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_20px_60px_rgba(0,0,0,0.20)] sm:min-h-[450px] sm:rounded-[17px] lg:min-h-0">
+
             <div className="shrink-0 px-4 pb-4 pt-5 sm:px-7 sm:pb-5 sm:pt-7">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -868,6 +880,7 @@ export default function CalendarPage() {
               </div>
             ) : (
               <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 sm:px-6 sm:pb-6">
+
                 {/* DAY TOTAL */}
                 <div className="rounded-[12px] border border-white/[0.07] bg-white/[0.018] p-4 sm:rounded-[14px] sm:p-5">
                   <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-white/30 sm:text-[11px]">
