@@ -10,6 +10,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+// --- FIX 1: Change Trade type to have result as last field
 type Trade = {
   id: string;
   trade_date: string;
@@ -19,6 +20,7 @@ type Trade = {
   pnl: number;
   r_multiple: number | null;
   followed_plan: boolean | null;
+  result: "Win" | "Loss" | "Breakeven" | null;
 };
 
 function formatPnl(value: number) {
@@ -154,10 +156,11 @@ export default function CalendarPage() {
         nextMonthDate.getMonth() + 1
       ).padStart(2, "0")}-01`;
 
+      // --- FIX 2: Select 'result' field in the .select() call
       const { data, error: tradesError } = await supabase
         .from("trades")
         .select(
-          "id, trade_date, created_at, symbol, direction, pnl, r_multiple, followed_plan"
+          "id, trade_date, created_at, symbol, direction, pnl, r_multiple, followed_plan, result"
         )
         .eq("user_id", user.id)
         .gte("trade_date", startDate)
@@ -225,6 +228,12 @@ export default function CalendarPage() {
       (trade) => Number(trade.pnl) < 0
     );
 
+    const breakevens = trades.filter(
+      (trade) =>
+        trade.result === "Breakeven" ||
+        (trade.result === null && Number(trade.pnl) === 0)
+    );
+
     const winRate =
       trades.length > 0
         ? (winners.length / trades.length) * 100
@@ -270,6 +279,7 @@ export default function CalendarPage() {
       tradeCount: trades.length,
       winners: winners.length,
       losers: losers.length,
+      breakevens: breakevens.length,
     };
   }, [trades]);
 
@@ -650,6 +660,11 @@ export default function CalendarPage() {
                           const hasTrades =
                             dayTrades.length > 0;
 
+                          // --- FIX 3: Add hasBreakeven after hasTrades, before isSelected
+                          const hasBreakeven = dayTrades.some(
+                            (trade) => trade.result === "Breakeven"
+                          );
+
                           const isSelected =
                             selectedDay === day;
 
@@ -708,6 +723,14 @@ export default function CalendarPage() {
                                     <span className="absolute right-1.5 top-1.5 rounded-full bg-white/[0.045] px-1 py-0.5 text-[7px] text-white/25 sm:right-3 sm:top-3 sm:px-1.5 sm:text-[8px]">
                                       {dayTrades.length}
                                     </span>
+
+                                    {/* Fix 3: Now hasBreakeven is defined and can be used safely */}
+                                    {hasBreakeven && (
+                                      <span
+                                        className="absolute bottom-2 right-2 h-1.5 w-1.5 rounded-full bg-amber-300 shadow-[0_0_8px_rgba(252,211,77,0.55)] sm:bottom-3 sm:right-3 sm:h-2 sm:w-2"
+                                        title="Includes breakeven trade"
+                                      />
+                                    )}
                                   </>
                                 )}
                               </div>
@@ -931,6 +954,25 @@ export default function CalendarPage() {
                             >
                               {trade.direction}
                             </p>
+
+                            <span
+                              className={`mt-1 inline-flex text-[8px] font-medium ${
+                                trade.result === "Breakeven" ||
+                                (trade.result === null && Number(trade.pnl) === 0)
+                                  ? "text-amber-300/75"
+                                  : trade.result === "Loss" ||
+                                      (trade.result === null && Number(trade.pnl) < 0)
+                                    ? "text-red-400/70"
+                                    : "text-emerald-400/70"
+                              }`}
+                            >
+                              {trade.result ??
+                                (Number(trade.pnl) === 0
+                                  ? "Breakeven"
+                                  : Number(trade.pnl) > 0
+                                    ? "Win"
+                                    : "Loss")}
+                            </span>
                           </div>
 
                           <p

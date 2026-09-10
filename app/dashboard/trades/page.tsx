@@ -26,6 +26,7 @@ type TradeRow = {
   exit_price: number | null;
   quantity: number;
   pnl: number;
+  result: "Win" | "Loss" | "Breakeven" | null;
   risk_amount: number | null;
   r_multiple: number | null;
   setup: string | null;
@@ -38,11 +39,12 @@ type TradeRow = {
   created_at: string;
 };
 
-type Filter = "All" | "Wins" | "Losses" | "Long" | "Short";
+type Filter = "All" | "Wins" | "Losses" | "Breakeven" | "Long" | "Short";
 
 type FormState = {
   trade_date: string;
   pnl: string;
+  result: "Win" | "Loss" | "Breakeven";
   symbol: string;
   direction: "Long" | "Short";
   quantity: string;
@@ -58,6 +60,7 @@ type FormState = {
 const emptyForm: FormState = {
   trade_date: new Date().toISOString().split("T")[0],
   pnl: "",
+  result: "Win",
   symbol: "",
   direction: "Long",
   quantity: "1",
@@ -332,6 +335,41 @@ function AddTradeModal({
             />
           </label>
 
+          {/* RESULT */}
+          <div className="mt-5">
+            <span className="mb-2 block text-[10px] font-medium text-white/40">
+              Result
+            </span>
+
+            <div className="grid h-11 grid-cols-3 overflow-hidden rounded-[10px] border border-white/[0.07] bg-[#0a141e]">
+              {(["Win", "Loss", "Breakeven"] as const).map((result) => (
+                <button
+                  key={result}
+                  type="button"
+                  onClick={() => {
+                    update("result", result);
+                    if (result === "Breakeven") {
+                      update("pnl", "0");
+                    } else if (form.result === "Breakeven") {
+                      update("pnl", "");
+                    }
+                  }}
+                  className={`text-[10px] font-medium transition ${
+                    form.result === result
+                      ? result === "Win"
+                        ? "bg-emerald-400/[0.10] text-emerald-400"
+                        : result === "Loss"
+                          ? "bg-red-400/[0.10] text-red-400"
+                          : "bg-amber-400/[0.10] text-amber-300"
+                      : "text-white/30 hover:bg-white/[0.025] hover:text-white/60"
+                  }`}
+                >
+                  {result}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* P&L */}
           <label className="mt-5 block">
             <span className="mb-2 block text-[10px] font-medium text-white/40">
@@ -344,10 +382,19 @@ function AddTradeModal({
               onChange={(event) =>
                 update("pnl", event.target.value)
               }
-              placeholder="0.00"
+              placeholder={form.result === "Breakeven" ? "0.00" : "0.00"}
+              disabled={form.result === "Breakeven"}
               autoFocus
-              className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-[#0a141e] px-3 text-[14px] text-white outline-none placeholder:text-white/20 transition focus:border-blue-400/30"
+              className={`h-11 w-full rounded-[10px] border border-white/[0.07] bg-[#0a141e] px-3 text-[14px] text-white outline-none placeholder:text-white/20 transition focus:border-blue-400/30 ${
+                form.result === "Breakeven" ? "cursor-not-allowed opacity-50" : ""
+              }`}
             />
+
+            {form.result === "Breakeven" && (
+              <p className="mt-1.5 text-[9px] text-amber-300/45">
+                Breakeven trades are automatically saved at $0.
+              </p>
+            )}
           </label>
 
           {/* INSTRUMENT + DIRECTION */}
@@ -751,10 +798,20 @@ export default function TradesPage() {
       return;
     }
 
-    const pnl = Number(form.pnl);
+    const pnl = form.result === "Breakeven" ? 0 : Number(form.pnl);
 
     if (Number.isNaN(pnl)) {
       setFormError("Please enter a valid P&L.");
+      return;
+    }
+
+    if (form.result === "Win" && pnl <= 0) {
+      setFormError("A winning trade must have a positive P&L.");
+      return;
+    }
+
+    if (form.result === "Loss" && pnl >= 0) {
+      setFormError("A losing trade must have a negative P&L.");
       return;
     }
 
@@ -825,6 +882,7 @@ export default function TradesPage() {
         direction: form.direction,
         quantity: Number(form.quantity) || 1,
         pnl,
+        result: form.result,
         followed_plan: form.followed_plan,
         setup: form.setup.trim() || null,
         grade: form.execution_rating || null,
@@ -873,6 +931,14 @@ export default function TradesPage() {
     if (activeFilter === "Losses") {
       result = result.filter(
         (trade) => Number(trade.pnl) < 0
+      );
+    }
+
+    if (activeFilter === "Breakeven") {
+      result = result.filter(
+        (trade) =>
+          trade.result === "Breakeven" ||
+          (trade.result === null && Number(trade.pnl) === 0)
       );
     }
 
@@ -953,6 +1019,7 @@ export default function TradesPage() {
                 "All",
                 "Wins",
                 "Losses",
+                "Breakeven",
                 "Long",
                 "Short",
               ] as Filter[]
@@ -1090,9 +1157,12 @@ export default function TradesPage() {
 
                     <span
                       className={`text-[10px] font-semibold ${
-                        Number(trade.pnl) >= 0
-                          ? "text-emerald-400"
-                          : "text-red-400"
+                        trade.result === "Breakeven" ||
+                        (trade.result === null && Number(trade.pnl) === 0)
+                          ? "text-amber-300"
+                          : Number(trade.pnl) >= 0
+                            ? "text-emerald-400"
+                            : "text-red-400"
                       }`}
                     >
                       {formatMoney(trade.pnl)}
@@ -1100,9 +1170,12 @@ export default function TradesPage() {
 
                     <span
                       className={`text-[10px] ${
-                        Number(trade.pnl) >= 0
-                          ? "text-white/45"
-                          : "text-red-400/80"
+                        trade.result === "Breakeven" ||
+                        (trade.result === null && Number(trade.pnl) === 0)
+                          ? "text-amber-300/80"
+                          : Number(trade.pnl) >= 0
+                            ? "text-white/45"
+                            : "text-red-400/80"
                       }`}
                     >
                       {formatR(trade.r_multiple)}
@@ -1166,6 +1239,25 @@ export default function TradesPage() {
                     {selected.direction}
                   </span>
 
+                  <span
+                    className={`rounded-md border px-2 py-1 text-[9px] font-medium ${
+                      selected.result === "Breakeven" ||
+                      (selected.result === null && Number(selected.pnl) === 0)
+                        ? "border-amber-400/10 bg-amber-400/[0.06] text-amber-300"
+                        : selected.result === "Loss" ||
+                            (selected.result === null && Number(selected.pnl) < 0)
+                          ? "border-red-400/10 bg-red-400/[0.06] text-red-400"
+                          : "border-emerald-400/10 bg-emerald-400/[0.06] text-emerald-400"
+                    }`}
+                  >
+                    {selected.result ??
+                      (Number(selected.pnl) === 0
+                        ? "Breakeven"
+                        : Number(selected.pnl) > 0
+                          ? "Win"
+                          : "Loss")}
+                  </span>
+
                   {selected.setup && (
                     <span className="rounded-md border border-white/[0.06] bg-white/[0.025] px-2 py-1 text-[9px] font-medium text-white/35">
                       {selected.setup}
@@ -1175,9 +1267,12 @@ export default function TradesPage() {
 
                 <span
                   className={`text-[16px] font-semibold ${
-                    Number(selected.pnl) >= 0
-                      ? "text-emerald-400"
-                      : "text-red-400"
+                    selected.result === "Breakeven" ||
+                    (selected.result === null && Number(selected.pnl) === 0)
+                      ? "text-amber-300"
+                      : Number(selected.pnl) >= 0
+                        ? "text-emerald-400"
+                        : "text-red-400"
                   }`}
                 >
                   {formatMoney(selected.pnl)}
