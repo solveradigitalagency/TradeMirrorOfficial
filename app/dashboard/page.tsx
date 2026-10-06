@@ -27,6 +27,7 @@ type Trade = {
   direction: "Long" | "Short";
   pnl: number;
   r_multiple: number | null;
+  result: "Win" | "Loss" | "Breakeven" | null;
 };
 
 type Profile = {
@@ -513,6 +514,7 @@ export default function DashboardPage({
       direction: "Long",
       pnl: 1295,
       r_multiple: 2.59,
+      result: "Win",
     },
     {
       id: "preview-2",
@@ -522,6 +524,7 @@ export default function DashboardPage({
       direction: "Short",
       pnl: 840,
       r_multiple: 1.68,
+      result: "Win",
     },
     {
       id: "preview-3",
@@ -531,6 +534,7 @@ export default function DashboardPage({
       direction: "Long",
       pnl: -420,
       r_multiple: -0.84,
+      result: "Loss",
     },
     {
       id: "preview-4",
@@ -540,6 +544,7 @@ export default function DashboardPage({
       direction: "Long",
       pnl: 620,
       r_multiple: 1.24,
+      result: "Win",
     },
     {
       id: "preview-5",
@@ -549,6 +554,7 @@ export default function DashboardPage({
       direction: "Short",
       pnl: 910,
       r_multiple: 1.82,
+      result: "Win",
     },
     {
       id: "preview-6",
@@ -558,6 +564,7 @@ export default function DashboardPage({
       direction: "Long",
       pnl: 510,
       r_multiple: 1.02,
+      result: "Win",
     },
   ];
 
@@ -637,7 +644,7 @@ export default function DashboardPage({
         supabase
           .from("trades")
           .select(
-            "id, trade_date, created_at, symbol, direction, pnl, r_multiple"
+            "id, trade_date, created_at, symbol, direction, pnl, r_multiple, result"
           )
           .eq("user_id", user.id)
           .order("trade_date", {
@@ -774,19 +781,25 @@ export default function DashboardPage({
       0
     );
 
+    // UPDATED WIN RATE LOGIC
     const winners = filteredTrades.filter(
-      (trade) => Number(trade.pnl) > 0
+      (trade) => trade.result === "Win"
     );
 
     const losers = filteredTrades.filter(
-      (trade) => Number(trade.pnl) < 0
+      (trade) => trade.result === "Loss"
     );
 
+    const breakevens = filteredTrades.filter(
+      (trade) => trade.result === "Breakeven"
+    );
+
+    const decidedTrades =
+      winners.length + losers.length;
+
     const winRate =
-      filteredTrades.length > 0
-        ? (winners.length /
-            filteredTrades.length) *
-          100
+      decidedTrades > 0
+        ? (winners.length / decidedTrades) * 100
         : 0;
 
     const grossProfit = winners.reduce(
@@ -817,6 +830,7 @@ export default function DashboardPage({
       tradeCount: filteredTrades.length,
       winners: winners.length,
       losers: losers.length,
+      breakevens: breakevens.length,
     };
   }, [filteredTrades]);
 
@@ -869,21 +883,28 @@ export default function DashboardPage({
       0
     );
 
+    // UPDATED WIN RATE LOGIC FOR PREVIOUS STATS
     const winners =
       previousRangeTrades.filter(
-        (trade) => Number(trade.pnl) > 0
+        (trade) => trade.result === "Win"
       );
 
     const losers =
       previousRangeTrades.filter(
-        (trade) => Number(trade.pnl) < 0
+        (trade) => trade.result === "Loss"
       );
 
+    const breakevens =
+      previousRangeTrades.filter(
+        (trade) => trade.result === "Breakeven"
+      );
+
+    const decidedTrades =
+      winners.length + losers.length;
+
     const winRate =
-      previousRangeTrades.length > 0
-        ? (winners.length /
-            previousRangeTrades.length) *
-          100
+      decidedTrades > 0
+        ? (winners.length / decidedTrades) * 100
         : 0;
 
     const grossProfit = winners.reduce(
@@ -912,6 +933,9 @@ export default function DashboardPage({
       winRate,
       profitFactor,
       trades: previousRangeTrades.length,
+      winners: winners.length,
+      losers: losers.length,
+      breakevens: breakevens.length,
     };
   }, [previousRangeTrades]);
 
@@ -982,9 +1006,7 @@ export default function DashboardPage({
 
   return (
     <div className="min-h-screen bg-[#03070d]">
-
       {/* Ambient background */}
-
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute left-[18%] top-[-220px] h-[550px] w-[550px] rounded-full bg-blue-500/[0.035] blur-[150px]" />
 
