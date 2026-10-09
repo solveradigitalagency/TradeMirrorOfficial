@@ -49,24 +49,6 @@ type Profile = {
   is_founder?: boolean;
 };
 
-function MonkModeIcon({ className = "" }: { className?: string }) {
-  return (
-    <span
-      className={`block bg-current ${className}`}
-      style={{
-        WebkitMaskImage: "url('/icons/monk-mode-icon.png')",
-        maskImage: "url('/icons/monk-mode-icon.png')",
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-      }}
-    />
-  );
-}
-
 export default function DashboardSidebar() {
   const pathname = usePathname();
 
@@ -153,11 +135,7 @@ export default function DashboardSidebar() {
         ]
       : []),
 
-    {
-      label: "Monk Mode",
-      href: "/dashboard/monk-mode",
-      icon: MonkModeIcon,
-    },
+    // Monk Mode removed
 
     {
       label: "Discover",
@@ -221,26 +199,14 @@ export default function DashboardSidebar() {
                     <span className="absolute left-[-1px] top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.8)]" />
                   )}
 
-                  {item.label === "Monk Mode" ? (
-                    <div className="flex h-[19px] w-[17px] shrink-0 items-center justify-center overflow-visible">
-                      <MonkModeIcon
-                        className={`h-[60px] w-[60px] max-w-none shrink-0 ${
-                          active
-                            ? "text-blue-400 opacity-100"
-                            : "text-white/35 group-hover:text-white/60"
-                        }`}
-                      />
-                    </div>
-                  ) : (
-                    <Icon
-                      className={`h-[17px] w-[17px] ${
-                        active
-                          ? "text-blue-400"
-                          : "text-white/35 group-hover:text-white/60"
-                      }`}
-                      strokeWidth={1.8}
-                    />
-                  )}
+                  <Icon
+                    className={`h-[17px] w-[17px] ${
+                      active
+                        ? "text-blue-400"
+                        : "text-white/35 group-hover:text-white/60"
+                    }`}
+                    strokeWidth={1.8}
+                  />
 
                   <span>{item.label}</span>
                 </Link>
