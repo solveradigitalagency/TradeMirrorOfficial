@@ -674,10 +674,19 @@ export default function CalendarPage() {
                               onClick={() =>
                                 setSelectedDay(day)
                               }
-                              className={`group relative m-0.5 min-h-0 cursor-pointer overflow-hidden rounded-[8px] border p-0 text-left transition-all sm:rounded-[11px] ${
-                                isSelected
-                                  ? "z-10 border-white/25 bg-white/[0.09] shadow-[inset_0_0_35px_rgba(255,255,255,0.035),0_0_18px_rgba(255,255,255,0.025)]"
-                                  : "border-white/[0.065] bg-white/[0.015] hover:border-white/[0.11] hover:bg-white/[0.035]"
+                              // --- MODIFIED BUTTON CLASSNAME (Prompt #1)
+                              className={`group relative m-0.5 min-h-0 cursor-pointer overflow-hidden rounded-[8px] border p-0 text-left transition-all duration-300 sm:rounded-[11px] ${
+                                dayTrades.length > 0 && dayPnl > 0
+                                  ? isSelected
+                                    ? "z-10 border-emerald-400/40 bg-emerald-400/[0.09] shadow-[inset_0_0_25px_rgba(52,211,153,0.08),0_0_22px_rgba(52,211,153,0.16)]"
+                                    : "border-emerald-400/20 bg-emerald-400/[0.035] shadow-[inset_0_0_18px_rgba(52,211,153,0.035),0_0_12px_rgba(52,211,153,0.07)] hover:border-emerald-400/40 hover:bg-emerald-400/[0.07] hover:shadow-[inset_0_0_25px_rgba(52,211,153,0.07),0_0_20px_rgba(52,211,153,0.15)]"
+                                  : dayTrades.length > 0 && dayPnl < 0
+                                    ? isSelected
+                                      ? "z-10 border-red-400/40 bg-red-400/[0.09] shadow-[inset_0_0_25px_rgba(248,113,113,0.08),0_0_22px_rgba(248,113,113,0.16)]"
+                                      : "border-red-400/20 bg-red-400/[0.035] shadow-[inset_0_0_18px_rgba(248,113,113,0.035),0_0_12px_rgba(248,113,113,0.07)] hover:border-red-400/40 hover:bg-red-400/[0.07] hover:shadow-[inset_0_0_25px_rgba(248,113,113,0.07),0_0_20px_rgba(248,113,113,0.15)]"
+                                    : isSelected
+                                      ? "z-10 border-white/25 bg-white/[0.09] shadow-[inset_0_0_35px_rgba(255,255,255,0.035),0_0_18px_rgba(255,255,255,0.025)]"
+                                      : "border-white/[0.065] bg-white/[0.015] hover:border-white/[0.11] hover:bg-white/[0.035]"
                               }`}
                             >
                               <div className="relative flex h-full min-h-[58px] items-start justify-start p-0 sm:min-h-[70px]">
@@ -693,13 +702,14 @@ export default function CalendarPage() {
 
                                 {hasTrades && (
                                   <>
+                                    {/* MODIFIED P&L AMOUNT CLASSNAME (Prompt #3) */}
                                     <span
                                       className={`absolute bottom-2 left-1.5 text-[9px] font-semibold sm:bottom-3 sm:left-3 sm:text-[12px] ${
                                         dayPnl > 0
-                                          ? "text-white/80"
+                                          ? "text-emerald-300"
                                           : dayPnl < 0
-                                            ? "text-white/45"
-                                            : "text-white/35"
+                                            ? "text-red-300"
+                                            : "text-white/45"
                                       }`}
                                     >
                                       {dayPnl === 0
@@ -709,13 +719,14 @@ export default function CalendarPage() {
                                           )}
                                     </span>
 
+                                    {/* MODIFIED P&L AMOUNT GLOW (Prompt #2) */}
                                     <span
-                                      className={`pointer-events-none absolute bottom-1 left-1 right-1 h-6 rounded-full blur-[15px] opacity-20 sm:bottom-1 sm:left-2 sm:right-2 sm:h-8 sm:blur-[18px] ${
+                                      className={`pointer-events-none absolute bottom-1 left-1 right-1 h-6 rounded-full blur-[15px] opacity-45 transition-opacity duration-300 group-hover:opacity-75 sm:bottom-1 sm:left-2 sm:right-2 sm:h-8 sm:blur-[18px] ${
                                         dayPnl > 0
-                                          ? "bg-white/65"
+                                          ? "bg-emerald-400/70"
                                           : dayPnl < 0
-                                            ? "bg-white/25"
-                                            : "bg-white"
+                                            ? "bg-red-400/60"
+                                            : "bg-white/20"
                                       }`}
                                     />
 
