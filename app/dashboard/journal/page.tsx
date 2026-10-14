@@ -232,7 +232,7 @@ export default function JournalPage() {
   }
 
   return (
-    <main className="journal-background min-h-screen overflow-hidden px-3 py-8 text-white sm:px-6 sm:py-12 lg:px-10">
+    <main className="journal-background min-h-screen overflow-x-hidden px-3 py-4 text-white sm:px-6 sm:py-5 lg:px-10">
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1500px] flex-col justify-center">
         <section className="w-full">
           {/* The physical book */}
@@ -293,7 +293,7 @@ export default function JournalPage() {
                           </span>
                         </div>
 
-                        <div className="mt-5 grid grid-cols-2 gap-x-5">
+                        <div className="mt-3 grid grid-cols-2 gap-x-5">
                           <Detail
                             label="Direction"
                             value={currentTrade.direction}
@@ -328,7 +328,7 @@ export default function JournalPage() {
                           />
                         </div>
 
-                        <div className="mt-7 border-y border-stone-300/80 py-5">
+                        <div className="mt-4 border-y border-stone-300/80 py-5">
                           <p className="book-eyebrow">Realized P&L</p>
                           <p
                             className={`mt-3 text-4xl font-semibold tracking-tight ${
@@ -422,7 +422,7 @@ export default function JournalPage() {
                           </p>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-2 gap-x-5">
+                        <div className="mt-1 grid grid-cols-2 gap-x-5">
                           <Detail
                             label="Setup"
                             value={currentTrade.setup}
@@ -459,7 +459,7 @@ export default function JournalPage() {
                           />
                         </div>
 
-                        <div className="mt-7">
+                        <div className="mt-4">
                           <p className="book-eyebrow">
                             Notes & reflection
                           </p>
@@ -515,7 +515,7 @@ export default function JournalPage() {
 
           {/* Navigation stays separate from the paper itself */}
           {currentTrade && !loading && !error && (
-            <div className="mx-auto mt-10 flex max-w-6xl items-center justify-between gap-4 px-1 sm:px-3">
+            <div className="mx-auto mt-5 flex max-w-6xl items-center justify-between gap-4 px-1 sm:px-3">
               <button
                 onClick={() => goToTrade(activeIndex - 1)}
                 disabled={journalTrades.length < 2}
@@ -667,7 +667,7 @@ export default function JournalPage() {
 
     min-width: 0;
 
-    min-height: 540px;
+    min-height: 0;
 
     flex-direction: column;
 
@@ -723,7 +723,7 @@ export default function JournalPage() {
 
     z-index: 1;
 
-    padding-bottom: 24px;
+    padding-bottom: 12px;
 
   }
 
@@ -827,9 +827,9 @@ export default function JournalPage() {
 
     .book-page {
 
-      min-height: 600px;
+      min-height: 0;
 
-      padding: 36px 30px 25px;
+      padding: 24px 28px 18px;
 
     }
 
@@ -899,9 +899,9 @@ export default function JournalPage() {
 
     .book-page {
 
-      min-height: 650px;
+      min-height: 0;
 
-      padding: 42px 42px 28px;
+      padding: 26px 32px 18px;
 
     }
 
