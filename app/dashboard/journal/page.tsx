@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -72,6 +71,7 @@ const money = (value: number | null | undefined) => {
 
 const number = (value: number | null | undefined) => {
   if (value == null || !Number.isFinite(Number(value))) return "—";
+
   return Number(value).toLocaleString("en-US", {
     maximumFractionDigits: 4,
   });
@@ -105,41 +105,12 @@ function Detail({
   value: string | number | null | undefined;
 }) {
   return (
-    <div className="min-w-0 border-b border-stone-200/80 py-3">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+    <div className="min-w-0 border-b border-stone-300/80 py-3">
+      <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-stone-400">
         {label}
       </p>
       <p className="mt-1 break-words text-sm font-medium text-stone-800">
         {value == null || value === "" ? "—" : value}
-      </p>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  positive,
-}: {
-  label: string;
-  value: string;
-  positive?: boolean | null;
-}) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">
-        {label}
-      </p>
-      <p
-        className={`mt-2 text-xl font-semibold tracking-tight ${
-          positive === true
-            ? "text-emerald-400"
-            : positive === false
-              ? "text-rose-400"
-              : "text-white"
-        }`}
-      >
-        {value}
       </p>
     </div>
   );
@@ -160,16 +131,13 @@ export default function JournalPage() {
 
     try {
       const supabase = createClient();
-
-      // A missing browser session should be handled gracefully.
       let user = null;
 
       try {
         const result = await supabase.auth.getUser();
 
         if (result.error) {
-          const message =
-            result.error.message?.toLowerCase() ?? "";
+          const message = result.error.message?.toLowerCase() ?? "";
 
           if (
             !message.includes("session missing") &&
@@ -244,43 +212,13 @@ export default function JournalPage() {
   const currentTrade = journalTrades[activeIndex] ?? null;
   const isDemo = currentTrade?.id === "demo-trade";
 
-  const stats = useMemo(() => {
-    const totalPnl = trades.reduce(
-      (sum, trade) => sum + Number(trade.pnl ?? 0),
-      0
-    );
-
-    const wins = trades.filter(
-      (trade) => Number(trade.pnl ?? 0) > 0
-    ).length;
-
-    const losses = trades.filter(
-      (trade) => Number(trade.pnl ?? 0) < 0
-    ).length;
-
-    const completed = wins + losses;
-
-    return {
-      totalPnl,
-      count: trades.length,
-      winRate: completed
-        ? `${Math.round((wins / completed) * 100)}%`
-        : "—",
-      wins,
-      losses,
-    };
-  }, [trades]);
-
   function toggleExample() {
     if (showExample) {
-      if (currentTrade?.id === "demo-trade") {
-        setActiveIndex(0);
-      }
       setShowExample(false);
+      setActiveIndex(0);
     } else {
       setShowExample(true);
       setActiveIndex(trades.length);
-      // setIsOpen calls removed
     }
   }
 
@@ -294,173 +232,106 @@ export default function JournalPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0b0b0c] text-white">
-      <div className="mx-auto max-w-[1500px] px-5 py-8 sm:px-8 lg:px-12">
-        {/* Header */}
-        <header className="flex flex-col justify-between gap-5 border-b border-white/10 pb-7 sm:flex-row sm:items-end">
-          <div>
-            <div className="mb-3 flex items-center gap-2 text-xs font-medium text-white/40">
-              <span>TradeMirror</span>
-              <span>/</span>
-              <span className="text-white/70">Trading Journal</span>
-            </div>
-
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Your trading journal.
-            </h1>
-
-            <p className="mt-2 max-w-xl text-sm leading-6 text-white/45">
-              Every setup. Every decision. Every lesson.
-              A clearer picture of your trading performance.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={toggleExample}
-              className="rounded-full border border-white/15 px-4 py-2.5 text-sm font-medium text-white/75 transition hover:border-white/30 hover:bg-white/5"
-            >
-              {showExample ? "Hide sample trade" : "Preview sample trade"}
-            </button>
-
-            <button
-              onClick={() => setRefreshKey((value) => value + 1)}
-              disabled={loading}
-              className="rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-white/85 disabled:opacity-50"
-            >
-              {loading ? "Refreshing…" : "Refresh journal"}
-            </button>
-          </div>
-        </header>
-
-        {/* Performance overview */}
-        <section className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Stat
-            label="Net P&L"
-            value={money(stats.totalPnl)}
-            positive={
-              stats.totalPnl > 0
-                ? true
-                : stats.totalPnl < 0
-                  ? false
-                  : null
-            }
-          />
-          <Stat label="Total trades" value={String(stats.count)} />
-          <Stat label="Win rate" value={stats.winRate} />
-          <Stat
-            label="Wins / losses"
-            value={`${stats.wins} / ${stats.losses}`}
-          />
-        </section>
-
-        {/* PERMANENTLY OPEN JOURNAL */}
-        <section className="mt-10">
-          <div className="mb-5 flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">
-                The archive
-              </p>
-              <h2 className="mt-1 text-xl font-semibold tracking-tight">
-                Trading logbook
-              </h2>
-            </div>
-
-            <span className="text-xs text-white/35">
-              {journalTrades.length}{" "}
-              {journalTrades.length === 1 ? "entry" : "entries"}
-            </span>
-          </div>
-
-          {loading ? (
-            <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-white/10 bg-white/[0.025]">
-              <div className="text-center">
-                <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-white/15 border-t-white/80" />
-                <p className="mt-4 text-sm text-white/45">
-                  Loading your journal…
-                </p>
-              </div>
-            </div>
-          ) : error ? (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-8">
-              <p className="text-sm text-white/70">
-                We couldn&apos;t load your journal.
-              </p>
-              <p className="mt-2 break-words text-sm text-white/40">
-                {error}
-              </p>
-              <button
-                onClick={() => setRefreshKey((value) => value + 1)}
-                className="mt-4 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black"
-              >
-                Try again
-              </button>
-            </div>
-          ) : signedIn === false ? (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-8 text-center">
-              <h3 className="text-lg font-semibold">
-                Your journal is waiting.
-              </h3>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/45">
-                Sign in to load your recorded trades, or preview a sample
-                entry to see how your open journal works.
-              </p>
-              <button
-                onClick={toggleExample}
-                className="mt-5 rounded-full border border-white/15 px-5 py-2.5 text-sm text-white/80 hover:bg-white/5"
-              >
-                {showExample ? "Hide sample trade" : "Preview sample journal"}
-              </button>
-            </div>
-          ) : (
-            <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[radial-gradient(ellipse_at_50%_25%,rgba(255,255,255,0.07),transparent_65%)] p-2 sm:p-5 lg:p-8">
-              {/* Book frame */}
-              <div className="mx-auto max-w-6xl">
-                {currentTrade ? (
-                  <>
-                    <div
-                      key={currentTrade.id}
-                      className="journal-spread grid overflow-hidden rounded-[5px] bg-[#d8d5ce] shadow-[0_25px_80px_rgba(0,0,0,0.5)] md:grid-cols-2"
-                    >
-                      {/* LEFT PAGE */}
-                      <article className="journal-page journal-left relative min-h-[460px] bg-[#f8f7f3] p-5 text-stone-900 sm:p-8 lg:p-10">
-                        <div className="pointer-events-none absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-stone-300/40 to-transparent" />
-
-                        <div className="relative flex items-start justify-between gap-3 border-b border-stone-300 pb-5">
+    <main className="journal-background min-h-screen overflow-hidden px-3 py-8 text-white sm:px-6 sm:py-12 lg:px-10">
+      <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1500px] flex-col justify-center">
+        <section className="w-full">
+          {/* The physical book */}
+          <div className="book-shell mx-auto max-w-6xl">
+            <div className="book-pages">
+              <div className="book-spread">
+                {/* LEFT PAGE */}
+                <article className="book-page book-left">
+                  {loading ? (
+                    <div className="flex h-full min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                      <div className="loading-line w-20" />
+                      <div className="loading-line mt-7 w-40" />
+                      <div className="loading-line mt-4 w-3/4" />
+                      <div className="loading-line mt-12 w-full" />
+                      <div className="loading-line mt-4 w-5/6" />
+                      <p className="mt-8 text-xs text-stone-400">
+                        Opening your journal…
+                      </p>
+                    </div>
+                  ) : error ? (
+                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                      <p className="book-eyebrow">A little interruption</p>
+                      <h2 className="mt-4 text-3xl font-semibold tracking-tight">
+                        Couldn&apos;t load your entries.
+                      </h2>
+                      <p className="mt-4 break-words text-sm leading-7 text-stone-500">
+                        {error}
+                      </p>
+                      <button
+                        onClick={() =>
+                          setRefreshKey((value) => value + 1)
+                        }
+                        className="mt-7 w-fit rounded-full border border-stone-300 px-5 py-2.5 text-sm text-stone-700 transition hover:bg-white"
+                      >
+                        Try again
+                      </button>
+                    </div>
+                  ) : currentTrade ? (
+                    <>
+                      <div className="book-page-content">
+                        <div className="flex items-start justify-between gap-3 border-b border-stone-300/80 pb-6">
                           <div>
-                            <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-stone-400">
-                              Trade entry
+                            <p className="book-eyebrow">
+                              {isDemo ? "Sample entry" : "Trade journal"}
                             </p>
-                            <h2 className="mt-2 text-3xl font-semibold tracking-tight">
-                              {currentTrade.symbol || "Untitled"}
-                            </h2>
-                            <p className="mt-1 text-xs text-stone-500">
+                            <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+                              {currentTrade.symbol || "Trade"}
+                            </h1>
+                            <p className="mt-2 text-xs text-stone-500">
                               {dateLabel(currentTrade.trade_date)}
                             </p>
                           </div>
 
-                          <span className="rounded-full border border-stone-300 px-3 py-1 text-[9px] font-semibold uppercase tracking-wider text-stone-500">
-                            {isDemo ? "Sample" : currentTrade.result || "Logged"}
+                          <span className="mt-1 rounded-full border border-stone-300 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-wider text-stone-500">
+                            {isDemo
+                              ? "Preview"
+                              : currentTrade.result || "Recorded"}
                           </span>
                         </div>
 
-                        <div className="relative mt-5 grid grid-cols-2 gap-x-5">
-                          <Detail label="Direction" value={currentTrade.direction} />
-                          <Detail label="Market" value={currentTrade.market} />
-                          <Detail label="Entry price" value={number(currentTrade.entry_price)} />
-                          <Detail label="Exit price" value={number(currentTrade.exit_price)} />
-                          <Detail label="Entry time" value={timeLabel(currentTrade.entry_time)} />
-                          <Detail label="Exit time" value={timeLabel(currentTrade.exit_time)} />
-                          <Detail label="Contracts" value={number(currentTrade.quantity)} />
-                          <Detail label="Risk amount" value={money(currentTrade.risk_amount)} />
+                        <div className="mt-5 grid grid-cols-2 gap-x-5">
+                          <Detail
+                            label="Direction"
+                            value={currentTrade.direction}
+                          />
+                          <Detail
+                            label="Market"
+                            value={currentTrade.market}
+                          />
+                          <Detail
+                            label="Entry price"
+                            value={number(currentTrade.entry_price)}
+                          />
+                          <Detail
+                            label="Exit price"
+                            value={number(currentTrade.exit_price)}
+                          />
+                          <Detail
+                            label="Entry time"
+                            value={timeLabel(currentTrade.entry_time)}
+                          />
+                          <Detail
+                            label="Exit time"
+                            value={timeLabel(currentTrade.exit_time)}
+                          />
+                          <Detail
+                            label="Contracts"
+                            value={number(currentTrade.quantity)}
+                          />
+                          <Detail
+                            label="Risk amount"
+                            value={money(currentTrade.risk_amount)}
+                          />
                         </div>
 
-                        <div className="relative mt-6 rounded-xl border border-stone-200 bg-white/70 p-4 sm:p-5">
-                          <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-stone-400">
-                            Realized P&L
-                          </p>
+                        <div className="mt-7 border-y border-stone-300/80 py-5">
+                          <p className="book-eyebrow">Realized P&L</p>
                           <p
-                            className={`mt-2 text-3xl font-semibold tracking-tight ${
+                            className={`mt-3 text-4xl font-semibold tracking-tight ${
                               Number(currentTrade.pnl ?? 0) > 0
                                 ? "text-emerald-700"
                                 : Number(currentTrade.pnl ?? 0) < 0
@@ -470,43 +341,112 @@ export default function JournalPage() {
                           >
                             {money(currentTrade.pnl)}
                           </p>
-                          <p className="mt-1 text-xs text-stone-500">
+                          <p className="mt-2 text-xs text-stone-500">
                             {currentTrade.r_multiple == null
                               ? "R-multiple not recorded"
                               : `${number(currentTrade.r_multiple)}R return`}
                           </p>
                         </div>
+                      </div>
 
-                        <div className="absolute bottom-5 left-5 right-7 flex items-center justify-between border-t border-stone-200 pt-3 sm:bottom-7 sm:left-8 sm:right-10">
-                          <span className="text-[9px] uppercase tracking-[0.18em] text-stone-400">
-                            TradeMirror
-                          </span>
-                          <span className="text-[10px] text-stone-400">
-                            {activeIndex * 2 + 1}
-                          </span>
-                        </div>
-                      </article>
+                      <footer className="book-page-footer">
+                        <span>TRADEMIRROR</span>
+                        <span>
+                          {String(activeIndex * 2 + 1).padStart(2, "0")}
+                        </span>
+                      </footer>
+                    </>
+                  ) : (
+                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                      <p className="book-eyebrow">
+                        TradeMirror · Personal logbook
+                      </p>
+                      <h1 className="mt-8 max-w-sm text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+                        Every trade tells a story.
+                      </h1>
+                      <p className="mt-5 max-w-sm text-sm leading-7 text-stone-500">
+                        Every setup, every decision, every lesson.
+                        Your trading history starts with a single entry.
+                      </p>
 
-                      {/* RIGHT PAGE */}
-                      <article className="journal-page journal-right relative min-h-[460px] border-t border-stone-300 bg-[#f5f3ed] p-5 text-stone-900 md:border-l md:border-t-0 sm:p-8 lg:p-10">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-5 bg-gradient-to-r from-stone-300/40 to-transparent md:block" />
+                      <div className="mt-9 border-t border-stone-300/80 pt-5">
+                        <p className="text-xs text-stone-400">
+                          {signedIn === false
+                            ? "Sign in to access your saved trades."
+                            : "Your journal is ready for its first entry."}
+                        </p>
+                        <button
+                          onClick={toggleExample}
+                          className="mt-4 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-stone-700"
+                        >
+                          Preview a sample entry
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </article>
 
-                        <div className="relative border-b border-stone-300 pb-5">
-                          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-stone-400">
+                {/* RIGHT PAGE */}
+                <article className="book-page book-right">
+                  {loading ? (
+                    <div className="flex h-full min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                      <div className="loading-line w-24" />
+                      <div className="loading-line mt-7 w-48" />
+                      <div className="loading-line mt-4 w-full" />
+                      <div className="loading-line mt-4 w-5/6" />
+                      <div className="loading-line mt-4 w-4/6" />
+                    </div>
+                  ) : error ? (
+                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                      <p className="book-eyebrow">Journal status</p>
+                      <h2 className="mt-4 text-2xl font-semibold">
+                        Your pages are still here.
+                      </h2>
+                      <p className="mt-3 text-sm leading-7 text-stone-500">
+                        Try loading your journal again. Your saved trades
+                        have not been changed by this page.
+                      </p>
+                    </div>
+                  ) : currentTrade ? (
+                    <>
+                      <div className="book-page-content">
+                        <div className="border-b border-stone-300/80 pb-6">
+                          <p className="book-eyebrow">
                             Review & reflection
                           </p>
-                          <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+                          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
                             The details.
                           </h2>
+                          <p className="mt-2 text-xs text-stone-500">
+                            What happened. What mattered. What to learn.
+                          </p>
                         </div>
 
-                        <div className="relative mt-2 grid grid-cols-2 gap-x-5">
-                          <Detail label="Setup" value={currentTrade.setup} />
-                          <Detail label="Session" value={currentTrade.session} />
-                          <Detail label="Market condition" value={currentTrade.market_condition} />
-                          <Detail label="Grade" value={currentTrade.grade} />
-                          <Detail label="Emotion" value={currentTrade.emotion} />
-                          <Detail label="Execution" value={currentTrade.execution_rating} />
+                        <div className="mt-3 grid grid-cols-2 gap-x-5">
+                          <Detail
+                            label="Setup"
+                            value={currentTrade.setup}
+                          />
+                          <Detail
+                            label="Session"
+                            value={currentTrade.session}
+                          />
+                          <Detail
+                            label="Market condition"
+                            value={currentTrade.market_condition}
+                          />
+                          <Detail
+                            label="Grade"
+                            value={currentTrade.grade}
+                          />
+                          <Detail
+                            label="Emotion"
+                            value={currentTrade.emotion}
+                          />
+                          <Detail
+                            label="Execution"
+                            value={currentTrade.execution_rating}
+                          />
                           <Detail
                             label="Followed plan"
                             value={
@@ -519,145 +459,468 @@ export default function JournalPage() {
                           />
                         </div>
 
-                        <div className="relative mt-6">
-                          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-stone-400">
+                        <div className="mt-7">
+                          <p className="book-eyebrow">
                             Notes & reflection
                           </p>
-                          <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-stone-600">
-                            {currentTrade.notes || "No notes recorded for this trade."}
+                          <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-stone-600">
+                            {currentTrade.notes ||
+                              "No notes recorded for this trade."}
                           </p>
                         </div>
 
                         {currentTrade.screenshot_url && (
-                          <div className="relative mt-5">
-                            <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.2em] text-stone-400">
+                          <div className="mt-6">
+                            <p className="book-eyebrow mb-3">
                               Chart screenshot
                             </p>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={currentTrade.screenshot_url}
                               alt="Trade chart screenshot"
-                              className="max-h-56 w-full rounded-lg border border-stone-200 object-contain"
+                              className="max-h-56 w-full rounded-lg border border-stone-300 object-contain"
                             />
                           </div>
                         )}
+                      </div>
 
-                        <div className="absolute bottom-5 left-7 right-5 flex items-center justify-between border-t border-stone-200 pt-3 sm:bottom-7 sm:left-10 sm:right-8">
-                          <span className="text-[10px] text-stone-400">
-                            {isDemo ? "Sample entry" : "Trading reflection"}
-                          </span>
-                          <span className="text-[10px] text-stone-400">
-                            {activeIndex * 2 + 2}
-                          </span>
-                        </div>
-                      </article>
-                    </div>
-
-                    {/* PAGE NAVIGATION */}
-                    <div className="mt-5 flex items-center justify-between gap-3">
-                      <button
-                        onClick={() => goToTrade(activeIndex - 1)}
-                        disabled={journalTrades.length < 2}
-                        className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm text-white/75 transition hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-30"
-                      >
-                        <span aria-hidden="true">←</span>
-                        <span className="hidden sm:inline">Previous spread</span>
-                        <span className="sm:hidden">Previous</span>
-                      </button>
-
-                      <span className="text-center text-[10px] tabular-nums text-white/40 sm:text-xs">
-                        {activeIndex + 1} of {journalTrades.length}
-                        {isDemo ? " · Sample" : ""}
-                      </span>
-
-                      <button
-                        onClick={() => goToTrade(activeIndex + 1)}
-                        disabled={journalTrades.length < 2}
-                        className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm text-white/75 transition hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-30"
-                      >
-                        <span className="hidden sm:inline">Next spread</span>
-                        <span className="sm:hidden">Next</span>
-                        <span aria-hidden="true">→</span>
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="grid overflow-hidden rounded-[5px] shadow-[0_25px_80px_rgba(0,0,0,0.5)] md:grid-cols-2">
-                    <article className="min-h-[420px] bg-[#f8f7f3] p-8 text-stone-900 sm:p-10">
-                      <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-stone-400">
-                        TradeMirror · Trading journal
-                      </p>
-                      <h2 className="mt-10 text-3xl font-semibold tracking-tight">
-                        Every trade tells a story.
+                      <footer className="book-page-footer">
+                        <span>
+                          {isDemo ? "SAMPLE ENTRY" : "TRADING REFLECTION"}
+                        </span>
+                        <span>
+                          {String(activeIndex * 2 + 2).padStart(2, "0")}
+                        </span>
+                      </footer>
+                    </>
+                  ) : (
+                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                      <p className="book-eyebrow">The next chapter</p>
+                      <h2 className="mt-5 text-3xl font-semibold tracking-tight">
+                        A fresh page.
                       </h2>
                       <p className="mt-4 max-w-sm text-sm leading-7 text-stone-500">
-                        Your trading history begins here. Each recorded trade
-                        becomes a page in your personal logbook.
+                        Your future entries will live here, alongside your
+                        setups, execution notes, and lessons learned.
                       </p>
-                      <div className="mt-10 border-t border-stone-200 pt-4 text-xs text-stone-400">
-                        Page 1
+                      <div className="mt-10 border-t border-stone-300/80 pt-5 text-xs text-stone-400">
+                        The best traders never stop learning.
                       </div>
-                    </article>
-                    <article className="min-h-[420px] border-t border-stone-300 bg-[#f5f3ed] p-8 text-stone-900 md:border-l md:border-t-0 sm:p-10">
-                      <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-stone-400">
-                        A fresh page
-                      </p>
-                      <h2 className="mt-6 text-xl font-semibold">
-                        Ready when you are.
-                      </h2>
-                      <p className="mt-3 text-sm leading-7 text-stone-500">
-                        Record your first trade to begin building your journal.
-                      </p>
-                      <div className="mt-8 border-t border-stone-200 pt-4">
-                        <button
-                          onClick={toggleExample}
-                          className="rounded-full border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-white"
-                        >
-                          Preview sample trade
-                        </button>
-                      </div>
-                      <div className="mt-10 border-t border-stone-200 pt-4 text-xs text-stone-400">
-                        Page 2
-                      </div>
-                    </article>
-                  </div>
-                )}
+                    </div>
+                  )}
+                </article>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation stays separate from the paper itself */}
+          {currentTrade && !loading && !error && (
+            <div className="mx-auto mt-10 flex max-w-6xl items-center justify-between gap-4 px-1 sm:px-3">
+              <button
+                onClick={() => goToTrade(activeIndex - 1)}
+                disabled={journalTrades.length < 2}
+                aria-label="Previous trade"
+                className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-25 sm:px-5"
+              >
+                <span aria-hidden="true">←</span>
+                <span>Previous</span>
+              </button>
+
+              <div className="text-center">
+                <p className="text-xs font-medium tabular-nums text-white/70">
+                  {activeIndex + 1} of {journalTrades.length}
+                </p>
+                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-white/30">
+                  {isDemo ? "Sample entry" : "Journal entries"}
+                </p>
               </div>
 
-              {/* Subtle page-turn animation */}
-              <style jsx>{`
-                .journal-page {
-                  transform-style: preserve-3d;
-                  animation: pageTurn 420ms ease-out both;
-                  backface-visibility: hidden;
-                }
-                .journal-left {
-                  transform-origin: right center;
-                }
-                .journal-right {
-                  transform-origin: left center;
-                  animation-delay: 35ms;
-                }
-                @keyframes pageTurn {
-                  from {
-                    opacity: 0.72;
-                    transform: perspective(1200px) rotateY(-4deg);
-                  }
-                  to {
-                    opacity: 1;
-                    transform: perspective(1200px) rotateY(0deg);
-                  }
-                }
-                @media (prefers-reduced-motion: reduce) {
-                  .journal-page {
-                    animation: none;
-                  }
-                }
-              `}</style>
+              <button
+                onClick={() => goToTrade(activeIndex + 1)}
+                disabled={journalTrades.length < 2}
+                aria-label="Next trade"
+                className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-25 sm:px-5"
+              >
+                <span>Next</span>
+                <span aria-hidden="true">→</span>
+              </button>
             </div>
           )}
         </section>
       </div>
+
+      <style jsx>{`
+
+  .journal-background {
+
+    background:
+
+      radial-gradient(
+
+        ellipse at 50% 38%,
+
+        rgba(255, 255, 255, 0.055),
+
+        transparent 55%
+
+      ),
+
+      #0b0b0c;
+
+  }
+
+
+
+  .book-shell {
+
+    position: relative;
+
+    isolation: isolate;
+
+    padding: 13px 12px 16px;
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+
+    border-radius: 10px 15px 15px 10px;
+
+    background: linear-gradient(
+
+      105deg,
+
+      #101011 0%,
+
+      #282829 8%,
+
+      #111112 19%,
+
+      #09090a 100%
+
+    );
+
+    box-shadow:
+
+      0 40px 100px rgba(0, 0, 0, 0.58),
+
+      0 10px 28px rgba(0, 0, 0, 0.38),
+
+      inset 2px 0 4px rgba(255, 255, 255, 0.08),
+
+      inset -2px 0 4px rgba(0, 0, 0, 0.8);
+
+  }
+
+
+
+  .book-pages {
+
+    position: relative;
+
+    border-radius: 3px;
+
+    background: #d0ccc3;
+
+    box-shadow:
+
+      2px 4px 0 #a9a59d,
+
+      4px 7px 0 #88857e,
+
+      6px 10px 0 #5d5a55,
+
+      8px 13px 0 #252526,
+
+      10px 17px 24px rgba(0, 0, 0, 0.48);
+
+  }
+
+
+
+  .book-spread {
+
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr);
+
+    overflow: hidden;
+
+    border-radius: 3px;
+
+    background: #f4f1e9;
+
+    box-shadow:
+
+      0 0 0 1px rgba(64, 56, 44, 0.35),
+
+      inset 0 0 12px rgba(78, 65, 47, 0.08);
+
+  }
+
+
+
+  .book-page {
+
+    position: relative;
+
+    display: flex;
+
+    min-width: 0;
+
+    min-height: 540px;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    overflow: hidden;
+
+    padding: 30px 24px 24px;
+
+    color: #292825;
+
+    background-color: #f8f6f0;
+
+    background-image: repeating-linear-gradient(
+
+      to bottom,
+
+      transparent 0,
+
+      transparent 31px,
+
+      rgba(120, 110, 91, 0.055) 32px
+
+    );
+
+  }
+
+
+
+  .book-left {
+
+    background-color: #faf8f2;
+
+    box-shadow: inset -13px 0 18px -17px rgba(48, 39, 28, 0.65);
+
+  }
+
+
+
+  .book-right {
+
+    background-color: #f3f0e8;
+
+    box-shadow: inset 13px 0 18px -17px rgba(48, 39, 28, 0.65);
+
+  }
+
+
+
+  .book-page-content {
+
+    position: relative;
+
+    z-index: 1;
+
+    padding-bottom: 24px;
+
+  }
+
+
+
+  .book-page-footer {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-top: 1px solid rgba(120, 110, 91, 0.24);
+
+    padding-top: 12px;
+
+    color: #a29b8e;
+
+    font-size: 9px;
+
+    letter-spacing: 0.17em;
+
+  }
+
+
+
+  .book-eyebrow {
+
+    color: #a29b8e;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.2em;
+
+    text-transform: uppercase;
+
+  }
+
+
+
+  .loading-line {
+
+    height: 9px;
+
+    max-width: 100%;
+
+    border-radius: 999px;
+
+    background: rgba(120, 110, 91, 0.15);
+
+    animation: pulse 1.5s ease-in-out infinite;
+
+  }
+
+
+
+  @keyframes pulse {
+
+    0%, 100% {
+
+      opacity: 0.45;
+
+    }
+
+    50% {
+
+      opacity: 1;
+
+    }
+
+  }
+
+
+
+  @media (min-width: 768px) {
+
+    .book-shell {
+
+      padding: 18px 18px 21px;
+
+    }
+
+
+
+    .book-spread {
+
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    }
+
+
+
+    .book-page {
+
+      min-height: 600px;
+
+      padding: 36px 30px 25px;
+
+    }
+
+
+
+    .book-left {
+
+      transform-origin: right center;
+
+    }
+
+
+
+    .book-right {
+
+      border-left: 1px solid rgba(120, 110, 91, 0.32);
+
+      transform-origin: left center;
+
+    }
+
+
+
+    .book-spread::after {
+
+      position: absolute;
+
+      z-index: 2;
+
+      top: 0;
+
+      bottom: 0;
+
+      left: 50%;
+
+      width: 15px;
+
+      content: "";
+
+      pointer-events: none;
+
+      transform: translateX(-50%);
+
+      background: linear-gradient(
+
+        to right,
+
+        rgba(64, 56, 44, 0.1),
+
+        rgba(64, 56, 44, 0.025) 30%,
+
+        rgba(255, 255, 255, 0.35) 50%,
+
+        rgba(64, 56, 44, 0.04) 70%,
+
+        rgba(64, 56, 44, 0.11)
+
+      );
+
+    }
+
+  }
+
+
+
+  @media (min-width: 1100px) {
+
+    .book-page {
+
+      min-height: 650px;
+
+      padding: 42px 42px 28px;
+
+    }
+
+  }
+
+
+
+  @media (prefers-reduced-motion: reduce) {
+
+    .loading-line {
+
+      animation: none;
+
+    }
+
+  }
+
+`}</style>
+
     </main>
   );
 }
