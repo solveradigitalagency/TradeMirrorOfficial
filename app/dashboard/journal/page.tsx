@@ -93,9 +93,6 @@ const dateLabel = (value: string | null) => {
   });
 };
 
-const timeLabel = (value: string | null) =>
-  value ? value.slice(0, 5) : "—";
-
 function Detail({
   label,
   value,
@@ -286,17 +283,19 @@ export default function JournalPage() {
                           </span>
                         </header>
 
-                        <div className="detail-grid mt-2">
-                          <Detail label="Direction" value={currentTrade.direction} />
-                          <Detail label="Market" value={currentTrade.market} />
-                          <Detail label="Entry price" value={number(currentTrade.entry_price)} />
-                          <Detail label="Exit price" value={number(currentTrade.exit_price)} />
-                          <Detail label="Entry time" value={timeLabel(currentTrade.entry_time)} />
-                          <Detail label="Exit time" value={timeLabel(currentTrade.exit_time)} />
-                          <Detail label="Contracts" value={number(currentTrade.quantity)} />
-                          <Detail label="Risk amount" value={money(currentTrade.risk_amount)} />
+                        {/* Only the essential trade details remain. */}
+                        <div className="detail-grid trade-details">
+                          <Detail
+                            label="Direction"
+                            value={currentTrade.direction}
+                          />
+                          <Detail
+                            label="Contracts"
+                            value={number(currentTrade.quantity)}
+                          />
                         </div>
 
+                        {/* P&L now sits directly below the two details. */}
                         <div className="pnl-panel">
                           <div>
                             <p className="eyebrow">Realized P&amp;L</p>
@@ -325,7 +324,9 @@ export default function JournalPage() {
 
                       <footer className="page-footer">
                         <span>TRADEMIRROR</span>
-                        <span>{String(activeIndex * 2 + 1).padStart(2, "0")}</span>
+                        <span>
+                          {String(activeIndex * 2 + 1).padStart(2, "0")}
+                        </span>
                       </footer>
                     </>
                   ) : (
@@ -382,21 +383,25 @@ export default function JournalPage() {
                       <div className="page-content review-content">
                         <header className="review-heading">
                           <p className="eyebrow">Review &amp; reflection</p>
-                          <h2 className="mt-2 text-3xl font-semibold tracking-tight">
+                          <h2 className="mt-1 text-3xl font-semibold tracking-tight">
                             The details.
                           </h2>
-                          <p className="mt-1 text-xs text-stone-500">
-                            What happened. What mattered. What to learn.
-                          </p>
                         </header>
 
+                        {/* Session, market condition, and grade removed. */}
                         <div className="detail-grid review-grid">
-                          <Detail label="Setup" value={currentTrade.setup} />
-                          <Detail label="Session" value={currentTrade.session} />
-                          <Detail label="Market condition" value={currentTrade.market_condition} />
-                          <Detail label="Grade" value={currentTrade.grade} />
-                          <Detail label="Emotion" value={currentTrade.emotion} />
-                          <Detail label="Execution" value={currentTrade.execution_rating} />
+                          <Detail
+                            label="Setup"
+                            value={currentTrade.setup}
+                          />
+                          <Detail
+                            label="Emotion"
+                            value={currentTrade.emotion}
+                          />
+                          <Detail
+                            label="Execution"
+                            value={currentTrade.execution_rating}
+                          />
                           <Detail
                             label="Followed plan"
                             value={
@@ -411,7 +416,10 @@ export default function JournalPage() {
 
                         <div className="notes-section">
                           <p className="eyebrow">Notes &amp; reflection</p>
-                          <p className="notes-copy">
+                          <p
+                            className="notes-copy"
+                            title={currentTrade.notes || undefined}
+                          >
                             {currentTrade.notes ||
                               "No notes recorded for this trade."}
                           </p>
@@ -419,7 +427,9 @@ export default function JournalPage() {
 
                         {currentTrade.screenshot_url && (
                           <div className="screenshot-section">
-                            <p className="eyebrow mb-2">Chart screenshot</p>
+                            <p className="eyebrow mb-2">
+                              Chart screenshot
+                            </p>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={currentTrade.screenshot_url}
@@ -434,7 +444,9 @@ export default function JournalPage() {
                         <span>
                           {isDemo ? "SAMPLE ENTRY" : "TRADING REFLECTION"}
                         </span>
-                        <span>{String(activeIndex * 2 + 2).padStart(2, "0")}</span>
+                        <span>
+                          {String(activeIndex * 2 + 2).padStart(2, "0")}
+                        </span>
                       </footer>
                     </>
                   ) : (
@@ -613,20 +625,8 @@ export default function JournalPage() {
 
         .review-content {
           flex: 1;
-          overflow-y: auto;
-          overscroll-behavior: contain;
-          scrollbar-width: thin;
-          scrollbar-color: #c9c1b4 transparent;
-          padding-right: 5px;
-        }
-
-        .review-content::-webkit-scrollbar {
-          width: 4px;
-        }
-
-        .review-content::-webkit-scrollbar-thumb {
-          border-radius: 99px;
-          background: #c9c1b4;
+          overflow: hidden;
+          padding-right: 2px;
         }
 
         .trade-heading {
@@ -673,15 +673,25 @@ export default function JournalPage() {
           column-gap: 24px;
         }
 
+        .trade-details {
+          margin-top: 4px;
+          column-gap: 24px;
+        }
+
+        .trade-details > div {
+          padding-top: 8px;
+          padding-bottom: 8px;
+        }
+
         .pnl-panel {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 16px;
-          margin-top: 17px;
+          margin-top: 12px;
           border-top: 1px solid rgba(120, 110, 91, 0.28);
           border-bottom: 1px solid rgba(120, 110, 91, 0.28);
-          padding: 14px 0;
+          padding: 13px 0;
         }
 
         .pnl-value {
@@ -695,36 +705,45 @@ export default function JournalPage() {
 
         .review-heading {
           border-bottom: 1px solid rgba(120, 110, 91, 0.28);
-          padding-bottom: 15px;
+          padding-bottom: 10px;
         }
 
         .review-grid {
           column-gap: 22px;
         }
 
+        .review-grid > div {
+          padding-top: 6px;
+          padding-bottom: 6px;
+        }
+
         .notes-section {
-          margin-top: 15px;
+          margin-top: 10px;
         }
 
         .notes-copy {
-          margin-top: 8px;
+          display: -webkit-box;
+          margin-top: 6px;
+          overflow: hidden;
           color: #6b665d;
-          font-size: 12px;
-          line-height: 1.65;
+          font-size: 11px;
+          line-height: 1.5;
           white-space: pre-wrap;
           overflow-wrap: anywhere;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 4;
         }
 
         .screenshot-section {
-          margin-top: 14px;
-          padding-bottom: 5px;
+          margin-top: 10px;
+          padding-bottom: 2px;
         }
 
         .trade-screenshot {
           display: block;
           width: 100%;
           height: auto;
-          max-height: 220px;
+          max-height: 175px;
           border: 1px solid #d6d0c5;
           border-radius: 6px;
           object-fit: contain;
@@ -739,9 +758,9 @@ export default function JournalPage() {
           align-items: center;
           justify-content: space-between;
           gap: 12px;
-          margin-top: 10px;
+          margin-top: 8px;
           border-top: 1px solid rgba(120, 110, 91, 0.24);
-          padding-top: 9px;
+          padding-top: 8px;
           color: #a29b8e;
           font-size: 9px;
           letter-spacing: 0.16em;
@@ -917,25 +936,29 @@ export default function JournalPage() {
           }
 
           .detail-grid > div {
-            padding-top: 6px;
-            padding-bottom: 6px;
+            padding-top: 5px;
+            padding-bottom: 5px;
           }
 
           .pnl-panel {
-            margin-top: 10px;
-            padding: 10px 0;
+            margin-top: 8px;
+            padding: 9px 0;
           }
 
           .review-heading {
-            padding-bottom: 10px;
+            padding-bottom: 8px;
           }
 
           .notes-section {
-            margin-top: 9px;
+            margin-top: 7px;
+          }
+
+          .notes-copy {
+            -webkit-line-clamp: 3;
           }
 
           .trade-screenshot {
-            max-height: 160px;
+            max-height: 135px;
           }
 
           .page-footer {
@@ -981,6 +1004,10 @@ export default function JournalPage() {
 
           .review-content {
             overflow: visible;
+          }
+
+          .notes-copy {
+            -webkit-line-clamp: 6;
           }
 
           .trade-screenshot {
