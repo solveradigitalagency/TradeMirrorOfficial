@@ -79,9 +79,10 @@ function MetricCard({
         )}
       </div>
 
+      {/* --- METRIC CARD VALUE - Colorful based on negative prop */}
       <p
         className={`mt-3 text-[22px] font-semibold tracking-[-0.045em] sm:mt-5 sm:text-[29px] ${
-          negative ? "text-white/50" : "text-white"
+          negative ? "text-red-400" : "text-emerald-400"
         }`}
       >
         {value}
@@ -90,7 +91,7 @@ function MetricCard({
       {progress !== undefined && (
         <div className="mt-4 h-[5px] overflow-hidden rounded-full bg-white/[0.07] sm:mt-5 sm:h-[6px]">
           <div
-            className="h-full rounded-full bg-white/75"
+            className="h-full rounded-full bg-white/65 transition-[width] duration-500"
             style={{
               width: `${Math.min(Math.max(progress, 0), 100)}%`,
             }}
@@ -465,6 +466,7 @@ export default function CalendarPage() {
                     0
                   )}%`
             }
+            negative={monthlyStats.winRate < 50}
             progress={
               loading
                 ? undefined
@@ -524,6 +526,7 @@ export default function CalendarPage() {
                     0
                   )}%`
             }
+            negative={monthlyStats.planFollowed < 80}
             progress={
               loading
                 ? undefined
@@ -853,7 +856,7 @@ export default function CalendarPage() {
                 </div>
 
                 <BookOpen
-                  className="mt-1 h-5 w-5 shrink-0 text-blue-300/70 sm:h-6 sm:w-6"
+                  className="mt-1 h-5 w-5 shrink-0 text-white/45 sm:h-6 sm:w-6"
                   strokeWidth={1.6}
                 />
               </div>
