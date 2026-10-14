@@ -66,7 +66,7 @@ function Avatar({
 }) {
   return (
     <div
-      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.12] bg-gradient-to-br from-[#344353] via-[#171f29] to-[#080d13] text-white/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_8px_20px_rgba(0,0,0,0.25)] ${
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.12] bg-gradient-to-br from-[#333333] via-[#171717] to-[#080808] text-white/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_8px_20px_rgba(0,0,0,0.25)] ${
         large ? "h-[72px] w-[72px]" : "h-10 w-10"
       }`}
     >
@@ -86,7 +86,7 @@ function Avatar({
         </span>
       )}
 
-      <div className="pointer-events-none absolute inset-0 rounded-full bg-blue-400/[0.035]" />
+      <div className="pointer-events-none absolute inset-0 rounded-full bg-white/[0.025]" />
     </div>
   );
 }
@@ -104,7 +104,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
 
   if (sortedTrades.length === 0) {
     return (
-      <div className="relative mt-4 flex h-[210px] items-center justify-center overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#08121c]/70 sm:h-[250px]">
+      <div className="relative mt-4 flex h-[210px] items-center justify-center overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#111111]/70 sm:h-[250px]">
         <p className="text-[11px] text-white/25">
           No public trade data available.
         </p>
@@ -142,7 +142,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
   const areaPoints = `0,${height} ${points} ${width},${height}`;
 
   return (
-    <div className="relative mt-4 h-[210px] overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#08121c]/70 sm:h-[250px]">
+    <div className="relative mt-4 h-[210px] overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#111111]/70 sm:h-[250px]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-0 right-0 top-1/4 border-t border-white/[0.035]" />
         <div className="absolute left-0 right-0 top-1/2 border-t border-white/[0.035]" />
@@ -164,12 +164,12 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
           >
             <stop
               offset="0%"
-              stopColor="#2385f5"
+              stopColor="#ffffff"
               stopOpacity="0.18"
             />
             <stop
               offset="100%"
-              stopColor="#2385f5"
+              stopColor="#ffffff"
               stopOpacity="0"
             />
           </linearGradient>
@@ -190,7 +190,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
         <polyline
           points={points}
           fill="none"
-          stroke="#2385f5"
+          stroke="#ffffff"
           strokeWidth="4"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -201,7 +201,7 @@ function EquityCurve({ trades }: { trades: Trade[] }) {
         <polyline
           points={points}
           fill="none"
-          stroke="#3b8ff5"
+          stroke="#d4d4d4"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -252,12 +252,12 @@ function TraderRow({
       onClick={onClick}
       className={`relative flex w-full items-center gap-3 overflow-hidden border-b border-white/[0.045] px-4 py-4 text-left transition-all duration-200 ${
         active
-          ? "bg-blue-500/[0.11]"
+          ? "bg-white/[0.07]"
           : "hover:bg-white/[0.025]"
       }`}
     >
       {active && (
-        <div className="absolute inset-y-0 left-0 w-[2px] bg-blue-400 shadow-[0_0_12px_rgba(35,133,245,0.65)]" />
+        <div className="absolute inset-y-0 left-0 w-[2px] bg-white/70 shadow-[0_0_12px_rgba(255,255,255,0.15)]" />
       )}
 
       <Avatar
@@ -271,7 +271,7 @@ function TraderRow({
       <div className="min-w-0 flex-1">
         <p
           className={`truncate text-[12px] font-semibold ${
-            active ? "text-blue-300" : "text-white/60"
+            active ? "text-white" : "text-white/60"
           }`}
         >
           {username}
@@ -286,8 +286,8 @@ function TraderRow({
             <span
               className={`text-[10px] font-semibold ${
                 trader.pnl >= 0
-                  ? "text-emerald-400"
-                  : "text-red-400"
+                  ? "text-white/80"
+                  : "text-white/45"
               }`}
             >
               {formatMoney(trader.pnl)}
@@ -723,7 +723,7 @@ export default function DiscoverPage() {
     selectedTrader.profile.id === currentUserId;
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#03070d] px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-4">
+    <main className="min-h-screen overflow-x-hidden bg-background px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-4">
       <div className="mx-auto flex min-h-[calc(100vh-24px)] max-w-[1600px] flex-col sm:min-h-[calc(100vh-32px)] lg:h-full">
         {/* HEADER */}
         <div className="shrink-0 px-1 pb-3 sm:px-2 sm:pb-4">
@@ -751,7 +751,7 @@ export default function DiscoverPage() {
         </div>
 
         {/* MAIN PANEL */}
-        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-[#09121c]/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_30px_80px_rgba(0,0,0,0.28)] sm:rounded-[18px]">
+        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_30px_80px_rgba(0,0,0,0.28)] sm:rounded-[18px]">
           {/* SEARCH */}
           <div className="flex shrink-0 flex-col gap-2 border-b border-white/[0.055] px-3 py-3 sm:flex-row sm:items-center sm:gap-3 sm:px-5">
             <div className="relative min-w-0 flex-1">
@@ -766,7 +766,7 @@ export default function DiscoverPage() {
                   setSearch(event.target.value)
                 }
                 placeholder="Search traders..."
-                className="h-10 w-full rounded-[9px] border border-white/[0.055] bg-white/[0.018] pl-9 pr-3 text-[11px] text-white/70 outline-none transition placeholder:text-white/25 focus:border-blue-400/25 focus:bg-white/[0.025] sm:h-9"
+                className="h-10 w-full rounded-[9px] border border-white/[0.055] bg-white/[0.018] pl-9 pr-3 text-[11px] text-white/70 outline-none transition placeholder:text-white/25 focus:border-white/25 focus:bg-white/[0.025] sm:h-9"
               />
             </div>
 
@@ -810,7 +810,7 @@ export default function DiscoverPage() {
                         }
                         className={`flex min-w-[138px] items-center gap-2.5 rounded-[12px] border px-3 py-2.5 text-left transition ${
                           active
-                            ? "border-blue-400/20 bg-blue-500/[0.10]"
+                            ? "border-white/20 bg-white/[0.07]"
                             : "border-white/[0.06] bg-white/[0.018]"
                         }`}
                       >
@@ -828,7 +828,7 @@ export default function DiscoverPage() {
                           <p
                             className={`truncate text-[11px] font-semibold ${
                               active
-                                ? "text-blue-300"
+                                ? "text-white"
                                 : "text-white/60"
                             }`}
                           >
@@ -911,7 +911,7 @@ export default function DiscoverPage() {
                               "trader"}
                           </h2>
 
-                          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-[8px] text-blue-300">
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-white/[0.10] text-[8px] text-white/80">
                             ✓
                           </span>
                         </div>
@@ -973,8 +973,8 @@ export default function DiscoverPage() {
                             viewingOwnProfile
                               ? "cursor-default border border-white/[0.06] bg-white/[0.025] text-white/25"
                               : selectedIsFollowing
-                                ? "border border-blue-400/[0.18] bg-blue-500/[0.08] text-blue-300 hover:bg-blue-500/[0.13]"
-                                : "bg-[#2385f5] text-white shadow-[0_8px_25px_rgba(35,133,245,0.18)] hover:bg-[#318ff7] hover:shadow-[0_10px_30px_rgba(35,133,245,0.28)]"
+                                ? "border border-white/[0.16] bg-white/[0.06] text-white/80 hover:bg-white/[0.10]"
+                                : "bg-white text-black shadow-[0_8px_25px_rgba(255,255,255,0.06)] hover:bg-white/90 hover:shadow-[0_10px_30px_rgba(255,255,255,0.08)]"
                           }`}
                         >
                           {followLoading ? (
@@ -994,7 +994,7 @@ export default function DiscoverPage() {
                       </div>
 
                       {followError && (
-                        <p className="max-w-full text-left text-[9px] text-red-400/75 sm:max-w-[250px] sm:text-right">
+                        <p className="max-w-full text-left text-[9px] text-white/55 sm:max-w-[250px] sm:text-right">
                           {followError}
                         </p>
                       )}
@@ -1016,8 +1016,8 @@ export default function DiscoverPage() {
                           <p
                             className={`truncate text-[18px] font-semibold tracking-[-0.04em] sm:text-[22px] ${
                               selectedTrader.pnl >= 0
-                                ? "text-emerald-400"
-                                : "text-red-400"
+                                ? "text-white/80"
+                                : "text-white/45"
                             }`}
                           >
                             {formatMoney(
@@ -1141,7 +1141,7 @@ export default function DiscoverPage() {
                           {topSetups.map((setup) => (
                             <span
                               key={setup}
-                              className="max-w-full truncate rounded-full border border-blue-400/[0.10] bg-blue-500/[0.035] px-3 py-1.5 text-[9px] font-medium text-white/45 sm:text-[10px]"
+                              className="max-w-full truncate rounded-full border border-white/[0.10] bg-white/[0.035] px-3 py-1.5 text-[9px] font-medium text-white/45 sm:text-[10px]"
                             >
                               {setup}
                             </span>
@@ -1187,7 +1187,7 @@ export default function DiscoverPage() {
       </div>
 
       {followError && (
-        <div className="fixed bottom-20 left-3 right-3 z-[60] rounded-xl border border-red-500/20 bg-[#0b1119]/95 px-4 py-3 text-[10px] text-red-400 shadow-2xl backdrop-blur-xl sm:bottom-5 sm:left-auto sm:right-5 sm:max-w-[320px]">
+        <div className="fixed bottom-20 left-3 right-3 z-[60] rounded-xl border border-white/[0.12] bg-[#111111]/95 px-4 py-3 text-[10px] text-white/55 shadow-2xl backdrop-blur-xl sm:bottom-5 sm:left-auto sm:right-5 sm:max-w-[320px]">
           {followError}
         </div>
       )}
@@ -1198,7 +1198,7 @@ export default function DiscoverPage() {
 function TrendingUpIcon() {
   return (
     <BarChart3
-      className="h-4 w-4 text-blue-300/65"
+      className="h-4 w-4 text-white/60"
       strokeWidth={1.7}
     />
   );

@@ -54,7 +54,7 @@ function SectionCard({
 }) {
   return (
     <section
-      className={`overflow-hidden rounded-[16px] border border-white/[0.075] bg-[#0b141e]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_12px_35px_rgba(0,0,0,0.16)] ${className}`}
+      className={`overflow-hidden rounded-[16px] border border-white/[0.075] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_12px_35px_rgba(0,0,0,0.16)] ${className}`}
     >
       <div className="px-4 pb-0 pt-4 sm:px-5 sm:pt-5">
         <h2 className="text-[13px] font-semibold tracking-[-0.02em] text-white/85 sm:text-[14px]">
@@ -96,7 +96,7 @@ function Field({
             placeholder={placeholder}
             maxLength={160}
             disabled={disabled}
-            className="h-[82px] w-full resize-none rounded-[9px] border border-white/[0.07] bg-[#0c1621] px-3 py-2.5 text-[11px] leading-4 text-white/75 outline-none transition placeholder:text-white/20 focus:border-blue-400/30 disabled:cursor-not-allowed disabled:opacity-50 sm:h-[76px]"
+            className="h-[82px] w-full resize-none rounded-[9px] border border-white/[0.07] bg-[#141414] px-3 py-2.5 text-[11px] leading-4 text-white/75 outline-none transition placeholder:text-white/20 focus:border-white/25 focus:bg-[#181818] disabled:cursor-not-allowed disabled:opacity-50 sm:h-[76px]"
           />
 
           <div className="mt-1 text-right text-[8px] text-white/20">
@@ -109,7 +109,7 @@ function Field({
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
           disabled={disabled}
-          className="h-[38px] w-full rounded-[9px] border border-white/[0.07] bg-[#0c1621] px-3 text-[11px] text-white/75 outline-none transition placeholder:text-white/20 focus:border-blue-400/30 disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-[38px] w-full rounded-[9px] border border-white/[0.07] bg-[#141414] px-3 text-[11px] text-white/75 outline-none transition placeholder:text-white/20 focus:border-white/25 focus:bg-[#181818] disabled:cursor-not-allowed disabled:opacity-50"
         />
       )}
     </label>
@@ -139,7 +139,7 @@ function SelectField({
         <select
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="h-[38px] w-full cursor-pointer appearance-none rounded-[9px] border border-white/[0.07] bg-[#0c1621] px-3 pr-9 text-[11px] text-white/70 outline-none focus:border-blue-400/30"
+          className="h-[38px] w-full cursor-pointer appearance-none rounded-[9px] border border-white/[0.07] bg-[#141414] px-3 pr-9 text-[11px] text-white/70 outline-none focus:border-white/25 focus:bg-[#181818]"
         >
           {options.map((option) => (
             <option key={option}>{option}</option>
@@ -169,13 +169,15 @@ function Toggle({
       aria-pressed={enabled}
       className={`relative h-[23px] w-[40px] shrink-0 cursor-pointer rounded-full transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
         enabled
-          ? "bg-blue-500 shadow-[0_0_14px_rgba(35,133,245,0.18)]"
+          ? "bg-white shadow-[0_0_12px_rgba(255,255,255,0.08)]"
           : "bg-white/[0.09]"
       }`}
     >
       <span
-        className={`absolute top-[3px] h-[17px] w-[17px] rounded-full bg-white shadow-sm transition-all ${
-          enabled ? "left-[20px]" : "left-[3px]"
+        className={`absolute top-[3px] h-[17px] w-[17px] rounded-full shadow-sm transition-all ${
+          enabled
+            ? "left-[20px] bg-black"
+            : "left-[3px] bg-white"
         }`}
       />
     </button>
@@ -731,9 +733,9 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#03070d] px-4 text-white">
+      <main className="flex min-h-screen items-center justify-center bg-background px-4 text-white">
         <div className="text-center">
-          <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-white/10 border-t-blue-400" />
+          <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-white/10 border-t-white" />
 
           <p className="mt-3 text-[11px] text-white/30">
             Loading settings...
@@ -760,8 +762,8 @@ export default function SettingsPage() {
     : "Free";
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#03070d] px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-0">
-      <div className="mx-auto flex min-h-[calc(100vh-24px)] max-w-[1600px] flex-col overflow-hidden rounded-[16px] border border-white/[0.075] bg-[#060d15]/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] sm:min-h-[calc(100vh-32px)] lg:h-full">
+    <main className="min-h-screen overflow-x-hidden bg-background px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-0">
+      <div className="mx-auto flex min-h-[calc(100vh-24px)] max-w-[1600px] flex-col overflow-hidden rounded-[16px] border border-white/[0.075] bg-[#0a0a0a]/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] sm:min-h-[calc(100vh-32px)] lg:h-full">
         {/* HEADER */}
         <header className="shrink-0 px-4 pb-3 pt-4 sm:px-5 sm:pb-4 sm:pt-5 lg:px-6">
           <div className="flex items-start justify-between gap-4">
@@ -777,12 +779,12 @@ export default function SettingsPage() {
             </div>
 
             {isPro && (
-              <div className="mt-1 flex shrink-0 items-center gap-1.5 rounded-full border border-blue-400/[0.13] bg-blue-500/[0.06] px-2.5 py-1">
+              <div className="mt-1 flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-2.5 py-1">
                 <Zap
-                  className="h-3 w-3 text-blue-300"
+                  className="h-3 w-3 text-white/70"
                   strokeWidth={1.8}
                 />
-                <span className="text-[8px] font-semibold uppercase tracking-[0.08em] text-blue-300/80">
+                <span className="text-[8px] font-semibold uppercase tracking-[0.08em] text-white/70">
                   Pro
                 </span>
               </div>
@@ -806,14 +808,14 @@ export default function SettingsPage() {
                   }
                   className={`relative h-full shrink-0 cursor-pointer px-3 text-[10px] font-medium transition-colors sm:px-3.5 sm:text-[11px] ${
                     active
-                      ? "text-blue-400"
+                      ? "text-white"
                       : "text-white/35 hover:text-white/65"
                   }`}
                 >
                   {tab}
 
                   {active && (
-                    <span className="absolute bottom-0 left-2.5 right-2.5 h-[2px] rounded-full bg-blue-500 shadow-[0_0_10px_rgba(35,133,245,0.45)]" />
+                    <span className="absolute bottom-0 left-2.5 right-2.5 h-[2px] rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.15)]" />
                   )}
                 </button>
               );
@@ -849,7 +851,7 @@ export default function SettingsPage() {
                               />
                             )}
 
-                            <div className="pointer-events-none absolute inset-0 bg-blue-400/[0.025]" />
+                            <div className="pointer-events-none absolute inset-0 bg-white/[0.02]" />
                           </div>
 
                           <input
@@ -947,7 +949,7 @@ export default function SettingsPage() {
                             <p
                               className={`text-[9px] ${
                                 message
-                                  ? "text-emerald-400"
+                                  ? "text-white/75"
                                   : "text-transparent"
                               }`}
                             >
@@ -961,7 +963,7 @@ export default function SettingsPage() {
                                 saveProfile
                               }
                               disabled={saving}
-                              className="h-[34px] w-full cursor-pointer rounded-[8px] bg-blue-600 px-5 text-[10px] font-semibold text-white shadow-[0_7px_20px_rgba(35,133,245,0.16)] transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                              className="h-[34px] w-full cursor-pointer rounded-[8px] bg-white px-5 text-[10px] font-semibold text-black shadow-[0_7px_20px_rgba(255,255,255,0.05)] transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                             >
                               {saving
                                 ? "Saving..."
@@ -996,8 +998,8 @@ export default function SettingsPage() {
                           Profile Status
                         </p>
 
-                        <div className="flex h-[38px] items-center gap-2 rounded-[9px] border border-white/[0.07] bg-[#0c1621] px-3">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_7px_rgba(52,211,153,0.4)]" />
+                        <div className="flex h-[38px] items-center gap-2 rounded-[9px] border border-white/[0.07] bg-[#141414] px-3">
+                          <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
 
                           <span className="text-[10px] text-white/50">
                             Account active
@@ -1050,7 +1052,7 @@ export default function SettingsPage() {
                         </p>
 
                         <div className="mt-4 flex flex-wrap gap-2">
-                          <span className="rounded-[5px] bg-blue-500/[0.08] px-2 py-1 text-[9px] text-blue-400/75">
+                          <span className="rounded-[5px] bg-white/[0.07] px-2 py-1 text-[9px] text-white/65">
                             {tradingStyle}
                           </span>
 
@@ -1110,9 +1112,9 @@ export default function SettingsPage() {
                         disabled
                       />
 
-                      <div className="rounded-[10px] border border-emerald-400/[0.08] bg-emerald-400/[0.02] p-3.5">
+                      <div className="rounded-[10px] border border-white/[0.08] bg-white/[0.02] p-3.5">
                         <div className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          <Check className="h-3.5 w-3.5 text-white/75" />
 
                           <span className="text-[10px] font-medium text-white/60">
                             Email verified
@@ -1142,7 +1144,7 @@ export default function SettingsPage() {
                       />
 
                       {passwordResetSent && (
-                        <p className="px-1 text-[9px] text-emerald-400">
+                        <p className="px-1 text-[9px] text-white/75">
                           Password reset
                           email sent.
                         </p>
@@ -1150,13 +1152,13 @@ export default function SettingsPage() {
                     </div>
                   </SectionCard>
 
-                  <section className="overflow-hidden rounded-[16px] border border-red-500/20 bg-red-500/[0.018]">
+                  <section className="overflow-hidden rounded-[16px] border border-white/[0.10] bg-white/[0.02]">
                     <div className="px-4 pb-4 pt-4 sm:px-5">
-                      <h2 className="text-[13px] font-semibold text-red-400">
+                      <h2 className="text-[13px] font-semibold text-white/75">
                         Danger Zone
                       </h2>
 
-                      <p className="mt-2 text-[10px] font-medium text-red-400/80">
+                      <p className="mt-2 text-[10px] font-medium text-white/65">
                         Delete Account
                       </p>
 
@@ -1170,7 +1172,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         disabled
-                        className="mt-3 flex h-[34px] w-full cursor-not-allowed items-center justify-center gap-2 rounded-[8px] border border-red-500/15 bg-red-500/[0.05] text-[10px] font-medium text-red-400/40"
+                        className="mt-3 flex h-[34px] w-full cursor-not-allowed items-center justify-center gap-2 rounded-[8px] border border-white/[0.10] bg-white/[0.025] text-[10px] font-medium text-white/35"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         Delete My Account
@@ -1252,7 +1254,7 @@ export default function SettingsPage() {
                       </button>
 
                       {message && (
-                        <p className="pt-2 text-[9px] text-emerald-400">
+                        <p className="pt-2 text-[9px] text-white/75">
                           {message}
                         </p>
                       )}
@@ -1319,7 +1321,7 @@ export default function SettingsPage() {
                             Default Instruments
                           </p>
 
-                          <div className="flex min-h-[38px] flex-wrap items-center gap-1.5 rounded-[9px] border border-white/[0.07] bg-[#0c1621] px-2 py-1.5">
+                          <div className="flex min-h-[38px] flex-wrap items-center gap-1.5 rounded-[9px] border border-white/[0.07] bg-[#141414] px-2 py-1.5">
                             {[
                               "NQ",
                               "ES",
@@ -1370,7 +1372,7 @@ export default function SettingsPage() {
                                       .value
                                   )
                                 }
-                                className="h-[38px] w-full rounded-[9px] border border-white/[0.07] bg-[#0c1621] px-3 pr-8 text-[11px] text-white/70 outline-none focus:border-blue-400/30"
+                                className="h-[38px] w-full rounded-[9px] border border-white/[0.07] bg-[#141414] px-3 pr-8 text-[11px] text-white/70 outline-none focus:border-white/25 focus:bg-[#181818]"
                               />
 
                               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white/30">
@@ -1388,8 +1390,8 @@ export default function SettingsPage() {
                           </p>
                         </div>
 
-                        <div className="rounded-[11px] border border-blue-500/[0.08] bg-blue-500/[0.018] p-3.5">
-                          <p className="text-[10px] font-medium text-blue-300/70">
+                        <div className="rounded-[11px] border border-white/[0.08] bg-white/[0.018] p-3.5">
+                          <p className="text-[10px] font-medium text-white/65">
                             {tradingStyle}
                           </p>
 
@@ -1420,7 +1422,7 @@ export default function SettingsPage() {
                   <p
                     className={`text-[9px] ${
                       message
-                        ? "text-emerald-400"
+                        ? "text-white/75"
                         : "text-transparent"
                     }`}
                   >
@@ -1433,7 +1435,7 @@ export default function SettingsPage() {
                       saveProfile
                     }
                     disabled={saving}
-                    className="h-[34px] w-full cursor-pointer rounded-[8px] bg-blue-600 px-5 text-[10px] font-semibold text-white shadow-[0_7px_20px_rgba(35,133,245,0.16)] transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                    className="h-[34px] w-full cursor-pointer rounded-[8px] bg-white px-5 text-[10px] font-semibold text-black shadow-[0_7px_20px_rgba(255,255,255,0.05)] transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                   >
                     {saving
                       ? "Saving..."
@@ -1454,7 +1456,7 @@ export default function SettingsPage() {
                           Default Setup Tags
                         </p>
 
-                        <div className="flex min-h-[38px] flex-wrap items-center gap-1.5 rounded-[9px] border border-white/[0.07] bg-[#0c1621] px-2 py-1.5">
+                        <div className="flex min-h-[38px] flex-wrap items-center gap-1.5 rounded-[9px] border border-white/[0.07] bg-[#141414] px-2 py-1.5">
                           {[
                             "FVG",
                             "Liquidity Sweep",
@@ -1634,7 +1636,7 @@ export default function SettingsPage() {
                       <p
                         className={`text-[9px] ${
                           message
-                            ? "text-emerald-400"
+                            ? "text-white/75"
                             : "text-transparent"
                         }`}
                       >
@@ -1648,7 +1650,7 @@ export default function SettingsPage() {
                           saveProfile
                         }
                         disabled={saving}
-                        className="h-[34px] w-full cursor-pointer rounded-[8px] bg-blue-600 px-5 text-[10px] font-semibold text-white shadow-[0_7px_20px_rgba(35,133,245,0.16)] transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                        className="h-[34px] w-full cursor-pointer rounded-[8px] bg-white px-5 text-[10px] font-semibold text-black shadow-[0_7px_20px_rgba(255,255,255,0.05)] transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                       >
                         {saving
                           ? "Saving..."
@@ -1815,13 +1817,13 @@ export default function SettingsPage() {
               <div className="space-y-3.5 xl:grid xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-4 xl:space-y-0">
                 <SectionCard title="Your Plan">
                   <div className="px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
-                    <div className="relative overflow-hidden rounded-[14px] border border-blue-500/15 bg-blue-500/[0.025] p-4 sm:p-5">
-                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-500/[0.08] blur-3xl" />
+                    <div className="relative overflow-hidden rounded-[14px] border border-white/[0.12] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-4 sm:p-5">
+                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/[0.04] blur-3xl" />
 
                       <div className="relative">
                         <div className="flex items-center justify-between gap-4">
                           <div>
-                            <p className="text-[9px] uppercase tracking-[0.14em] text-blue-400/70">
+                            <p className="text-[9px] uppercase tracking-[0.14em] text-white/60">
                               Current Plan
                             </p>
 
@@ -1832,9 +1834,9 @@ export default function SettingsPage() {
                             </h2>
                           </div>
 
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-blue-400/10 bg-blue-400/[0.06]">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-white/10 bg-white/[0.06]">
                             <Zap
-                              className="h-4 w-4 text-blue-400"
+                              className="h-4 w-4 text-white"
                               strokeWidth={
                                 1.7
                               }
@@ -1867,7 +1869,7 @@ export default function SettingsPage() {
                                 }
                                 className="flex items-center gap-2"
                               >
-                                <Check className="h-3.5 w-3.5 text-emerald-400" />
+                                <Check className="h-3.5 w-3.5 text-white/75" />
 
                                 <span className="text-[10px] text-white/45">
                                   {feature}
@@ -1884,7 +1886,7 @@ export default function SettingsPage() {
                               (window.location.href =
                                 "/pricing")
                             }
-                            className="mt-5 h-[35px] w-full cursor-pointer rounded-[8px] bg-blue-600 px-5 text-[10px] font-semibold text-white shadow-[0_8px_25px_rgba(35,133,245,0.16)] transition hover:bg-blue-500 sm:w-auto"
+                            className="mt-5 h-[35px] w-full cursor-pointer rounded-[8px] bg-white px-5 text-[10px] font-semibold text-black shadow-[0_8px_25px_rgba(255,255,255,0.06)] transition hover:bg-white/90 sm:w-auto"
                           >
                             Explore Pro
                           </button>

@@ -152,7 +152,7 @@ export default function DashboardSidebar() {
 
   return (
     <aside
-      className="fixed left-3 top-3 bottom-3 z-40 hidden w-[242px] flex-col overflow-hidden rounded-[26px] border border-white/[0.08] bg-[#070d15]/95 shadow-[14px_0_45px_rgba(0,0,0,0.32),4px_0_18px_rgba(59,130,246,0.035),inset_-1px_0_0_rgba(255,255,255,0.025)] backdrop-blur-xl lg:flex"
+      className="fixed left-3 top-3 bottom-3 z-40 hidden w-[242px] flex-col overflow-hidden rounded-[26px] border border-white/[0.08] bg-black/95 shadow-[14px_0_45px_rgba(0,0,0,0.32),inset_-1px_0_0_rgba(255,255,255,0.025)] backdrop-blur-xl lg:flex"
     >
       <div className="pointer-events-none absolute inset-y-5 right-0 w-px bg-gradient-to-b from-transparent via-white/[0.09] to-transparent" />
 
@@ -173,7 +173,7 @@ export default function DashboardSidebar() {
       {/* Navigation */}
       <div className="min-h-0 flex-1">
         {/* Ambient glow */}
-        <div className="pointer-events-none absolute left-[-120px] top-[80px] h-[350px] w-[350px] rounded-full bg-blue-500/[0.035] blur-[110px]" />
+        <div className="pointer-events-none absolute left-[-120px] top-[80px] h-[350px] w-[350px] rounded-full bg-white/[0.015] blur-[110px]" />
 
         <nav className="relative flex-1 px-4">
           <div className="space-y-1">
@@ -191,18 +191,18 @@ export default function DashboardSidebar() {
                   href={item.href}
                   className={`group relative flex h-[47px] items-center gap-3 rounded-xl px-4 text-[13px] font-medium transition-all duration-200 ${
                     active
-                      ? "border border-blue-400/20 bg-blue-500/[0.13] text-white shadow-[0_0_28px_rgba(35,133,245,0.10),inset_0_1px_0_rgba(255,255,255,0.045)]"
-                      : "border border-transparent text-white/42 hover:bg-white/[0.025] hover:text-white/75"
+                      ? "border border-white/[0.14] bg-white/[0.09] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                      : "border border-transparent text-white/42 hover:bg-white/[0.04] hover:text-white/75"
                   }`}
                 >
                   {active && (
-                    <span className="absolute left-[-1px] top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.8)]" />
+                    <span className="absolute left-[-1px] top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.25)]" />
                   )}
 
                   <Icon
                     className={`h-[17px] w-[17px] ${
                       active
-                        ? "text-blue-400"
+                        ? "text-white"
                         : "text-white/35 group-hover:text-white/60"
                     }`}
                     strokeWidth={1.8}
@@ -220,13 +220,13 @@ export default function DashboardSidebar() {
 
       {/* Upgrade Pro Card */}
       {profile?.plan !== "pro" && showProModal && (
-        <div className="relative mx-3 mt-2 mb-2 w-[calc(100%-24px)] max-w-[calc(100%-24px)] shrink-0 overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#070d15] shadow-2xl">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-500/[0.10] blur-[35px]" />
+        <div className="relative mx-3 mt-2 mb-2 w-[calc(100%-24px)] max-w-[calc(100%-24px)] shrink-0 overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#0a0a0a] shadow-2xl">
+          <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/[0.06] blur-[35px]" />
 
           <div className="relative flex items-start justify-between p-3.5 pb-0">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-blue-400/20 bg-blue-500/[0.10]">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/15 bg-white/[0.06]">
               <Sparkles
-                className="h-3.5 w-3.5 text-blue-400"
+                className="h-3.5 w-3.5 text-white/80"
                 strokeWidth={1.8}
               />
             </div>
@@ -253,10 +253,10 @@ export default function DashboardSidebar() {
           <div className="px-3.5 pt-2.5 pb-3.5">
             <Link
               href="/pricing"
-              className="relative mt-2.5 flex h-8.5 w-full shrink-0 items-center justify-center rounded-lg border border-blue-300/20 bg-blue-500 px-3 text-[11px] font-semibold text-white shadow-[0_8px_20px_rgba(35,133,245,0.18)] transition hover:bg-blue-400"
+              className="relative mt-2.5 flex h-8.5 w-full shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white px-3 text-[11px] font-semibold text-black shadow-[0_8px_20px_rgba(255,255,255,0.06)] transition hover:bg-white/85"
             >
               <Crown
-                className="mr-1.5 h-3.5 w-3.5"
+                className="mr-1.5 h-3.5 w-3.5 text-black"
                 strokeWidth={1.8}
               />
               Upgrade to Pro
@@ -291,11 +291,7 @@ export default function DashboardSidebar() {
 
           <div className="min-w-0 flex-1">
             <p
-              className={`truncate text-[11px] font-semibold ${
-                profile?.is_founder
-                  ? "text-[#E8C77A]"
-                  : "text-white"
-              }`}
+              className={`truncate text-[11px] font-semibold text-white`}
             >
               {profile?.display_name || "Jake Carmona"}
             </p>
@@ -305,7 +301,7 @@ export default function DashboardSidebar() {
             </p>
           </div>
 
-          <span className="rounded-md border border-blue-400/15 bg-blue-500/[0.10] px-1.5 py-1 text-[8px] font-semibold text-blue-400">
+          <span className="rounded-md border border-white/10 bg-white/[0.06] px-1.5 py-1 text-[8px] font-semibold text-white/70">
             {profile?.plan === "pro" ? "PRO" : "FREE"}
           </span>
         </Link>

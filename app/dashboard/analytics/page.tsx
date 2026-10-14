@@ -85,7 +85,7 @@ function MetricCard({
   negative?: boolean;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-[14px] border border-white/[0.09] bg-[#0d1823]/90 px-6 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_12px_30px_rgba(0,0,0,0.16)] transition-all duration-300 hover:border-white/[0.13] hover:bg-[#101c28]">
+    <div className="group relative overflow-hidden rounded-[14px] border border-white/[0.09] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] px-6 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_12px_30px_rgba(0,0,0,0.16)] transition-all duration-300 hover:border-white/[0.13] hover:bg-[#1c1c1c]">
       <p className="text-[12px] font-medium text-white/40">
         {title}
       </p>
@@ -93,16 +93,16 @@ function MetricCard({
       <p
         className={`mt-4 text-[22px] font-semibold tracking-[-0.04em] ${
           positive
-            ? "text-emerald-400"
+            ? "text-white"
             : negative
-              ? "text-red-400"
+              ? "text-white/50"
               : "text-white/85"
         }`}
       >
         {value}
       </p>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/0 to-transparent transition-all duration-300 group-hover:via-blue-400/20" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/0 to-transparent transition-all duration-300 group-hover:via-white/15" />
     </div>
   );
 }
@@ -133,8 +133,8 @@ function AnalysisBar({
         <div
           className={`h-full rounded-full transition-all duration-700 ${
             pnl >= 0
-              ? "bg-gradient-to-r from-blue-400/80 to-emerald-400/75 shadow-[0_0_16px_rgba(45,200,180,0.18)]"
-              : "bg-gradient-to-r from-red-400/70 to-red-400/90 shadow-[0_0_16px_rgba(248,113,113,0.14)]"
+              ? "bg-gradient-to-r from-white/45 to-white/90 shadow-[0_0_14px_rgba(255,255,255,0.08)]"
+              : "bg-gradient-to-r from-white/15 to-white/35"
           }`}
           style={{ width: `${width}%` }}
         />
@@ -143,8 +143,8 @@ function AnalysisBar({
       <span
         className={`text-right text-[12px] font-semibold ${
           pnl >= 0
-            ? "text-emerald-400"
-            : "text-red-400"
+            ? "text-white/85"
+            : "text-white/45"
         }`}
       >
         {formatMoney(pnl)}
@@ -653,10 +653,10 @@ export default function AnalyticsPage() {
   const hasData = filteredTrades.length > 0;
 
   return (
-    <main className="h-screen overflow-hidden bg-[#03070d] px-4 py-4 text-white lg:px-5">
+    <main className="h-screen overflow-hidden bg-background px-4 py-4 text-white lg:px-5">
       <div className="mx-auto flex h-full max-w-[1600px] flex-col">
 
-        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] border border-white/[0.10] bg-[#09121c]/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_30px_80px_rgba(0,0,0,0.28)]">
+        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] border border-white/[0.10] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_30px_80px_rgba(0,0,0,0.28)]">
 
           {/* HEADER */}
 
@@ -693,8 +693,8 @@ export default function AnalyticsPage() {
                   }
                   className={`h-9 rounded-[8px] border px-3 text-[11px] font-medium transition ${
                     range === option
-                      ? "border-blue-400/25 bg-blue-500/[0.13] text-blue-200"
-                      : "border-white/[0.08] bg-white/[0.02] text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+                      ? "border-white/[0.18] bg-white/[0.10] text-white"
+                      : "border-white/[0.08] bg-white/[0.02] text-white/40 hover:bg-white/[0.05] hover:text-white/70"
                   }`}
                 >
                   {option}
@@ -724,7 +724,7 @@ export default function AnalyticsPage() {
                     }
                     className={`h-full rounded-[7px] px-5 text-[11px] font-medium transition-all ${
                       active
-                        ? "border border-blue-400/30 bg-blue-500/[0.16] text-white shadow-[0_0_18px_rgba(35,133,245,0.10)]"
+                        ? "border border-white/[0.14] bg-white/[0.09] text-white shadow-[0_0_18px_rgba(255,255,255,0.035)]"
                         : "text-white/40 hover:bg-white/[0.025] hover:text-white/65"
                     }`}
                   >
@@ -862,7 +862,7 @@ export default function AnalyticsPage() {
 
               {/* MAIN ANALYSIS */}
 
-              <section className="min-h-0 flex-1 overflow-hidden rounded-[15px] border border-white/[0.075] bg-[#0c1722]/85 shadow-[inset_0_1px_0_rgba(255,255,255,0.025)]">
+              <section className="min-h-0 flex-1 overflow-hidden rounded-[15px] border border-white/[0.075] bg-gradient-to-br from-[#141414] via-[#101010] to-[#0a0a0a] shadow-[inset_0_1px_0_rgba(255,255,255,0.025)]">
 
                 {activeTab === "Performance" ? (
                   <div className="flex h-full flex-col">
@@ -871,7 +871,7 @@ export default function AnalyticsPage() {
 
                       <div className="flex items-center gap-2.5">
                         <TrendingUp
-                          className="h-4 w-4 text-blue-300/70"
+                          className="h-4 w-4 text-white/60"
                           strokeWidth={1.7}
                         />
 
@@ -903,7 +903,7 @@ export default function AnalyticsPage() {
                     ) : (
                       <div className="min-h-0 flex-1 px-6 pb-6 pt-4">
 
-                        <div className="relative h-full overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#08111a]/70">
+                        <div className="relative h-full overflow-hidden rounded-[12px] border border-white/[0.055] bg-[#111111]/70">
 
                           {/* GRID */}
 
@@ -937,13 +937,13 @@ export default function AnalyticsPage() {
                               >
                                 <stop
                                   offset="0%"
-                                  stopColor="#2385f5"
-                                  stopOpacity="0.22"
+                                  stopColor="#ffffff"
+                                  stopOpacity="0.12"
                                 />
 
                                 <stop
                                   offset="100%"
-                                  stopColor="#2385f5"
+                                  stopColor="#ffffff"
                                   stopOpacity="0"
                                 />
                               </linearGradient>
@@ -977,7 +977,7 @@ export default function AnalyticsPage() {
                                 )
                                 .join(" ")}
                               fill="none"
-                              stroke="#4aa3ff"
+                              stroke="#ffffff"
                               strokeWidth="3"
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -1048,7 +1048,7 @@ export default function AnalyticsPage() {
 
                     <div className="rounded-[13px] border border-white/[0.07] bg-white/[0.018] p-5">
                       <Target
-                        className="h-5 w-5 text-blue-300/70"
+                        className="h-5 w-5 text-white/60"
                         strokeWidth={1.6}
                       />
 
@@ -1066,7 +1066,7 @@ export default function AnalyticsPage() {
 
                     <div className="rounded-[13px] border border-white/[0.07] bg-white/[0.018] p-5">
                       <Activity
-                        className="h-5 w-5 text-blue-300/70"
+                        className="h-5 w-5 text-white/60"
                         strokeWidth={1.6}
                       />
 
@@ -1083,7 +1083,7 @@ export default function AnalyticsPage() {
 
                     <div className="rounded-[13px] border border-white/[0.07] bg-white/[0.018] p-5">
                       <CalendarDays
-                        className="h-5 w-5 text-blue-300/70"
+                        className="h-5 w-5 text-white/60"
                         strokeWidth={1.6}
                       />
 
@@ -1098,7 +1098,7 @@ export default function AnalyticsPage() {
 
                     <div className="rounded-[13px] border border-white/[0.07] bg-white/[0.018] p-5">
                       <TrendingUp
-                        className="h-5 w-5 text-blue-300/70"
+                        className="h-5 w-5 text-white/60"
                         strokeWidth={1.6}
                       />
 
@@ -1106,7 +1106,7 @@ export default function AnalyticsPage() {
                         Max Drawdown
                       </p>
 
-                      <p className="mt-2 text-2xl font-semibold text-red-400">
+                      <p className="mt-2 text-2xl font-semibold text-white/50">
                         {formatMoney(
                           metrics.maxDrawdown
                         )}
@@ -1115,7 +1115,7 @@ export default function AnalyticsPage() {
 
                     <div className="rounded-[13px] border border-white/[0.07] bg-white/[0.018] p-5">
                       <BarChart3
-                        className="h-5 w-5 text-blue-300/70"
+                        className="h-5 w-5 text-white/60"
                         strokeWidth={1.6}
                       />
 
@@ -1132,7 +1132,7 @@ export default function AnalyticsPage() {
 
                     <div className="rounded-[13px] border border-white/[0.07] bg-white/[0.018] p-5">
                       <Clock3
-                        className="h-5 w-5 text-blue-300/70"
+                        className="h-5 w-5 text-white/60"
                         strokeWidth={1.6}
                       />
 
@@ -1159,7 +1159,7 @@ export default function AnalyticsPage() {
                         <div className="flex items-center gap-2.5">
 
                           <BarChart3
-                            className="h-4 w-4 text-blue-300/70"
+                            className="h-4 w-4 text-white/60"
                             strokeWidth={1.7}
                           />
 
@@ -1234,7 +1234,7 @@ export default function AnalyticsPage() {
       </div>
 
       {error && (
-        <div className="fixed bottom-5 right-5 rounded-xl border border-red-500/20 bg-[#0b1119]/95 px-4 py-3 text-[10px] text-red-400 shadow-2xl backdrop-blur-xl backdrop-blur-xl">
+        <div className="fixed bottom-5 right-5 rounded-xl border border-white/[0.12] bg-[#111111]/95 px-4 py-3 text-[10px] text-white/70 shadow-2xl backdrop-blur-xl">
           {error}
         </div>
       )}

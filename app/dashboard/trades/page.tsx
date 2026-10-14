@@ -156,7 +156,7 @@ function Direction({
   return (
     <div
       className={`flex items-center gap-1.5 text-[11px] font-medium ${
-        isLong ? "text-emerald-400" : "text-red-400"
+        isLong ? "text-white/80" : "text-white/45"
       }`}
     >
       {isLong ? (
@@ -190,8 +190,8 @@ function FilterButton({
       onClick={onClick}
       className={`h-8 shrink-0 border-r border-white/[0.05] px-3 text-[10px] font-medium transition-colors last:border-r-0 ${
         active
-          ? "bg-blue-500/[0.12] text-white"
-          : "text-white/35 hover:bg-white/[0.025] hover:text-white/65"
+          ? "bg-white/[0.10] text-white"
+          : "text-white/35 hover:bg-white/[0.04] hover:text-white/70"
       }`}
     >
       {children}
@@ -290,7 +290,7 @@ function AddTradeModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/65 p-0 backdrop-blur-md sm:items-center sm:p-4">
-      <div className="w-full max-w-[500px] max-h-[94vh] overflow-hidden rounded-t-[20px] border border-white/[0.09] bg-[#08111a] shadow-[0_35px_100px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[18px]">
+      <div className="w-full max-w-[500px] max-h-[94vh] overflow-hidden rounded-t-[20px] border border-white/[0.09] bg-card shadow-[0_35px_100px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[18px]">
         {/* HEADER */}
         <div className="border-b border-white/[0.055] px-6 py-5">
           <div className="flex items-start justify-between">
@@ -331,7 +331,7 @@ function AddTradeModal({
               onChange={(event) =>
                 update("trade_date", event.target.value)
               }
-              className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-[#0a141e] px-3 text-[11px] text-white/70 outline-none transition focus:border-blue-400/30 [color-scheme:dark]"
+              className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[11px] text-white/70 outline-none transition focus:border-white/25 [color-scheme:dark]"
             />
           </label>
 
@@ -341,7 +341,7 @@ function AddTradeModal({
               Result
             </span>
 
-            <div className="grid h-11 grid-cols-3 overflow-hidden rounded-[10px] border border-white/[0.07] bg-[#0a141e]">
+            <div className="grid h-11 grid-cols-3 overflow-hidden rounded-[10px] border border-white/[0.07] bg-secondary">
               {(["Win", "Loss", "Breakeven"] as const).map((result) => (
                 <button
                   key={result}
@@ -357,11 +357,11 @@ function AddTradeModal({
                   className={`text-[10px] font-medium transition ${
                     form.result === result
                       ? result === "Win"
-                        ? "bg-emerald-400/[0.10] text-emerald-400"
+                        ? "bg-white/10 text-white"
                         : result === "Loss"
-                          ? "bg-red-400/[0.10] text-red-400"
-                          : "bg-amber-400/[0.10] text-amber-300"
-                      : "text-white/30 hover:bg-white/[0.025] hover:text-white/60"
+                          ? "bg-white/7 text-white/60"
+                          : "bg-white/7 text-white/50"
+                      : "text-white/30 hover:bg-white/[0.04] hover:text-white/70"
                   }`}
                 >
                   {result}
@@ -385,13 +385,13 @@ function AddTradeModal({
               placeholder={form.result === "Breakeven" ? "0.00" : "0.00"}
               disabled={form.result === "Breakeven"}
               autoFocus
-              className={`h-11 w-full rounded-[10px] border border-white/[0.07] bg-[#0a141e] px-3 text-[14px] text-white outline-none placeholder:text-white/20 transition focus:border-blue-400/30 ${
+              className={`h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[14px] text-white outline-none placeholder:text-white/20 transition focus:border-white/25 ${
                 form.result === "Breakeven" ? "cursor-not-allowed opacity-50" : ""
               }`}
             />
 
             {form.result === "Breakeven" && (
-              <p className="mt-1.5 text-[9px] text-amber-300/45">
+              <p className="mt-1.5 text-[9px] text-white/50">
                 Breakeven trades are automatically saved at $0.
               </p>
             )}
@@ -414,7 +414,7 @@ function AddTradeModal({
                   )
                 }
                 placeholder="NQ"
-                className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-[#0a141e] px-3 text-[12px] text-white/75 outline-none placeholder:text-white/20 transition focus:border-blue-400/30"
+                className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[12px] text-white/75 outline-none placeholder:text-white/20 transition focus:border-white/25"
               />
             </label>
 
@@ -423,7 +423,7 @@ function AddTradeModal({
                 Direction
               </span>
 
-              <div className="grid h-11 grid-cols-2 overflow-hidden rounded-[10px] border border-white/[0.07] bg-[#0a141e]">
+              <div className="grid h-11 grid-cols-2 overflow-hidden rounded-[10px] border border-white/[0.07] bg-secondary">
                 {(["Long", "Short"] as const).map(
                   (direction) => (
                     <button
@@ -435,9 +435,9 @@ function AddTradeModal({
                       className={`text-[11px] font-medium transition ${
                         form.direction === direction
                           ? direction === "Long"
-                            ? "bg-emerald-400/[0.10] text-emerald-400"
-                            : "bg-red-400/[0.10] text-red-400"
-                          : "text-white/30 hover:bg-white/[0.025] hover:text-white/60"
+                            ? "bg-white/10 text-white"
+                            : "bg-white/7 text-white/60"
+                          : "text-white/30 hover:bg-white/[0.04] hover:text-white/70"
                       }`}
                     >
                       {direction}
@@ -464,7 +464,7 @@ function AddTradeModal({
                   }
                   className={`rounded-lg border px-3 py-2 text-[10px] transition ${
                     form.emotion === emotion
-                      ? "border-blue-400/25 bg-blue-500/[0.10] text-blue-300"
+                      ? "border-white/[0.15] bg-white/[0.07] text-white"
                       : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
                   }`}
                 >
@@ -480,7 +480,7 @@ function AddTradeModal({
               Followed your plan?
             </span>
 
-            <div className="grid h-11 grid-cols-2 overflow-hidden rounded-[10px] border border-white/[0.07] bg-[#0a141e]">
+            <div className="grid h-11 grid-cols-2 overflow-hidden rounded-[10px] border border-white/[0.07] bg-secondary">
               <button
                 type="button"
                 onClick={() =>
@@ -488,8 +488,8 @@ function AddTradeModal({
                 }
                 className={`text-[11px] font-medium transition ${
                   form.followed_plan
-                    ? "bg-emerald-400/[0.10] text-emerald-400"
-                    : "text-white/30 hover:bg-white/[0.025]"
+                    ? "bg-white/10 text-white"
+                    : "text-white/30 hover:bg-white/[0.04]"
                 }`}
               >
                 Yes
@@ -502,8 +502,8 @@ function AddTradeModal({
                 }
                 className={`text-[11px] font-medium transition ${
                   !form.followed_plan
-                    ? "bg-red-400/[0.10] text-red-400"
-                    : "text-white/30 hover:bg-white/[0.025]"
+                    ? "bg-white/7 text-white/60"
+                    : "text-white/30 hover:bg-white/[0.04]"
                 }`}
               >
                 No
@@ -524,7 +524,7 @@ function AddTradeModal({
                 update("setup", event.target.value)
               }
               placeholder="FVG, liquidity sweep, etc."
-              className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-[#0a141e] px-3 text-[11px] text-white/75 outline-none placeholder:text-white/20 transition focus:border-blue-400/30"
+              className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[11px] text-white/75 outline-none placeholder:text-white/20 transition focus:border-white/25"
             />
           </label>
 
@@ -544,7 +544,7 @@ function AddTradeModal({
                   }
                   className={`h-10 rounded-[9px] border text-[10px] transition ${
                     form.execution_rating === rating
-                      ? "border-blue-400/25 bg-blue-500/[0.10] text-blue-300"
+                      ? "border-white/[0.15] bg-white/[0.07] text-white"
                       : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
                   }`}
                 >
@@ -566,7 +566,7 @@ function AddTradeModal({
                 update("notes", event.target.value)
               }
               placeholder="Write about the trade..."
-              className="h-28 w-full resize-none rounded-[10px] border border-white/[0.07] bg-[#0a141e] px-3 py-3 text-[11px] leading-5 text-white/70 outline-none placeholder:text-white/20 focus:border-blue-400/30"
+              className="h-28 w-full resize-none rounded-[10px] border border-white/[0.07] bg-secondary px-3 py-3 text-[11px] leading-5 text-white/70 outline-none placeholder:text-white/20 focus:border-white/25"
             />
           </label>
 
@@ -588,7 +588,7 @@ function AddTradeModal({
                   }
                   className={`h-10 rounded-[9px] border text-[10px] transition ${
                     form.visibility === visibility
-                      ? "border-blue-400/25 bg-blue-500/[0.10] text-blue-300"
+                      ? "border-white/[0.15] bg-white/[0.07] text-white"
                       : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
                   }`}
                 >
@@ -605,8 +605,8 @@ function AddTradeModal({
             </span>
 
             {!screenshotFile ? (
-              <label className="group flex cursor-pointer flex-col items-center justify-center rounded-[12px] border border-dashed border-white/[0.09] bg-[#0a141e] px-4 py-7 transition hover:border-blue-400/25 hover:bg-blue-500/[0.025]">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/[0.08] text-blue-400 transition group-hover:bg-blue-500/[0.12]">
+              <label className="group flex cursor-pointer flex-col items-center justify-center rounded-[12px] border border-dashed border-white/[0.09] bg-secondary px-4 py-7 transition hover:border-white/[0.15] hover:bg-white/[0.04]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.05] text-white/70 transition group-hover:bg-white/[0.08]">
                   <FileImage
                     className="h-4 w-4"
                     strokeWidth={1.8}
@@ -629,7 +629,7 @@ function AddTradeModal({
                 />
               </label>
             ) : (
-              <div className="relative overflow-hidden rounded-[12px] border border-white/[0.08] bg-[#050b12]">
+              <div className="relative overflow-hidden rounded-[12px] border border-white/[0.08] bg-background">
                 <img
                   src={screenshotPreview}
                   alt="Trade screenshot preview"
@@ -676,7 +676,7 @@ function AddTradeModal({
             type="button"
             onClick={() => onSubmit(screenshotFile)}
             disabled={saving}
-            className="flex h-10 items-center gap-2 rounded-[10px] bg-blue-600 px-5 text-[10px] font-semibold text-white shadow-[0_8px_25px_rgba(35,133,245,0.18)] transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex h-10 items-center gap-2 rounded-[10px] bg-white px-5 text-[10px] font-semibold text-black transition hover:bg-white/85 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {saving ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -986,7 +986,7 @@ export default function TradesPage() {
     null;
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#03070d] px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-0">
+    <main className="min-h-screen overflow-x-hidden bg-background px-3 py-3 pb-24 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5 lg:pb-0">
       <div className="mx-auto flex min-h-[calc(100vh-24px)] max-w-[1500px] flex-col sm:min-h-[calc(100vh-32px)] lg:h-full">
         {/* HEADER */}
         <div className="flex shrink-0 items-center justify-between gap-3">
@@ -1001,7 +1001,7 @@ export default function TradesPage() {
               setFormError("");
               setShowAddTrade(true);
             }}
-            className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-[#2385f5] px-3 text-[10px] font-semibold text-white shadow-[0_8px_25px_rgba(35,133,245,0.18)] transition hover:bg-[#318ff7] sm:gap-2 sm:px-4 sm:text-[11px]"
+            className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-white px-3 text-[10px] font-semibold text-black transition hover:bg-white/85 sm:gap-2 sm:px-4 sm:text-[11px]"
           >
             <Plus
               className="h-3.5 w-3.5"
@@ -1013,7 +1013,7 @@ export default function TradesPage() {
 
         {/* FILTERS */}
         <div className="mt-3 flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex w-full overflow-x-auto rounded-lg border border-white/[0.07] bg-[#08111a] sm:w-auto">
+          <div className="flex w-full overflow-x-auto rounded-lg border border-white/[0.07] bg-card sm:w-auto">
             {(
               [
                 "All",
@@ -1043,7 +1043,7 @@ export default function TradesPage() {
                 onChange={(event) =>
                   setSymbolFilter(event.target.value)
                 }
-                className="h-8 min-w-0 flex-1 appearance-none rounded-lg border border-white/[0.07] bg-[#09111b] px-3 pr-8 text-[10px] font-medium text-white/45 outline-none sm:flex-none"
+                className="h-8 min-w-0 flex-1 appearance-none rounded-lg border border-white/[0.07] bg-secondary px-3 pr-8 text-[10px] font-medium text-white/45 outline-none sm:flex-none"
               >
                 <option>All Symbols</option>
 
@@ -1063,7 +1063,7 @@ export default function TradesPage() {
                 onChange={(event) =>
                   setSortOrder(event.target.value)
                 }
-                className="h-8 min-w-0 flex-1 appearance-none rounded-lg border border-white/[0.07] bg-[#09111b] px-3 pr-8 text-[10px] font-medium text-white/45 outline-none sm:flex-none"
+                className="h-8 min-w-0 flex-1 appearance-none rounded-lg border border-white/[0.07] bg-secondary px-3 pr-8 text-[10px] font-medium text-white/45 outline-none sm:flex-none"
               >
                 <option>Recent</option>
                 <option>Oldest</option>
@@ -1082,7 +1082,7 @@ export default function TradesPage() {
         )}
 
         {/* TRADE TABLE */}
-        <div className="mt-3 shrink-0 overflow-x-auto overflow-y-hidden rounded-[12px] border border-white/[0.065] bg-[#071019]/85 shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
+        <div className="mt-3 shrink-0 overflow-x-auto overflow-y-hidden rounded-[12px] border border-white/[0.065] bg-card shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
           <div className="min-w-[720px]">
             {/* TABLE HEADER */}
             <div className="grid grid-cols-[0.7fr_0.9fr_1.05fr_1.05fr_0.75fr_0.65fr_0.75fr_0.7fr] border-b border-white/[0.055] bg-white/[0.012] px-4 py-2.5">
@@ -1109,7 +1109,7 @@ export default function TradesPage() {
             <div className="max-h-[155px] overflow-y-auto">
               {loading ? (
                 <div className="flex h-[115px] items-center justify-center">
-                  <Loader2 className="h-5 w-5 animate-spin text-blue-400/60" />
+                  <Loader2 className="h-5 w-5 animate-spin text-white/50" />
                 </div>
               ) : filteredTrades.length === 0 ? (
                 <div className="flex h-[115px] flex-col items-center justify-center">
@@ -1131,7 +1131,7 @@ export default function TradesPage() {
                     }
                     className={`grid w-full grid-cols-[0.7fr_0.9fr_1.05fr_1.05fr_0.75fr_0.65fr_0.75fr_0.7fr] border-b border-white/[0.045] px-4 py-2.5 text-left transition-colors last:border-b-0 ${
                       selectedTrade === trade.id
-                        ? "bg-blue-500/[0.035]"
+                        ? "bg-white/[0.02]"
                         : "hover:bg-white/[0.018]"
                     }`}
                   >
@@ -1159,10 +1159,10 @@ export default function TradesPage() {
                       className={`text-[10px] font-semibold ${
                         trade.result === "Breakeven" ||
                         (trade.result === null && Number(trade.pnl) === 0)
-                          ? "text-amber-300"
+                          ? "text-white/50"
                           : Number(trade.pnl) >= 0
-                            ? "text-emerald-400"
-                            : "text-red-400"
+                            ? "text-white"
+                            : "text-white/60"
                       }`}
                     >
                       {formatMoney(trade.pnl)}
@@ -1172,10 +1172,10 @@ export default function TradesPage() {
                       className={`text-[10px] ${
                         trade.result === "Breakeven" ||
                         (trade.result === null && Number(trade.pnl) === 0)
-                          ? "text-amber-300/80"
+                          ? "text-white/50"
                           : Number(trade.pnl) >= 0
                             ? "text-white/45"
-                            : "text-red-400/80"
+                            : "text-white/60"
                       }`}
                     >
                       {formatR(trade.r_multiple)}
@@ -1198,7 +1198,7 @@ export default function TradesPage() {
         </div>
 
         {/* SELECTED TRADE */}
-        <section className="mt-3 min-h-[520px] overflow-hidden rounded-[13px] border border-white/[0.075] bg-[#071019]/90 shadow-[0_25px_80px_rgba(0,0,0,0.24)] lg:min-h-0 lg:flex-1">
+        <section className="mt-3 min-h-[520px] overflow-hidden rounded-[13px] border border-white/[0.075] bg-card shadow-[0_25px_80px_rgba(0,0,0,0.24)] lg:min-h-0 lg:flex-1">
           {!selected ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
@@ -1228,8 +1228,8 @@ export default function TradesPage() {
                     className={`rounded-md border px-2 py-1 text-[9px] font-medium ${
                       selected.direction ===
                       "Long"
-                        ? "border-emerald-400/10 bg-emerald-400/[0.06] text-emerald-400"
-                        : "border-red-400/10 bg-red-400/[0.06] text-red-400"
+                        ? "border-white/10 bg-white/10 text-white"
+                        : "border-white/10 bg-white/[0.07] text-white/60"
                     }`}
                   >
                     {selected.direction ===
@@ -1243,11 +1243,11 @@ export default function TradesPage() {
                     className={`rounded-md border px-2 py-1 text-[9px] font-medium ${
                       selected.result === "Breakeven" ||
                       (selected.result === null && Number(selected.pnl) === 0)
-                        ? "border-amber-400/10 bg-amber-400/[0.06] text-amber-300"
+                        ? "border-white/10 bg-white/7 text-white/50"
                         : selected.result === "Loss" ||
                             (selected.result === null && Number(selected.pnl) < 0)
-                          ? "border-red-400/10 bg-red-400/[0.06] text-red-400"
-                          : "border-emerald-400/10 bg-emerald-400/[0.06] text-emerald-400"
+                          ? "border-white/10 bg-white/7 text-white/60"
+                          : "border-white/10 bg-white/10 text-white"
                     }`}
                   >
                     {selected.result ??
@@ -1269,10 +1269,10 @@ export default function TradesPage() {
                   className={`text-[16px] font-semibold ${
                     selected.result === "Breakeven" ||
                     (selected.result === null && Number(selected.pnl) === 0)
-                      ? "text-amber-300"
+                      ? "text-white/50"
                       : Number(selected.pnl) >= 0
-                        ? "text-emerald-400"
-                        : "text-red-400"
+                        ? "text-white"
+                        : "text-white/60"
                   }`}
                 >
                   {formatMoney(selected.pnl)}
@@ -1388,7 +1388,7 @@ export default function TradesPage() {
                       <p
                         className={`mt-1 text-[10px] font-semibold ${
                           selected.grade
-                            ? "text-emerald-400"
+                            ? "text-white"
                             : "text-white/40"
                         }`}
                       >
@@ -1418,8 +1418,8 @@ export default function TradesPage() {
                         <p
                           className={`mt-1 text-[10px] font-medium ${
                             selected.followed_plan
-                              ? "text-emerald-400"
-                              : "text-red-400"
+                              ? "text-white"
+                              : "text-white/60"
                           }`}
                         >
                           {selected.followed_plan
@@ -1442,8 +1442,8 @@ export default function TradesPage() {
                 </div>
 
                 {/* CHART / SCREENSHOT */}
-                <div className="relative h-[210px] min-h-[210px] overflow-hidden rounded-lg border border-white/[0.06] bg-[#050b12] sm:h-[240px] sm:min-h-[240px] lg:h-full lg:min-h-[150px]">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(35,133,245,0.08),transparent_55%)]" />
+                <div className="relative h-[210px] min-h-[210px] overflow-hidden rounded-lg border border-white/[0.06] bg-background sm:h-[240px] sm:min-h-[240px] lg:h-full lg:min-h-[150px]">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(255,255,255,0.05),transparent_55%)]" />
 
                   <div className="absolute inset-0 opacity-40">
                     <div className="absolute left-0 right-0 top-[25%] border-t border-white/[0.045]" />
@@ -1464,13 +1464,13 @@ export default function TradesPage() {
                     <path
                       d="M0 175 L35 168 L55 180 L82 160 L110 164 L135 145 L160 152 L184 130 L210 138 L236 119 L260 126 L284 103 L308 112 L332 91 L356 98 L382 73 L408 82 L435 56 L460 68 L500 34"
                       fill="none"
-                      stroke="rgba(49,145,247,0.9)"
+                      stroke="rgba(255,255,255,0.8)"
                       strokeWidth="2.5"
                     />
 
                     <path
                       d="M0 175 L35 168 L55 180 L82 160 L110 164 L135 145 L160 152 L184 130 L210 138 L236 119 L260 126 L284 103 L308 112 L332 91 L356 98 L382 73 L408 82 L435 56 L460 68 L500 34 L500 220 L0 220 Z"
-                      fill="rgba(35,133,245,0.08)"
+                      fill="rgba(255,255,255,0.05)"
                     />
                   </svg>
 

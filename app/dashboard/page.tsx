@@ -150,7 +150,7 @@ function MetricCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/[0.085] bg-gradient-to-br from-[#111b2a] via-[#0b131f] to-[#08101a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
+    <div className="relative overflow-hidden rounded-2xl border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-1.5">
@@ -168,8 +168,8 @@ function MetricCard({
             className={`mt-3 text-[28px] font-semibold tracking-[-0.04em] ${
               title === "Net P&L"
                 ? value.startsWith("-")
-                  ? "text-red-400"
-                  : "text-emerald-400"
+                  ? "text-white/45"
+                  : "text-white/75"
                 : "text-white"
             }`}
           >
@@ -179,8 +179,8 @@ function MetricCard({
           <p
             className={`mt-1 text-[10px] font-medium ${
               positive
-                ? "text-emerald-400/90"
-                : "text-red-400/90"
+                ? "text-white/65"
+                : "text-white/45"
             }`}
           >
             {change}
@@ -239,17 +239,13 @@ function MiniLineChart({
         >
           <stop
             offset="0%"
-            stopColor={
-              purple ? "#8b5cf6" : "#34d399"
-            }
+            stopColor="#ffffff"
             stopOpacity="0.22"
           />
 
           <stop
             offset="100%"
-            stopColor={
-              purple ? "#8b5cf6" : "#34d399"
-            }
+            stopColor="#ffffff"
             stopOpacity="0"
           />
         </linearGradient>
@@ -265,9 +261,7 @@ function MiniLineChart({
       <polyline
         points={points}
         fill="none"
-        stroke={
-          purple ? "#8b5cf6" : "#34d399"
-        }
+        stroke="#ffffff"
         strokeWidth="2"
       />
     </svg>
@@ -304,7 +298,7 @@ function WinRateRing({
         cy="30"
         r="23"
         fill="none"
-        stroke="#3182f6"
+        stroke="#ffffff"
         strokeWidth="7"
         strokeLinecap="round"
         strokeDasharray={circumference}
@@ -344,8 +338,8 @@ function TradeBars({
             key={index}
             className={`w-[7px] rounded-t-[3px] ${
               value >= 0
-                ? "bg-cyan-400/65"
-                : "bg-red-400/55"
+                ? "bg-white/65"
+                : "bg-white/25"
             }`}
             style={{
               height: `${height}px`,
@@ -417,13 +411,13 @@ function EquityChart({
         >
           <stop
             offset="0%"
-            stopColor="#3182f6"
+            stopColor="#ffffff"
             stopOpacity="0.30"
           />
 
           <stop
             offset="100%"
-            stopColor="#3182f6"
+            stopColor="#ffffff"
             stopOpacity="0"
           />
         </linearGradient>
@@ -437,12 +431,12 @@ function EquityChart({
         >
           <stop
             offset="0%"
-            stopColor="#38bdf8"
+            stopColor="#a3a3a3"
           />
 
           <stop
             offset="100%"
-            stopColor="#3182f6"
+            stopColor="#ffffff"
           />
         </linearGradient>
       </defs>
@@ -487,8 +481,8 @@ function EquityChart({
         cx={Number(lastPoint.split(",")[0])}
         cy={Number(lastPoint.split(",")[1])}
         r="5"
-        fill="#3182f6"
-        stroke="#08101a"
+        fill="#ffffff"
+        stroke="#111111"
         strokeWidth="3"
       />
     </svg>
@@ -1005,17 +999,17 @@ export default function DashboardPage({
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#03070d]">
+    <div className="min-h-screen bg-background">
       {/* Ambient background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute left-[18%] top-[-220px] h-[550px] w-[550px] rounded-full bg-blue-500/[0.035] blur-[150px]" />
+        <div className="absolute left-[18%] top-[-220px] h-[550px] w-[550px] rounded-full bg-white/[0.025] blur-[150px]" />
 
-        <div className="absolute bottom-[-220px] right-[-180px] h-[500px] w-[500px] rounded-full bg-blue-500/[0.025] blur-[150px]" />
+        <div className="absolute bottom-[-220px] right-[-180px] h-[500px] w-[500px] rounded-full bg-white/[0.015] blur-[150px]" />
       </div>
 
       <div className="relative mx-auto max-w-[1700px] px-3 py-3 sm:px-5 sm:py-4 xl:px-7">
 
-        <div className="min-h-[calc(100vh-24px)] overflow-hidden rounded-[18px] border border-white/[0.07] bg-[#050b13]/80 shadow-[0_35px_100px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.025)] backdrop-blur-2xl">
+        <div className="min-h-[calc(100vh-24px)] overflow-hidden rounded-[18px] border border-white/[0.07] bg-card/80 shadow-[0_35px_100px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.025)] backdrop-blur-2xl">
 
           {/* HEADER */}
 
@@ -1029,7 +1023,7 @@ export default function DashboardPage({
 
               {/* RANGE */}
 
-              <div className="hidden items-center overflow-hidden rounded-xl border border-white/[0.08] bg-[#0b121c] p-1 md:flex">
+              <div className="hidden items-center overflow-hidden rounded-xl border border-white/[0.08] bg-secondary p-1 md:flex">
 
                 {(
                   [
@@ -1049,7 +1043,7 @@ export default function DashboardPage({
                     }
                     className={`h-9 rounded-lg px-4 text-[11px] font-medium transition ${
                       range === rangeOption
-                        ? "border border-blue-400/20 bg-blue-500/[0.22] text-blue-300 shadow-[0_0_18px_rgba(35,133,245,0.12)]"
+                        ? "border border-white/[0.16] bg-white/[0.12] text-white shadow-[0_0_18px_rgba(35,133,245,0.12)]"
                         : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
                     }`}
                   >
@@ -1065,7 +1059,7 @@ export default function DashboardPage({
                   setSearchOpen(true);
                   setNotificationsOpen(false);
                 }}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-[#0b121c] text-white/55 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-secondary text-white/55 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white"
               >
                 <Search
                   className="h-[18px] w-[18px]"
@@ -1079,7 +1073,7 @@ export default function DashboardPage({
                   setNotificationsOpen((value) => !value);
                   setSearchOpen(false);
                 }}
-                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-[#0b121c] text-white/55 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-secondary text-white/55 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white"
               >
                 <Bell
                   className="h-[18px] w-[18px]"
@@ -1087,7 +1081,7 @@ export default function DashboardPage({
                 />
 
                 {unreadNotifications > 0 && (
-                  <span className="absolute right-[7px] top-[6px] flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-blue-500 px-1 text-[8px] font-bold text-white ring-2 ring-[#0b121c]">
+                  <span className="absolute right-[7px] top-[6px] flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-white px-1 text-[8px] font-bold text-black ring-2 ring-[#111111]">
                     {unreadNotifications > 9
                       ? "9+"
                       : unreadNotifications}
@@ -1102,33 +1096,33 @@ export default function DashboardPage({
                   onClick={() => setAiOverviewOpen((prev) => !prev)}
                   className={`group relative flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
                     aiReviewReady
-                      ? "border-blue-400/20 bg-blue-500/[0.08] text-blue-300"
+                      ? "border-white/[0.16] bg-white/[0.05] text-white"
                       : "border-white/[0.06] bg-white/[0.025] text-white/45"
                   }`}
                   aria-label="AI Weekly Overview"
                 >
                   {aiReviewReady && (
-                    <span className="absolute inset-0 rounded-xl bg-blue-500/10 blur-md ai-heartbeat" />
+                    <span className="absolute inset-0 rounded-xl bg-white/[0.06] blur-md ai-heartbeat" />
                   )}
 
                   <Sparkles
                     className={`relative h-[18px] w-[18px] transition-all duration-300 ${
                       aiReviewReady
-                        ? "ai-heartbeat drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
+                        ? "ai-heartbeat drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                         : "group-hover:text-white/80"
                     }`}
                   />
                 </button>
 
                 {aiOverviewOpen && (
-                  <div className="absolute right-0 top-12 z-50 w-[330px] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0a111b]/95 shadow-2xl shadow-black/40 backdrop-blur-2xl">
+                  <div className="absolute right-0 top-12 z-50 w-[330px] overflow-hidden rounded-2xl border border-white/[0.08] bg-card/95 shadow-2xl shadow-black/40 backdrop-blur-2xl">
                     {/* subtle glow */}
-                    <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-500/10 blur-3xl" />
+                    <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/[0.06] blur-3xl" />
 
                     <div className="relative p-4">
                       <div className="flex items-start gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-400/15 bg-blue-500/[0.08]">
-                          <Sparkles className="h-4 w-4 text-blue-300" />
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.05]">
+                          <Sparkles className="h-4 w-4 text-white" />
                         </div>
 
                         <div className="min-w-0">
@@ -1136,7 +1130,7 @@ export default function DashboardPage({
                             <p className="text-[13px] font-semibold text-white">
                               AI Weekly Overview
                             </p>
-                            <span className="rounded-full border border-blue-400/15 bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-blue-300">
+                            <span className="rounded-full border border-white/[0.12] bg-white/[0.06] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-white">
                               Ready
                             </span>
                           </div>
@@ -1151,7 +1145,7 @@ export default function DashboardPage({
                         onClick={() => {
                           window.location.href = "/dashboard/ai-review";
                         }}
-                        className="mt-4 flex h-9 w-full items-center justify-center rounded-xl bg-blue-500 text-[12px] font-semibold text-white transition hover:bg-blue-400"
+                        className="mt-4 flex h-9 w-full items-center justify-center rounded-xl bg-white text-[12px] font-semibold text-black transition hover:bg-white/85"
                       >
                         View Weekly Review
                       </button>
@@ -1308,7 +1302,7 @@ export default function DashboardPage({
 
               {/* P&L PERFORMANCE */}
 
-              <section className="h-[330px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#111b2a] via-[#0b131f] to-[#08101a] shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
+              <section className="h-[330px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
 
                 <div className="flex items-center justify-between px-6 pt-5">
 
@@ -1370,7 +1364,7 @@ export default function DashboardPage({
 
               {/* RECENT TRADES */}
 
-              <section className="h-[400px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#111b2a] via-[#0b131f] to-[#08101a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
+              <section className="h-[400px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
 
                 <div className="flex items-center justify-between">
 
@@ -1433,8 +1427,8 @@ export default function DashboardPage({
                             className={
                               trade.direction ===
                               "Long"
-                                ? "flex items-center gap-1 text-emerald-400"
-                                : "flex items-center gap-1 text-red-400"
+                                ? "flex items-center gap-1 text-white/75"
+                                : "flex items-center gap-1 text-white/45"
                             }
                           >
                             {trade.direction ===
@@ -1452,8 +1446,8 @@ export default function DashboardPage({
                               Number(
                                 trade.pnl
                               ) >= 0
-                                ? "font-semibold text-emerald-400"
-                                : "font-semibold text-red-400"
+                                ? "font-semibold text-white/75"
+                                : "font-semibold text-white/45"
                             }
                           >
                             {formatMoney(
@@ -1489,7 +1483,7 @@ export default function DashboardPage({
 
                 <a
                   href="/dashboard/trades"
-                  className="mt-4 flex h-10 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.02] text-[11px] font-medium text-white/55 transition hover:border-blue-400/15 hover:bg-blue-500/[0.05] hover:text-white"
+                  className="mt-4 flex h-10 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.02] text-[11px] font-medium text-white/55 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-white"
                 >
                   Go to Trades
                 </a>
@@ -1511,7 +1505,7 @@ export default function DashboardPage({
           onMouseDown={() => setSearchOpen(false)}
         >
           <div
-            className="w-full max-w-[720px] overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#08101a]/98 shadow-[0_35px_100px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl"
+            className="w-full max-w-[720px] overflow-hidden rounded-[20px] border border-white/[0.09] bg-card/95 shadow-[0_35px_100px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl"
             onMouseDown={(event) => event.stopPropagation()}
           >
             {/* Search header */}
@@ -1618,14 +1612,14 @@ export default function DashboardPage({
                           <div
                             className={`flex h-8 w-8 items-center justify-center rounded-lg ${
                               trade.direction === "Long"
-                                ? "bg-emerald-400/[0.08]"
-                                : "bg-red-400/[0.08]"
+                                ? "bg-white/[0.06]"
+                                : "bg-white/[0.035]"
                             }`}
                           >
                             {trade.direction === "Long" ? (
-                              <ArrowUpRight className="h-4 w-4 text-emerald-400" />
+                              <ArrowUpRight className="h-4 w-4 text-white/75" />
                             ) : (
-                              <ArrowDownRight className="h-4 w-4 text-red-400" />
+                              <ArrowDownRight className="h-4 w-4 text-white/45" />
                             )}
                           </div>
 
@@ -1641,8 +1635,8 @@ export default function DashboardPage({
                           <span
                             className={`text-[10px] font-semibold ${
                               Number(trade.pnl) >= 0
-                                ? "text-emerald-400"
-                                : "text-red-400"
+                                ? "text-white/75"
+                                : "text-white/45"
                             }`}
                           >
                             {formatMoney(Number(trade.pnl))}
@@ -1683,7 +1677,7 @@ export default function DashboardPage({
 
       {/* NOTIFICATIONS PANEL */}
       {notificationsOpen && (
-        <div className="fixed right-5 top-[92px] z-[90] w-[370px] overflow-hidden rounded-[18px] border border-white/[0.09] bg-[#08101a]/98 shadow-[0_25px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl xl:right-10">
+        <div className="fixed right-5 top-[92px] z-[90] w-[370px] overflow-hidden rounded-[18px] border border-white/[0.09] bg-card/95 shadow-[0_25px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl xl:right-10">
           <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3.5">
             <div>
               <p className="text-[12px] font-semibold text-white/85">
@@ -1728,7 +1722,7 @@ export default function DashboardPage({
                       }))
                     );
                   }}
-                  className="rounded-lg px-2 py-1 text-[9px] font-medium text-blue-400/80 transition hover:bg-blue-400/[0.06] hover:text-blue-400"
+                  className="rounded-lg px-2 py-1 text-[9px] font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white"
                 >
                   Mark all read
                 </button>
@@ -1786,12 +1780,12 @@ export default function DashboardPage({
                   }}
                   className={`flex w-full gap-3 border-b border-white/[0.045] px-4 py-3.5 text-left transition hover:bg-white/[0.025] ${
                     !notification.read
-                      ? "bg-blue-500/[0.025]"
+                      ? "bg-white/[0.025]"
                       : ""
                   }`}
                 >
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-400/[0.08]">
-                    <Bell className="h-3.5 w-3.5 text-blue-400" />
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.05]">
+                    <Bell className="h-3.5 w-3.5 text-white/60" />
                   </div>
 
                   <div className="min-w-0 flex-1">
@@ -1801,7 +1795,7 @@ export default function DashboardPage({
                       </p>
 
                       {!notification.read && (
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
                       )}
                     </div>
 

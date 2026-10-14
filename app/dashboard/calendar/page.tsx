@@ -66,14 +66,14 @@ function MetricCard({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-[14px] border border-white/[0.10] bg-[#0d1823]/90 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_12px_35px_rgba(0,0,0,0.18)] sm:rounded-[16px] sm:px-6 sm:py-6">
+    <div className="relative overflow-hidden rounded-[14px] border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_12px_35px_rgba(0,0,0,0.18)] sm:rounded-[16px] sm:px-6 sm:py-6">
       <div className="flex items-start justify-between gap-2">
         <p className="text-[11px] font-medium text-white/45 sm:text-[13px]">
           {title}
         </p>
 
         {icon && (
-          <div className="shrink-0 text-blue-300/80">
+          <div className="shrink-0 text-white/60">
             {icon}
           </div>
         )}
@@ -81,7 +81,7 @@ function MetricCard({
 
       <p
         className={`mt-3 text-[22px] font-semibold tracking-[-0.045em] sm:mt-5 sm:text-[29px] ${
-          negative ? "text-red-400" : "text-emerald-400"
+          negative ? "text-white/50" : "text-white"
         }`}
       >
         {value}
@@ -90,7 +90,7 @@ function MetricCard({
       {progress !== undefined && (
         <div className="mt-4 h-[5px] overflow-hidden rounded-full bg-white/[0.07] sm:mt-5 sm:h-[6px]">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-blue-400/80 to-emerald-400"
+            className="h-full rounded-full bg-white/75"
             style={{
               width: `${Math.min(Math.max(progress, 0), 100)}%`,
             }}
@@ -415,7 +415,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#03070d] px-3 py-3 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5">
+    <main className="min-h-screen bg-background px-3 py-3 text-white sm:px-4 sm:py-4 lg:h-screen lg:overflow-hidden lg:px-5">
       <div className="mx-auto flex min-h-full max-w-[1600px] flex-col gap-3 sm:gap-4 lg:h-full">
 
         {/* KPI ROW */}
@@ -536,7 +536,7 @@ export default function CalendarPage() {
         <div className="grid min-h-0 flex-1 gap-3 sm:gap-4 xl:grid-cols-[minmax(0,3.25fr)_minmax(300px,1.25fr)]">
 
           {/* CALENDAR */}
-          <section className="flex min-h-[520px] flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-[#0d1823]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_20px_60px_rgba(0,0,0,0.20)] sm:min-h-[600px] sm:rounded-[17px] lg:min-h-0">
+          <section className="flex min-h-[520px] flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_20px_60px_rgba(0,0,0,0.20)] sm:min-h-[600px] sm:rounded-[17px] lg:min-h-0">
 
             {/* Calendar Header */}
             <div className="shrink-0 px-4 pb-4 pt-5 sm:px-7 sm:pb-5 sm:pt-7">
@@ -601,7 +601,7 @@ export default function CalendarPage() {
                   key={day}
                   className={`m-0.5 flex h-7 items-center justify-center rounded-[7px] border text-[8px] font-medium tracking-wide sm:m-1 sm:h-9 sm:rounded-[9px] sm:text-[10px] ${
                     index === 7
-                      ? "hidden border-blue-400/[0.08] bg-blue-500/[0.025] text-[9px] font-semibold tracking-[0.04em] text-blue-300/45 xl:flex"
+                      ? "hidden border-white/[0.06] bg-white/[0.025] text-[9px] font-semibold tracking-[0.04em] text-white/40 xl:flex"
                       : "border-white/[0.055] bg-white/[0.018] text-white/30"
                   }`}
                 >
@@ -639,7 +639,7 @@ export default function CalendarPage() {
                             return (
                               <div
                                 key={`empty-${weekIndex}-${dayIndex}`}
-                                className="m-0.5 rounded-[8px] border border-white/[0.035] bg-[#080f18]/30 sm:rounded-[11px]"
+                                className="m-0.5 rounded-[8px] border border-white/[0.035] bg-white/[0.01] sm:rounded-[11px]"
                               />
                             );
                           }
@@ -660,7 +660,6 @@ export default function CalendarPage() {
                           const hasTrades =
                             dayTrades.length > 0;
 
-                          // --- FIX 3: Add hasBreakeven after hasTrades, before isSelected
                           const hasBreakeven = dayTrades.some(
                             (trade) => trade.result === "Breakeven"
                           );
@@ -677,15 +676,15 @@ export default function CalendarPage() {
                               }
                               className={`group relative m-0.5 min-h-0 cursor-pointer overflow-hidden rounded-[8px] border p-0 text-left transition-all sm:rounded-[11px] ${
                                 isSelected
-                                  ? "z-10 border-blue-400/25 bg-blue-500/[0.16] shadow-[inset_0_0_35px_rgba(35,133,245,0.10),0_0_18px_rgba(35,133,245,0.05)]"
-                                  : "border-white/[0.065] bg-[#0a141f]/55 hover:border-white/[0.11] hover:bg-white/[0.035]"
+                                  ? "z-10 border-white/25 bg-white/[0.09] shadow-[inset_0_0_35px_rgba(255,255,255,0.035),0_0_18px_rgba(255,255,255,0.025)]"
+                                  : "border-white/[0.065] bg-white/[0.015] hover:border-white/[0.11] hover:bg-white/[0.035]"
                               }`}
                             >
                               <div className="relative flex h-full min-h-[58px] items-start justify-start p-0 sm:min-h-[70px]">
                                 <span
                                   className={`pt-1.5 pl-1.5 text-[9px] font-medium sm:pt-2 sm:pl-2 sm:text-[11px] ${
                                     isSelected
-                                      ? "text-blue-100"
+                                      ? "text-white"
                                       : "text-white/40"
                                   }`}
                                 >
@@ -697,9 +696,9 @@ export default function CalendarPage() {
                                     <span
                                       className={`absolute bottom-2 left-1.5 text-[9px] font-semibold sm:bottom-3 sm:left-3 sm:text-[12px] ${
                                         dayPnl > 0
-                                          ? "text-emerald-400"
+                                          ? "text-white/80"
                                           : dayPnl < 0
-                                            ? "text-red-400"
+                                            ? "text-white/45"
                                             : "text-white/35"
                                       }`}
                                     >
@@ -713,9 +712,9 @@ export default function CalendarPage() {
                                     <span
                                       className={`pointer-events-none absolute bottom-1 left-1 right-1 h-6 rounded-full blur-[15px] opacity-20 sm:bottom-1 sm:left-2 sm:right-2 sm:h-8 sm:blur-[18px] ${
                                         dayPnl > 0
-                                          ? "bg-emerald-400"
+                                          ? "bg-white/65"
                                           : dayPnl < 0
-                                            ? "bg-red-400"
+                                            ? "bg-white/25"
                                             : "bg-white"
                                       }`}
                                     />
@@ -724,10 +723,9 @@ export default function CalendarPage() {
                                       {dayTrades.length}
                                     </span>
 
-                                    {/* Fix 3: Now hasBreakeven is defined and can be used safely */}
                                     {hasBreakeven && (
                                       <span
-                                        className="absolute bottom-2 right-2 h-1.5 w-1.5 rounded-full bg-amber-300 shadow-[0_0_8px_rgba(252,211,77,0.55)] sm:bottom-3 sm:right-3 sm:h-2 sm:w-2"
+                                        className="absolute bottom-2 right-2 h-1.5 w-1.5 rounded-full bg-white/50 shadow-[0_0_8px_rgba(252,211,77,0.55)] sm:bottom-3 sm:right-3 sm:h-2 sm:w-2"
                                         title="Includes breakeven trade"
                                       />
                                     )}
@@ -743,11 +741,11 @@ export default function CalendarPage() {
                       <div
                         className={`m-0.5 hidden min-h-0 items-center justify-center rounded-[11px] border px-3 text-center xl:flex ${
                           weeklyPnl[weekIndex] > 0
-                            ? "border-emerald-400/[0.08] bg-emerald-400/[0.035]"
+                            ? "border-white/[0.08] bg-white/[0.025]"
                             : weeklyPnl[
                                   weekIndex
                                 ] < 0
-                              ? "border-red-400/[0.08] bg-red-400/[0.035]"
+                              ? "border-white/[0.045] bg-white/[0.012]"
                               : "border-white/[0.035] bg-white/[0.008]"
                         }`}
                       >
@@ -755,11 +753,11 @@ export default function CalendarPage() {
                           <p
                             className={`text-[13px] font-semibold ${
                               weeklyPnl[weekIndex] > 0
-                                ? "text-emerald-400"
+                                ? "text-white/80"
                                 : weeklyPnl[
                                       weekIndex
                                     ] < 0
-                                  ? "text-red-400"
+                                  ? "text-white/45"
                                   : "text-white/25"
                             }`}
                           >
@@ -794,9 +792,9 @@ export default function CalendarPage() {
                       key={`mobile-week-${index}`}
                       className={`flex min-w-[82px] flex-1 items-center justify-center rounded-[9px] border px-2 py-2 ${
                         value > 0
-                          ? "border-emerald-400/[0.08] bg-emerald-400/[0.035]"
+                          ? "border-white/[0.08] bg-white/[0.025]"
                           : value < 0
-                            ? "border-red-400/[0.08] bg-red-400/[0.035]"
+                            ? "border-white/[0.045] bg-white/[0.012]"
                             : "border-white/[0.035] bg-white/[0.008]"
                       }`}
                     >
@@ -804,9 +802,9 @@ export default function CalendarPage() {
                         <p
                           className={`text-[10px] font-semibold ${
                             value > 0
-                              ? "text-emerald-400"
+                              ? "text-white/80"
                               : value < 0
-                                ? "text-red-400"
+                                ? "text-white/45"
                                 : "text-white/25"
                           }`}
                         >
@@ -827,7 +825,7 @@ export default function CalendarPage() {
           </section>
 
           {/* SELECTED DAY */}
-          <section className="flex min-h-[420px] flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-[#0d1823]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_20px_60px_rgba(0,0,0,0.20)] sm:min-h-[450px] sm:rounded-[17px] lg:min-h-0">
+          <section className="flex min-h-[420px] flex-col overflow-hidden rounded-[16px] border border-white/[0.10] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_20px_60px_rgba(0,0,0,0.20)] sm:min-h-[450px] sm:rounded-[17px] lg:min-h-0">
 
             <div className="shrink-0 px-4 pb-4 pt-5 sm:px-7 sm:pb-5 sm:pt-7">
               <div className="flex items-start justify-between gap-3">
@@ -892,7 +890,7 @@ export default function CalendarPage() {
                   ).padStart(2, "0")}-${String(
                     selectedDay
                   ).padStart(2, "0")}`}
-                  className="mt-6 flex h-11 items-center gap-2 rounded-[10px] border border-blue-400/20 bg-blue-500/[0.04] px-4 text-[13px] font-medium text-blue-200/80 transition hover:border-blue-400/35 hover:bg-blue-500/[0.08] hover:text-blue-200 sm:mt-7 sm:h-12 sm:rounded-[11px] sm:px-5 sm:text-[14px]"
+                  className="mt-6 flex h-11 items-center gap-2 rounded-[10px] border border-white/[0.12] bg-white/[0.04] px-4 text-[13px] font-medium text-white/80 transition hover:border-white/25 hover:bg-white/[0.08] hover:text-white sm:mt-7 sm:h-12 sm:rounded-[11px] sm:px-5 sm:text-[14px]"
                 >
                   <Plus
                     className="h-4 w-4"
@@ -913,8 +911,8 @@ export default function CalendarPage() {
                   <p
                     className={`mt-1.5 text-[23px] font-semibold tracking-[-0.04em] sm:mt-2 sm:text-[27px] ${
                       selectedDayPnl >= 0
-                        ? "text-emerald-400"
-                        : "text-red-400"
+                        ? "text-white/80"
+                        : "text-white/45"
                     }`}
                   >
                     {formatPnlPrecise(
@@ -948,8 +946,8 @@ export default function CalendarPage() {
                               className={`mt-1 text-[9px] sm:text-[10px] ${
                                 trade.direction ===
                                 "Long"
-                                  ? "text-emerald-400"
-                                  : "text-red-400"
+                                  ? "text-white/80"
+                                  : "text-white/45"
                               }`}
                             >
                               {trade.direction}
@@ -959,11 +957,11 @@ export default function CalendarPage() {
                               className={`mt-1 inline-flex text-[8px] font-medium ${
                                 trade.result === "Breakeven" ||
                                 (trade.result === null && Number(trade.pnl) === 0)
-                                  ? "text-amber-300/75"
+                                  ? "text-white/55"
                                   : trade.result === "Loss" ||
                                       (trade.result === null && Number(trade.pnl) < 0)
-                                    ? "text-red-400/70"
-                                    : "text-emerald-400/70"
+                                    ? "text-white/45"
+                                    : "text-white/70"
                               }`}
                             >
                               {trade.result ??
@@ -980,8 +978,8 @@ export default function CalendarPage() {
                               Number(
                                 trade.pnl
                               ) >= 0
-                                ? "text-emerald-400"
-                                : "text-red-400"
+                                ? "text-white/80"
+                                : "text-white/45"
                             }`}
                           >
                             {formatPnlPrecise(
@@ -1033,7 +1031,7 @@ export default function CalendarPage() {
 
                 <a
                   href="/dashboard/trades"
-                  className="mt-3 flex h-10 items-center justify-center rounded-[10px] border border-white/[0.07] bg-white/[0.02] text-[10px] font-medium text-white/50 transition hover:border-blue-400/15 hover:bg-blue-500/[0.05] hover:text-white sm:mt-4 sm:h-11 sm:rounded-[11px] sm:text-[11px]"
+                  className="mt-3 flex h-10 items-center justify-center rounded-[10px] border border-white/[0.07] bg-white/[0.02] text-[10px] font-medium text-white/50 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-white sm:mt-4 sm:h-11 sm:rounded-[11px] sm:text-[11px]"
                 >
                   View trades
                 </a>

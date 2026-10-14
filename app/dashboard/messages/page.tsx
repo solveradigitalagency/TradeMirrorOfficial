@@ -115,7 +115,7 @@ function Avatar({
 
   return (
     <div
-      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] bg-gradient-to-br from-[#17273a] to-[#0b121c] font-semibold text-white/65 ${sizeClass}`}
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] bg-gradient-to-br from-[#333333] to-[#0b0b0b] font-semibold text-white/65 ${sizeClass}`}
     >
       {profile?.avatar_url ? (
         <img
@@ -733,7 +733,7 @@ function MessagesContent() {
 
   if (loading) {
     return (
-      <main className="flex h-screen items-center justify-center bg-[#03070d] text-white">
+      <main className="flex h-screen items-center justify-center bg-background text-white">
         <div className="flex items-center gap-3 text-white/40">
           <Loader2 className="h-4 w-4 animate-spin" />
           <span className="text-[12px]">Loading messages...</span>
@@ -743,7 +743,7 @@ function MessagesContent() {
   }
 
   return (
-    <main className="h-screen overflow-hidden bg-[#03070d] px-4 py-4 text-white lg:px-5">
+    <main className="h-screen overflow-hidden bg-background px-4 py-4 text-white lg:px-5">
       <div className="mx-auto flex h-full max-w-[1500px] flex-col">
         {/* HEADER */}
         <div className="flex shrink-0 items-center justify-between">
@@ -758,7 +758,7 @@ function MessagesContent() {
           </div>
 
           <div className="hidden items-center rounded-lg border border-white/[0.07] bg-[#08111a] px-3 py-2 text-[10px] text-white/35 sm:flex">
-            <MessageCircle className="mr-2 h-3.5 w-3.5 text-blue-400/70" />
+            <MessageCircle className="mr-2 h-3.5 w-3.5 text-white/60" />
             {conversations.length}{" "}
             {conversations.length === 1
               ? "conversation"
@@ -768,17 +768,17 @@ function MessagesContent() {
 
         {/* ERROR */}
         {error && (
-          <div className="mt-3 shrink-0 rounded-lg border border-red-400/15 bg-red-500/[0.06] px-3 py-2 text-[10px] text-red-300/80">
+          <div className="mt-3 shrink-0 rounded-lg border border-white/[0.12] bg-white/[0.035] px-3 py-2 text-[10px] text-white/70">
             {error}
           </div>
         )}
 
         {/* MESSAGES SURFACE */}
-        <section className="mt-4 min-h-0 flex-1 overflow-hidden rounded-[18px] border border-white/[0.075] bg-[#050b13]/90 shadow-[0_30px_90px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.025)]">
+        <section className="mt-4 min-h-0 flex-1 overflow-hidden rounded-[18px] border border-white/[0.075] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[0_30px_90px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.025)]">
           <div className="flex h-full min-h-0">
             {/* CONVERSATION LIST */}
             <aside
-              className={`flex w-full shrink-0 flex-col border-r border-white/[0.06] bg-[#071019]/80 md:w-[310px] ${
+              className={`flex w-full shrink-0 flex-col border-r border-white/[0.06] bg-[#101010]/80 md:w-[310px] ${
                 mobileConversationOpen ? "hidden md:flex" : "flex"
               }`}
             >
@@ -790,7 +790,7 @@ function MessagesContent() {
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search messages..."
-                    className="h-10 w-full rounded-xl border border-white/[0.07] bg-[#0a131d] pl-9 pr-3 text-[11px] text-white/75 outline-none transition placeholder:text-white/25 focus:border-blue-400/25 focus:bg-[#0c1621]"
+                    className="h-10 w-full rounded-xl border border-white/[0.07] bg-[#141414] pl-9 pr-3 text-[11px] text-white/75 outline-none transition placeholder:text-white/25 focus:border-white/25 focus:bg-[#181818]"
                   />
                 </div>
               </div>
@@ -836,7 +836,7 @@ function MessagesContent() {
                           }
                           className={`mb-1 flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${
                             active
-                              ? "border border-blue-400/10 bg-blue-500/[0.075]"
+                              ? "border border-white/[0.14] bg-white/[0.06]"
                               : "border border-transparent hover:bg-white/[0.025]"
                           }`}
                         >
@@ -872,7 +872,7 @@ function MessagesContent() {
                               </p>
 
                               {conversation.unreadCount > 0 && (
-                                <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-[#2385f5] px-1 text-[8px] font-bold text-white">
+                                <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-white px-1 text-[8px] font-bold text-black">
                                   {conversation.unreadCount > 9
                                     ? "9+"
                                     : conversation.unreadCount}
@@ -897,10 +897,10 @@ function MessagesContent() {
               {!selectedConversation ? (
                 <div className="flex h-full flex-col items-center justify-center px-8 text-center">
                   <div className="relative">
-                    <div className="absolute inset-0 rounded-3xl bg-blue-500/[0.08] blur-2xl" />
+                    <div className="absolute inset-0 rounded-3xl bg-white/[0.035] blur-2xl" />
 
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-[20px] border border-white/[0.08] bg-[#0b1520] shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
-                      <MessageCircle className="h-7 w-7 text-blue-400/60" />
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-[20px] border border-white/[0.08] bg-[#151515] shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
+                      <MessageCircle className="h-7 w-7 text-white/55" />
                     </div>
                   </div>
 
@@ -916,7 +916,7 @@ function MessagesContent() {
               ) : (
                 <>
                   {/* CONVERSATION HEADER */}
-                  <header className="flex shrink-0 items-center gap-3 border-b border-white/[0.055] bg-[#071019]/70 px-4 py-3.5">
+                  <header className="flex shrink-0 items-center gap-3 border-b border-white/[0.055] bg-[#111111]/70 px-4 py-3.5">
                     <button
                       type="button"
                       onClick={() =>
@@ -950,9 +950,9 @@ function MessagesContent() {
                   </header>
 
                   {/* MESSAGE AREA */}
-                  <div className="relative min-h-0 flex-1 overflow-y-auto bg-[#040a11] px-4 py-5 sm:px-6">
+                  <div className="relative min-h-0 flex-1 overflow-y-auto bg-[#0a0a0a] px-4 py-5 sm:px-6">
                     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                      <div className="absolute left-[30%] top-[-200px] h-[420px] w-[420px] rounded-full bg-blue-500/[0.018] blur-[130px]" />
+                      <div className="absolute left-[30%] top-[-200px] h-[420px] w-[420px] rounded-full bg-white/[0.015] blur-[130px]" />
                     </div>
 
                     {loadingMessages ? (
@@ -1008,8 +1008,8 @@ function MessagesContent() {
                                 <div
                                   className={`rounded-[16px] px-3.5 py-2.5 text-[11px] leading-5 ${
                                     isMine
-                                      ? "rounded-br-[5px] bg-[#2385f5] text-white shadow-[0_8px_25px_rgba(35,133,245,0.14)]"
-                                      : "rounded-bl-[5px] border border-white/[0.065] bg-[#0b151f] text-white/70 shadow-[0_10px_30px_rgba(0,0,0,0.16)]"
+                                      ? "rounded-br-[5px] bg-white text-black shadow-[0_8px_25px_rgba(255,255,255,0.045)]"
+                                      : "rounded-bl-[5px] border border-white/[0.08] bg-[#171717] text-white/75 shadow-[0_10px_30px_rgba(0,0,0,0.16)]"
                                   }`}
                                 >
                                   {/* Step 9: Render images and attachments */}
@@ -1064,7 +1064,7 @@ function MessagesContent() {
 
                                   {isMine &&
                                     (message.read_at ? (
-                                      <CheckCheck className="h-3 w-3 text-blue-400/70" />
+                                      <CheckCheck className="h-3 w-3 text-white/60" />
                                     ) : (
                                       <Check className="h-3 w-3 text-white/20" />
                                     ))}
@@ -1080,14 +1080,14 @@ function MessagesContent() {
                   </div>
 
                   {/* COMPOSER */}
-                  <div className="shrink-0 border-t border-white/[0.055] bg-[#071019]/75 p-3 sm:p-4">
+                  <div className="shrink-0 border-t border-white/[0.055] bg-[#111111]/75 p-3 sm:p-4">
                     {/* Step 7: Show the selected file before sending */}
                     {selectedFile && (
-                      <div className="mx-auto mb-2 flex max-w-[760px] items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0a141e] px-3 py-2.5">
+                      <div className="mx-auto mb-2 flex max-w-[760px] items-center gap-3 rounded-xl border border-white/[0.07] bg-[#151515] px-3 py-2.5">
                         {selectedFile.type.startsWith("image/") ? (
-                          <ImageIcon className="h-4 w-4 shrink-0 text-blue-400/70" />
+                          <ImageIcon className="h-4 w-4 shrink-0 text-white/60" />
                         ) : (
-                          <Paperclip className="h-4 w-4 shrink-0 text-blue-400/70" />
+                          <Paperclip className="h-4 w-4 shrink-0 text-white/60" />
                         )}
 
                         <div className="min-w-0 flex-1">
@@ -1110,7 +1110,7 @@ function MessagesContent() {
                         </button>
                       </div>
                     )}
-                    <div className="mx-auto flex max-w-[760px] items-end gap-2 rounded-[14px] border border-white/[0.075] bg-[#0a141e] p-1.5 shadow-[0_15px_45px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.02)] transition focus-within:border-blue-400/20">
+                    <div className="mx-auto flex max-w-[760px] items-end gap-2 rounded-[14px] border border-white/[0.075] bg-[#151515] p-1.5 shadow-[0_15px_45px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.02)] transition focus-within:border-white/20">
                       {/* Step 6: Add the file picker */}
                       <input
                         ref={fileInputRef}
@@ -1165,7 +1165,7 @@ function MessagesContent() {
                           sending ||
                           uploadingFile
                         }
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#2385f5] text-white shadow-[0_7px_20px_rgba(35,133,245,0.18)] transition hover:bg-[#318ff7] disabled:cursor-not-allowed disabled:bg-white/[0.05] disabled:text-white/20 disabled:shadow-none"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white text-black shadow-[0_7px_20px_rgba(255,255,255,0.06)] transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/[0.05] disabled:text-white/20 disabled:shadow-none"
                       >
                         {sending || uploadingFile ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />

@@ -92,9 +92,10 @@ function shortMoney(value: number) {
   return money(value);
 }
 
+// Neutralized colors for Net P&L
 function pnlClass(value: number) {
-  if (value > 0) return "text-emerald-400";
-  if (value < 0) return "text-red-400";
+  if (value > 0) return "text-white/80";
+  if (value < 0) return "text-white/45";
   return "text-white/45";
 }
 
@@ -167,7 +168,7 @@ function BreakdownTable({
   rows: Breakdown[];
 }) {
   return (
-    <section className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+    <section className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
       <div className="mb-5 flex items-center justify-between">
         <div>
           <h2 className="text-[15px] font-semibold tracking-[-0.02em] text-white">
@@ -209,11 +210,11 @@ function BreakdownTable({
                 {row.trades}
               </span>
 
-              <span className="text-[11px] text-emerald-400/75">
+              <span className="text-[11px] text-white/70">
                 {money(row.grossProfit)}
               </span>
 
-              <span className="text-[11px] text-red-400/75">
+              <span className="text-[11px] text-white/45">
                 {money(row.grossLoss)}
               </span>
 
@@ -520,10 +521,11 @@ export default function TaxCenterPage() {
     const margin = 18;
     let y = 20;
 
+    // <-- PDF color palette for more monochrome
     const blue = {
-      r: 59,
-      g: 130,
-      b: 246,
+      r: 25,
+      g: 25,
+      b: 25,
     };
 
     const dark = {
@@ -610,7 +612,7 @@ export default function TaxCenterPage() {
       x: number,
       width: number,
     ) {
-      doc.setFillColor(247, 248, 250);
+      doc.setFillColor(245, 245, 245);
       doc.roundedRect(x, y, width, 20, 2.5, 2.5, "F");
 
       doc.setFont("helvetica", "normal");
@@ -700,7 +702,7 @@ export default function TaxCenterPage() {
     ];
 
     function drawTableHeader() {
-      doc.setFillColor(242, 244, 247);
+      doc.setFillColor(238, 238, 238);
       doc.rect(margin, y - 5, tableWidth, 8, "F");
 
       doc.setFont("helvetica", "bold");
@@ -875,7 +877,7 @@ export default function TaxCenterPage() {
     const detailWidths = [25, 28, 18, 27, 27, 15, 40];
 
     function drawDetailHeader() {
-      doc.setFillColor(242, 244, 247);
+      doc.setFillColor(238, 238, 238);
       doc.rect(margin, y - 5, tableWidth, 8, "F");
 
       doc.setFont("helvetica", "bold");
@@ -1039,9 +1041,9 @@ export default function TaxCenterPage() {
         <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <Landmark className="h-4 w-4 text-blue-400/80" />
+              <Landmark className="h-4 w-4 text-white/65" />
 
-              <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-blue-400/70">
+              <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/55">
                 Records & Reporting
               </span>
             </div>
@@ -1062,7 +1064,7 @@ export default function TaxCenterPage() {
                 onChange={(event) =>
                   setYear(Number(event.target.value))
                 }
-                className="h-10 appearance-none rounded-xl border border-white/[0.08] bg-white/[0.04] pl-10 pr-9 text-[12px] font-medium text-white outline-none transition hover:bg-white/[0.06] focus:border-blue-400/30"
+                className="h-10 appearance-none rounded-xl border border-white/[0.08] bg-white/[0.04] pl-10 pr-9 text-[12px] font-medium text-white outline-none transition hover:bg-white/[0.06] focus:border-white/25"
               >
                 {years.map((option) => (
                   <option
@@ -1103,14 +1105,14 @@ export default function TaxCenterPage() {
             label="Gross Profit"
             value={money(stats.grossProfit)}
             icon={<TrendingUp className="h-3.5 w-3.5" />}
-            valueClass="text-emerald-400"
+            valueClass="text-white/80"
           />
 
           <StatCard
             label="Gross Loss"
             value={money(stats.grossLoss)}
             icon={<TrendingDown className="h-3.5 w-3.5" />}
-            valueClass="text-red-400"
+            valueClass="text-white/45"
           />
 
           <StatCard
@@ -1123,14 +1125,14 @@ export default function TaxCenterPage() {
             label="Winning Trades"
             value={stats.winningTrades.toLocaleString()}
             icon={<TrendingUp className="h-3.5 w-3.5" />}
-            valueClass="text-emerald-400"
+            valueClass="text-white/80"
           />
 
           <StatCard
             label="Losing Trades"
             value={stats.losingTrades.toLocaleString()}
             icon={<TrendingDown className="h-3.5 w-3.5" />}
-            valueClass="text-red-400"
+            valueClass="text-white/45"
           />
 
           <StatCard
@@ -1142,12 +1144,12 @@ export default function TaxCenterPage() {
 
         {loading ? (
           <div className="flex min-h-[420px] items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-blue-400/60" />
+            <Loader2 className="h-6 w-6 animate-spin text-white/55" />
           </div>
         ) : (
           <>
             {/* Annual P&L */}
-            <section className="mt-5 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+            <section className="mt-5 rounded-2xl border border-white/[0.07] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
               <div className="mb-7 flex items-center justify-between">
                 <div>
                   <h2 className="text-[15px] font-semibold tracking-[-0.02em] text-white">
@@ -1187,8 +1189,8 @@ export default function TaxCenterPage() {
                         <span
                           className={
                             month.pnl >= 0
-                              ? "text-emerald-400"
-                              : "text-red-400"
+                              ? "text-white/80"
+                              : "text-white/45"
                           }
                         >
                           {shortMoney(month.pnl)}
@@ -1199,8 +1201,8 @@ export default function TaxCenterPage() {
                         <div
                           className={`w-full max-w-[44px] rounded-t-lg transition-all duration-300 group-hover:brightness-125 ${
                             positive
-                              ? "bg-emerald-400/45"
-                              : "bg-red-400/45"
+                              ? "bg-white/75 shadow-[0_0_14px_rgba(255,255,255,0.06)]"
+                              : "bg-white/25"
                           }`}
                           style={{
                             height: `${height}%`,
@@ -1218,7 +1220,7 @@ export default function TaxCenterPage() {
             </section>
 
             {/* Monthly */}
-            <section className="mt-5 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+            <section className="mt-5 rounded-2xl border border-white/[0.07] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
               <div className="mb-5">
                 <h2 className="text-[15px] font-semibold tracking-[-0.02em] text-white">
                   P&L by Month
@@ -1251,11 +1253,11 @@ export default function TaxCenterPage() {
                       {month.trades}
                     </span>
 
-                    <span className="text-[11px] text-emerald-400/75">
+                    <span className="text-[11px] text-white/70">
                       {money(month.grossProfit)}
                     </span>
 
-                    <span className="text-[11px] text-red-400/75">
+                    <span className="text-[11px] text-white/45">
                       {money(month.grossLoss)}
                     </span>
 
@@ -1295,13 +1297,13 @@ export default function TaxCenterPage() {
             </div>
 
             {/* Export */}
-            <section className="mt-5 overflow-hidden rounded-2xl border border-blue-400/[0.12] bg-blue-400/[0.035] shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+            <section className="mt-5 overflow-hidden rounded-2xl border border-white/[0.09] bg-white/[0.025] shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
               <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-xl">
                   <div className="mb-2 flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-blue-400/80" />
+                    <FileText className="h-4 w-4 text-white/65" />
 
-                    <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-blue-400/70">
+                    <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-white/55">
                       Tax Reporting
                     </span>
                   </div>
@@ -1337,7 +1339,7 @@ export default function TaxCenterPage() {
                     type="button"
                     onClick={handlePdfDownload}
                     disabled={downloading !== null}
-                    className="flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-[12px] font-semibold text-white shadow-[0_8px_25px_rgba(59,130,246,0.2)] transition hover:bg-blue-400 disabled:opacity-50"
+                    className="flex h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 text-[12px] font-semibold text-black shadow-[0_8px_25px_rgba(255,255,255,0.06)] transition hover:bg-white/90 disabled:opacity-50"
                   >
                     {downloading === "pdf" ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -1382,7 +1384,7 @@ function StatCard({
   valueClass?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4 shadow-[0_14px_35px_rgba(0,0,0,0.16)]">
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-4 shadow-[0_14px_35px_rgba(0,0,0,0.16)]">
       <div className="flex items-center justify-between">
         <span className="text-[9px] font-medium uppercase tracking-[0.11em] text-white/25">
           {label}

@@ -1,3 +1,4 @@
+
 import DashboardSidebar from "./dashboard-sidebar";
 import MobileNav from "./mobile-nav";
 
@@ -7,7 +8,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#03070d] text-white">
+    <div className="min-h-screen bg-black text-white">
       <DashboardSidebar />
 
       <main className="min-h-screen pb-24 lg:pb-0 lg:pl-[270px]">
