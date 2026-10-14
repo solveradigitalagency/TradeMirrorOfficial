@@ -262,7 +262,7 @@ export default function JournalPage() {
                     </div>
                   ) : currentTrade ? (
                     <>
-                      <div className="page-content">
+                      <div className="page-content trade-page-content">
                         <header className="trade-heading">
                           <div className="min-w-0">
                             <p className="eyebrow">
@@ -320,6 +320,20 @@ export default function JournalPage() {
                             </p>
                           </div>
                         </div>
+
+                        {currentTrade.screenshot_url && (
+                          <div className="left-screenshot-section">
+                            <p className="eyebrow mb-2">Chart screenshot</p>
+                            <div className="left-screenshot-frame">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={currentTrade.screenshot_url}
+                                alt="Trade chart screenshot"
+                                className="left-trade-screenshot"
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       <footer className="page-footer">
@@ -424,20 +438,6 @@ export default function JournalPage() {
                               "No notes recorded for this trade."}
                           </p>
                         </div>
-
-                        {currentTrade.screenshot_url && (
-                          <div className="screenshot-section">
-                            <p className="eyebrow mb-2">
-                              Chart screenshot
-                            </p>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={currentTrade.screenshot_url}
-                              alt="Trade chart screenshot"
-                              className="trade-screenshot"
-                            />
-                          </div>
-                        )}
                       </div>
 
                       <footer className="page-footer">
@@ -623,10 +623,70 @@ export default function JournalPage() {
           min-height: 0;
         }
 
+        /* Let the left page content use all available height. */
+        .trade-page-content {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          min-height: 0;
+        }
+
+        /* Screenshot uses whatever space remains below the P&L. */
+        .left-screenshot-section {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          min-height: 0;
+          margin-top: 12px;
+          padding-bottom: 2px;
+        }
+
+        .left-screenshot-frame {
+          display: flex;
+          flex: 1;
+          align-items: center;
+          justify-content: center;
+          min-width: 0;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        .left-trade-screenshot {
+          display: block;
+          width: 100%;
+          height: 100%;
+          min-width: 0;
+          min-height: 0;
+          object-fit: contain;
+          object-position: center;
+          border: 1px solid #d6d0c5;
+          border-radius: 6px;
+        }
+
+        /* Keep the reflection on the right page, without scrolling. */
         .review-content {
           flex: 1;
+          min-height: 0;
           overflow: hidden;
           padding-right: 2px;
+        }
+
+        .notes-section {
+          min-height: 0;
+          margin-top: 10px;
+        }
+
+        .notes-copy {
+          display: -webkit-box;
+          overflow: hidden;
+          overflow-wrap: anywhere;
+          white-space: pre-wrap;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 10;
+          margin-top: 6px;
+          color: #6b665d;
+          font-size: 11px;
+          line-height: 1.5;
         }
 
         .trade-heading {
@@ -717,38 +777,7 @@ export default function JournalPage() {
           padding-bottom: 6px;
         }
 
-        .notes-section {
-          margin-top: 10px;
-        }
-
-        .notes-copy {
-          display: -webkit-box;
-          margin-top: 6px;
-          overflow: hidden;
-          color: #6b665d;
-          font-size: 11px;
-          line-height: 1.5;
-          white-space: pre-wrap;
-          overflow-wrap: anywhere;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 4;
-        }
-
-        .screenshot-section {
-          margin-top: 10px;
-          padding-bottom: 2px;
-        }
-
-        .trade-screenshot {
-          display: block;
-          width: 100%;
-          height: auto;
-          max-height: 175px;
-          border: 1px solid #d6d0c5;
-          border-radius: 6px;
-          object-fit: contain;
-          object-position: center;
-        }
+        /* Remove or override any legacy or now-unused screenshot-section/trade-screenshot rules if needed; we'll leave them for simplicity in case others use them elsewhere. */
 
         .page-footer {
           position: relative;
@@ -968,6 +997,14 @@ export default function JournalPage() {
 
           .example-control {
             margin-top: 3px;
+          }
+
+          /* Adjustments for short screens */
+          .left-screenshot-section {
+            margin-top: 8px;
+          }
+          .left-trade-screenshot {
+            border-radius: 4px;
           }
         }
 
