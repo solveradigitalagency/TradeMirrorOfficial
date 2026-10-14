@@ -233,7 +233,7 @@ export default function JournalPage() {
 
   return (
     <main className="journal-background min-h-screen overflow-x-hidden px-3 py-4 text-white sm:px-6 sm:py-5 lg:px-10">
-      <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1500px] flex-col justify-center">
+      <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1500px] flex-col justify-center translate-y-3">
         <section className="w-full">
           {/* The physical book */}
           <div className="book-shell mx-auto max-w-6xl">
