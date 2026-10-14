@@ -287,38 +287,14 @@ export default function JournalPage() {
                         </header>
 
                         <div className="detail-grid mt-2">
-                          <Detail
-                            label="Direction"
-                            value={currentTrade.direction}
-                          />
-                          <Detail
-                            label="Market"
-                            value={currentTrade.market}
-                          />
-                          <Detail
-                            label="Entry price"
-                            value={number(currentTrade.entry_price)}
-                          />
-                          <Detail
-                            label="Exit price"
-                            value={number(currentTrade.exit_price)}
-                          />
-                          <Detail
-                            label="Entry time"
-                            value={timeLabel(currentTrade.entry_time)}
-                          />
-                          <Detail
-                            label="Exit time"
-                            value={timeLabel(currentTrade.exit_time)}
-                          />
-                          <Detail
-                            label="Contracts"
-                            value={number(currentTrade.quantity)}
-                          />
-                          <Detail
-                            label="Risk amount"
-                            value={money(currentTrade.risk_amount)}
-                          />
+                          <Detail label="Direction" value={currentTrade.direction} />
+                          <Detail label="Market" value={currentTrade.market} />
+                          <Detail label="Entry price" value={number(currentTrade.entry_price)} />
+                          <Detail label="Exit price" value={number(currentTrade.exit_price)} />
+                          <Detail label="Entry time" value={timeLabel(currentTrade.entry_time)} />
+                          <Detail label="Exit time" value={timeLabel(currentTrade.exit_time)} />
+                          <Detail label="Contracts" value={number(currentTrade.quantity)} />
+                          <Detail label="Risk amount" value={money(currentTrade.risk_amount)} />
                         </div>
 
                         <div className="pnl-panel">
@@ -349,9 +325,7 @@ export default function JournalPage() {
 
                       <footer className="page-footer">
                         <span>TRADEMIRROR</span>
-                        <span>
-                          {String(activeIndex * 2 + 1).padStart(2, "0")}
-                        </span>
+                        <span>{String(activeIndex * 2 + 1).padStart(2, "0")}</span>
                       </footer>
                     </>
                   ) : (
@@ -405,7 +379,7 @@ export default function JournalPage() {
                     </div>
                   ) : currentTrade ? (
                     <>
-                      <div className="page-content">
+                      <div className="page-content review-content">
                         <header className="review-heading">
                           <p className="eyebrow">Review &amp; reflection</p>
                           <h2 className="mt-2 text-3xl font-semibold tracking-tight">
@@ -417,30 +391,12 @@ export default function JournalPage() {
                         </header>
 
                         <div className="detail-grid review-grid">
-                          <Detail
-                            label="Setup"
-                            value={currentTrade.setup}
-                          />
-                          <Detail
-                            label="Session"
-                            value={currentTrade.session}
-                          />
-                          <Detail
-                            label="Market condition"
-                            value={currentTrade.market_condition}
-                          />
-                          <Detail
-                            label="Grade"
-                            value={currentTrade.grade}
-                          />
-                          <Detail
-                            label="Emotion"
-                            value={currentTrade.emotion}
-                          />
-                          <Detail
-                            label="Execution"
-                            value={currentTrade.execution_rating}
-                          />
+                          <Detail label="Setup" value={currentTrade.setup} />
+                          <Detail label="Session" value={currentTrade.session} />
+                          <Detail label="Market condition" value={currentTrade.market_condition} />
+                          <Detail label="Grade" value={currentTrade.grade} />
+                          <Detail label="Emotion" value={currentTrade.emotion} />
+                          <Detail label="Execution" value={currentTrade.execution_rating} />
                           <Detail
                             label="Followed plan"
                             value={
@@ -478,9 +434,7 @@ export default function JournalPage() {
                         <span>
                           {isDemo ? "SAMPLE ENTRY" : "TRADING REFLECTION"}
                         </span>
-                        <span>
-                          {String(activeIndex * 2 + 2).padStart(2, "0")}
-                        </span>
+                        <span>{String(activeIndex * 2 + 2).padStart(2, "0")}</span>
                       </footer>
                     </>
                   ) : (
@@ -653,7 +607,26 @@ export default function JournalPage() {
         .page-content {
           position: relative;
           z-index: 1;
+          min-width: 0;
           min-height: 0;
+        }
+
+        .review-content {
+          flex: 1;
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          scrollbar-width: thin;
+          scrollbar-color: #c9c1b4 transparent;
+          padding-right: 5px;
+        }
+
+        .review-content::-webkit-scrollbar {
+          width: 4px;
+        }
+
+        .review-content::-webkit-scrollbar-thumb {
+          border-radius: 99px;
+          background: #c9c1b4;
         }
 
         .trade-heading {
@@ -734,29 +707,28 @@ export default function JournalPage() {
         }
 
         .notes-copy {
-          display: -webkit-box;
-          overflow: hidden;
           margin-top: 8px;
           color: #6b665d;
           font-size: 12px;
           line-height: 1.65;
           white-space: pre-wrap;
           overflow-wrap: anywhere;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 5;
         }
 
         .screenshot-section {
-          margin-top: 12px;
+          margin-top: 14px;
+          padding-bottom: 5px;
         }
 
         .trade-screenshot {
           display: block;
           width: 100%;
-          max-height: 95px;
+          height: auto;
+          max-height: 220px;
           border: 1px solid #d6d0c5;
           border-radius: 6px;
           object-fit: contain;
+          object-position: center;
         }
 
         .page-footer {
@@ -954,12 +926,16 @@ export default function JournalPage() {
             padding: 10px 0;
           }
 
+          .review-heading {
+            padding-bottom: 10px;
+          }
+
           .notes-section {
             margin-top: 9px;
           }
 
-          .notes-copy {
-            -webkit-line-clamp: 3;
+          .trade-screenshot {
+            max-height: 160px;
           }
 
           .page-footer {
@@ -1001,6 +977,14 @@ export default function JournalPage() {
 
           .book-right {
             border-top: 1px solid rgba(120, 110, 91, 0.32);
+          }
+
+          .review-content {
+            overflow: visible;
+          }
+
+          .trade-screenshot {
+            max-height: 260px;
           }
 
           .book-navigation {
