@@ -565,7 +565,7 @@ export default function JournalPage() {
 
       ),
 
-      #0b0b0c;
+      #3b0764;
 
   }
 
