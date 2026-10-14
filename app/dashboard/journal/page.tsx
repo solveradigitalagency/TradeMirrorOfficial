@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -92,10 +93,8 @@ const dateLabel = (value: string | null) => {
   });
 };
 
-const timeLabel = (value: string | null) => {
-  if (!value) return "—";
-  return value.slice(0, 5);
-};
+const timeLabel = (value: string | null) =>
+  value ? value.slice(0, 5) : "—";
 
 function Detail({
   label,
@@ -105,11 +104,9 @@ function Detail({
   value: string | number | null | undefined;
 }) {
   return (
-    <div className="min-w-0 border-b border-stone-300/80 py-3">
-      <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-        {label}
-      </p>
-      <p className="mt-1 break-words text-sm font-medium text-stone-800">
+    <div className="min-w-0 border-b border-stone-300/80 py-2">
+      <p className="eyebrow">{label}</p>
+      <p className="mt-1 truncate text-[13px] font-medium text-stone-800">
         {value == null || value === "" ? "—" : value}
       </p>
     </div>
@@ -131,7 +128,7 @@ export default function JournalPage() {
 
     try {
       const supabase = createClient();
-      let user = null;
+      let user: { id: string } | null = null;
 
       try {
         const result = await supabase.auth.getUser();
@@ -202,9 +199,7 @@ export default function JournalPage() {
   const journalTrades = useMemo(() => {
     const combined = [...trades];
 
-    if (showExample) {
-      combined.push(DEMO_TRADE);
-    }
+    if (showExample) combined.push(DEMO_TRADE);
 
     return combined;
   }, [trades, showExample]);
@@ -223,77 +218,75 @@ export default function JournalPage() {
   }
 
   function goToTrade(index: number) {
-    if (journalTrades.length === 0) return;
+    if (!journalTrades.length) return;
 
-    const next =
-      (index + journalTrades.length) % journalTrades.length;
-
-    setActiveIndex(next);
+    setActiveIndex(
+      (index + journalTrades.length) % journalTrades.length
+    );
   }
 
   return (
-    <main className="journal-background min-h-screen overflow-x-hidden px-3 py-4 text-white sm:px-6 sm:py-5 lg:px-10">
-      <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1500px] flex-col justify-center translate-y-3">
-        <section className="w-full">
-          {/* The physical book */}
-          <div className="book-shell mx-auto max-w-6xl">
+    <main className="journal-background">
+      <div className="journal-stage">
+        <section className="journal-layout">
+          <div className="book-shell">
             <div className="book-pages">
               <div className="book-spread">
-                {/* LEFT PAGE */}
+                {/* LEFT PAGE: TRADE */}
                 <article className="book-page book-left">
                   {loading ? (
-                    <div className="flex h-full min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                    <div className="empty-state">
                       <div className="loading-line w-20" />
                       <div className="loading-line mt-7 w-40" />
                       <div className="loading-line mt-4 w-3/4" />
-                      <div className="loading-line mt-12 w-full" />
+                      <div className="loading-line mt-10 w-full" />
                       <div className="loading-line mt-4 w-5/6" />
-                      <p className="mt-8 text-xs text-stone-400">
+                      <p className="mt-6 text-xs text-stone-400">
                         Opening your journal…
                       </p>
                     </div>
                   ) : error ? (
-                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
-                      <p className="book-eyebrow">A little interruption</p>
-                      <h2 className="mt-4 text-3xl font-semibold tracking-tight">
+                    <div className="empty-state">
+                      <p className="eyebrow">A little interruption</p>
+                      <h2 className="mt-4 text-2xl font-semibold">
                         Couldn&apos;t load your entries.
                       </h2>
-                      <p className="mt-4 break-words text-sm leading-7 text-stone-500">
+                      <p className="mt-3 break-words text-sm leading-6 text-stone-500">
                         {error}
                       </p>
                       <button
                         onClick={() =>
                           setRefreshKey((value) => value + 1)
                         }
-                        className="mt-7 w-fit rounded-full border border-stone-300 px-5 py-2.5 text-sm text-stone-700 transition hover:bg-white"
+                        className="action-button mt-5"
                       >
                         Try again
                       </button>
                     </div>
                   ) : currentTrade ? (
                     <>
-                      <div className="book-page-content">
-                        <div className="flex items-start justify-between gap-3 border-b border-stone-300/80 pb-6">
-                          <div>
-                            <p className="book-eyebrow">
+                      <div className="page-content">
+                        <header className="trade-heading">
+                          <div className="min-w-0">
+                            <p className="eyebrow">
                               {isDemo ? "Sample entry" : "Trade journal"}
                             </p>
-                            <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+                            <h1 className="trade-symbol">
                               {currentTrade.symbol || "Trade"}
                             </h1>
-                            <p className="mt-2 text-xs text-stone-500">
+                            <p className="mt-1 text-xs text-stone-500">
                               {dateLabel(currentTrade.trade_date)}
                             </p>
                           </div>
 
-                          <span className="mt-1 rounded-full border border-stone-300 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-wider text-stone-500">
+                          <span className="trade-badge">
                             {isDemo
                               ? "Preview"
                               : currentTrade.result || "Recorded"}
                           </span>
-                        </div>
+                        </header>
 
-                        <div className="mt-3 grid grid-cols-2 gap-x-5">
+                        <div className="detail-grid mt-2">
                           <Detail
                             label="Direction"
                             value={currentTrade.direction}
@@ -328,28 +321,33 @@ export default function JournalPage() {
                           />
                         </div>
 
-                        <div className="mt-4 border-y border-stone-300/80 py-5">
-                          <p className="book-eyebrow">Realized P&L</p>
-                          <p
-                            className={`mt-3 text-4xl font-semibold tracking-tight ${
-                              Number(currentTrade.pnl ?? 0) > 0
-                                ? "text-emerald-700"
-                                : Number(currentTrade.pnl ?? 0) < 0
-                                  ? "text-rose-700"
-                                  : "text-stone-800"
-                            }`}
-                          >
-                            {money(currentTrade.pnl)}
-                          </p>
-                          <p className="mt-2 text-xs text-stone-500">
-                            {currentTrade.r_multiple == null
-                              ? "R-multiple not recorded"
-                              : `${number(currentTrade.r_multiple)}R return`}
-                          </p>
+                        <div className="pnl-panel">
+                          <div>
+                            <p className="eyebrow">Realized P&amp;L</p>
+                            <p
+                              className={`pnl-value ${
+                                Number(currentTrade.pnl ?? 0) > 0
+                                  ? "text-emerald-700"
+                                  : Number(currentTrade.pnl ?? 0) < 0
+                                    ? "text-rose-700"
+                                    : "text-stone-800"
+                              }`}
+                            >
+                              {money(currentTrade.pnl)}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="eyebrow">R-multiple</p>
+                            <p className="mt-2 text-lg font-semibold text-stone-700">
+                              {currentTrade.r_multiple == null
+                                ? "—"
+                                : `${number(currentTrade.r_multiple)}R`}
+                            </p>
+                          </div>
                         </div>
                       </div>
 
-                      <footer className="book-page-footer">
+                      <footer className="page-footer">
                         <span>TRADEMIRROR</span>
                         <span>
                           {String(activeIndex * 2 + 1).padStart(2, "0")}
@@ -357,19 +355,18 @@ export default function JournalPage() {
                       </footer>
                     </>
                   ) : (
-                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
-                      <p className="book-eyebrow">
+                    <div className="empty-state">
+                      <p className="eyebrow">
                         TradeMirror · Personal logbook
                       </p>
-                      <h1 className="mt-8 max-w-sm text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+                      <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight">
                         Every trade tells a story.
                       </h1>
-                      <p className="mt-5 max-w-sm text-sm leading-7 text-stone-500">
+                      <p className="mt-4 max-w-sm text-sm leading-6 text-stone-500">
                         Every setup, every decision, every lesson.
                         Your trading history starts with a single entry.
                       </p>
-
-                      <div className="mt-9 border-t border-stone-300/80 pt-5">
+                      <div className="mt-7 border-t border-stone-300/80 pt-4">
                         <p className="text-xs text-stone-400">
                           {signedIn === false
                             ? "Sign in to access your saved trades."
@@ -377,7 +374,7 @@ export default function JournalPage() {
                         </p>
                         <button
                           onClick={toggleExample}
-                          className="mt-4 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-stone-700"
+                          className="action-button mt-4 dark-button"
                         >
                           Preview a sample entry
                         </button>
@@ -386,43 +383,40 @@ export default function JournalPage() {
                   )}
                 </article>
 
-                {/* RIGHT PAGE */}
+                {/* RIGHT PAGE: REVIEW */}
                 <article className="book-page book-right">
                   {loading ? (
-                    <div className="flex h-full min-h-[540px] flex-col justify-center px-8 sm:px-12">
+                    <div className="empty-state">
                       <div className="loading-line w-24" />
                       <div className="loading-line mt-7 w-48" />
                       <div className="loading-line mt-4 w-full" />
                       <div className="loading-line mt-4 w-5/6" />
-                      <div className="loading-line mt-4 w-4/6" />
                     </div>
                   ) : error ? (
-                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
-                      <p className="book-eyebrow">Journal status</p>
+                    <div className="empty-state">
+                      <p className="eyebrow">Journal status</p>
                       <h2 className="mt-4 text-2xl font-semibold">
                         Your pages are still here.
                       </h2>
-                      <p className="mt-3 text-sm leading-7 text-stone-500">
-                        Try loading your journal again. Your saved trades
-                        have not been changed by this page.
+                      <p className="mt-3 text-sm leading-6 text-stone-500">
+                        Try loading your journal again. Your saved
+                        trades have not been changed.
                       </p>
                     </div>
                   ) : currentTrade ? (
                     <>
-                      <div className="book-page-content">
-                        <div className="border-b border-stone-300/80 pb-6">
-                          <p className="book-eyebrow">
-                            Review & reflection
-                          </p>
-                          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                      <div className="page-content">
+                        <header className="review-heading">
+                          <p className="eyebrow">Review &amp; reflection</p>
+                          <h2 className="mt-2 text-3xl font-semibold tracking-tight">
                             The details.
                           </h2>
-                          <p className="mt-2 text-xs text-stone-500">
+                          <p className="mt-1 text-xs text-stone-500">
                             What happened. What mattered. What to learn.
                           </p>
-                        </div>
+                        </header>
 
-                        <div className="mt-1 grid grid-cols-2 gap-x-5">
+                        <div className="detail-grid review-grid">
                           <Detail
                             label="Setup"
                             value={currentTrade.setup}
@@ -459,32 +453,28 @@ export default function JournalPage() {
                           />
                         </div>
 
-                        <div className="mt-4">
-                          <p className="book-eyebrow">
-                            Notes & reflection
-                          </p>
-                          <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-stone-600">
+                        <div className="notes-section">
+                          <p className="eyebrow">Notes &amp; reflection</p>
+                          <p className="notes-copy">
                             {currentTrade.notes ||
                               "No notes recorded for this trade."}
                           </p>
                         </div>
 
                         {currentTrade.screenshot_url && (
-                          <div className="mt-6">
-                            <p className="book-eyebrow mb-3">
-                              Chart screenshot
-                            </p>
+                          <div className="screenshot-section">
+                            <p className="eyebrow mb-2">Chart screenshot</p>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={currentTrade.screenshot_url}
                               alt="Trade chart screenshot"
-                              className="max-h-56 w-full rounded-lg border border-stone-300 object-contain"
+                              className="trade-screenshot"
                             />
                           </div>
                         )}
                       </div>
 
-                      <footer className="book-page-footer">
+                      <footer className="page-footer">
                         <span>
                           {isDemo ? "SAMPLE ENTRY" : "TRADING REFLECTION"}
                         </span>
@@ -494,16 +484,16 @@ export default function JournalPage() {
                       </footer>
                     </>
                   ) : (
-                    <div className="flex min-h-[540px] flex-col justify-center px-8 sm:px-12">
-                      <p className="book-eyebrow">The next chapter</p>
-                      <h2 className="mt-5 text-3xl font-semibold tracking-tight">
+                    <div className="empty-state">
+                      <p className="eyebrow">The next chapter</p>
+                      <h2 className="mt-4 text-3xl font-semibold">
                         A fresh page.
                       </h2>
-                      <p className="mt-4 max-w-sm text-sm leading-7 text-stone-500">
-                        Your future entries will live here, alongside your
-                        setups, execution notes, and lessons learned.
+                      <p className="mt-3 text-sm leading-6 text-stone-500">
+                        Your future entries will live here alongside
+                        your setups, execution notes, and lessons learned.
                       </p>
-                      <div className="mt-10 border-t border-stone-300/80 pt-5 text-xs text-stone-400">
+                      <div className="mt-8 border-t border-stone-300/80 pt-4 text-xs text-stone-400">
                         The best traders never stop learning.
                       </div>
                     </div>
@@ -513,24 +503,24 @@ export default function JournalPage() {
             </div>
           </div>
 
-          {/* Navigation stays separate from the paper itself */}
+          {/* BOOK NAVIGATION */}
           {currentTrade && !loading && !error && (
-            <div className="mx-auto mt-5 flex max-w-6xl items-center justify-between gap-4 px-1 sm:px-3">
+            <nav className="book-navigation" aria-label="Trade navigation">
               <button
                 onClick={() => goToTrade(activeIndex - 1)}
                 disabled={journalTrades.length < 2}
                 aria-label="Previous trade"
-                className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-25 sm:px-5"
+                className="nav-button"
               >
                 <span aria-hidden="true">←</span>
-                <span>Previous</span>
+                Previous
               </button>
 
               <div className="text-center">
-                <p className="text-xs font-medium tabular-nums text-white/70">
+                <p className="text-xs font-medium tabular-nums text-white/75">
                   {activeIndex + 1} of {journalTrades.length}
                 </p>
-                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-white/30">
+                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-white/35">
                   {isDemo ? "Sample entry" : "Journal entries"}
                 </p>
               </div>
@@ -539,10 +529,18 @@ export default function JournalPage() {
                 onClick={() => goToTrade(activeIndex + 1)}
                 disabled={journalTrades.length < 2}
                 aria-label="Next trade"
-                className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-25 sm:px-5"
+                className="nav-button"
               >
-                <span>Next</span>
+                Next
                 <span aria-hidden="true">→</span>
+              </button>
+            </nav>
+          )}
+
+          {!loading && !error && (
+            <div className="example-control">
+              <button onClick={toggleExample}>
+                {showExample ? "Hide sample entry" : "View sample entry"}
               </button>
             </div>
           )}
@@ -550,377 +548,478 @@ export default function JournalPage() {
       </div>
 
       <style jsx>{`
-
-  .journal-background {
-
-    background:
-
-      radial-gradient(
-
-        ellipse at 50% 38%,
-
-        rgba(255, 255, 255, 0.055),
-
-        transparent 55%
-
-      ),
-
-      #3b0764;
-
-  }
-
-
-
-  .book-shell {
-
-    position: relative;
-
-    isolation: isolate;
-
-    padding: 13px 12px 16px;
-
-    border: 1px solid rgba(255, 255, 255, 0.13);
-
-    border-radius: 10px 15px 15px 10px;
-
-    background: linear-gradient(
-
-      105deg,
-
-      #101011 0%,
-
-      #282829 8%,
-
-      #111112 19%,
-
-      #09090a 100%
-
-    );
-
-    box-shadow:
-
-      0 40px 100px rgba(0, 0, 0, 0.58),
-
-      0 10px 28px rgba(0, 0, 0, 0.38),
-
-      inset 2px 0 4px rgba(255, 255, 255, 0.08),
-
-      inset -2px 0 4px rgba(0, 0, 0, 0.8);
-
-  }
-
-
-
-  .book-pages {
-
-    position: relative;
-
-    border-radius: 3px;
-
-    background: #d0ccc3;
-
-    box-shadow:
-
-      2px 4px 0 #a9a59d,
-
-      4px 7px 0 #88857e,
-
-      6px 10px 0 #5d5a55,
-
-      8px 13px 0 #252526,
-
-      10px 17px 24px rgba(0, 0, 0, 0.48);
-
-  }
-
-
-
-  .book-spread {
-
-    position: relative;
-
-    display: grid;
-
-    grid-template-columns: minmax(0, 1fr);
-
-    overflow: hidden;
-
-    border-radius: 3px;
-
-    background: #f4f1e9;
-
-    box-shadow:
-
-      0 0 0 1px rgba(64, 56, 44, 0.35),
-
-      inset 0 0 12px rgba(78, 65, 47, 0.08);
-
-  }
-
-
-
-  .book-page {
-
-    position: relative;
-
-    display: flex;
-
-    min-width: 0;
-
-    min-height: 0;
-
-    flex-direction: column;
-
-    justify-content: space-between;
-
-    overflow: hidden;
-
-    padding: 30px 24px 24px;
-
-    color: #292825;
-
-    background-color: #f8f6f0;
-
-    background-image: repeating-linear-gradient(
-
-      to bottom,
-
-      transparent 0,
-
-      transparent 31px,
-
-      rgba(120, 110, 91, 0.055) 32px
-
-    );
-
-  }
-
-
-
-  .book-left {
-
-    background-color: #faf8f2;
-
-    box-shadow: inset -13px 0 18px -17px rgba(48, 39, 28, 0.65);
-
-  }
-
-
-
-  .book-right {
-
-    background-color: #f3f0e8;
-
-    box-shadow: inset 13px 0 18px -17px rgba(48, 39, 28, 0.65);
-
-  }
-
-
-
-  .book-page-content {
-
-    position: relative;
-
-    z-index: 1;
-
-    padding-bottom: 12px;
-
-  }
-
-
-
-  .book-page-footer {
-
-    position: relative;
-
-    z-index: 1;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 12px;
-
-    border-top: 1px solid rgba(120, 110, 91, 0.24);
-
-    padding-top: 12px;
-
-    color: #a29b8e;
-
-    font-size: 9px;
-
-    letter-spacing: 0.17em;
-
-  }
-
-
-
-  .book-eyebrow {
-
-    color: #a29b8e;
-
-    font-size: 9px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.2em;
-
-    text-transform: uppercase;
-
-  }
-
-
-
-  .loading-line {
-
-    height: 9px;
-
-    max-width: 100%;
-
-    border-radius: 999px;
-
-    background: rgba(120, 110, 91, 0.15);
-
-    animation: pulse 1.5s ease-in-out infinite;
-
-  }
-
-
-
-  @keyframes pulse {
-
-    0%, 100% {
-
-      opacity: 0.45;
-
-    }
-
-    50% {
-
-      opacity: 1;
-
-    }
-
-  }
-
-
-
-  @media (min-width: 768px) {
-
-    .book-shell {
-
-      padding: 18px 18px 21px;
-
-    }
-
-
-
-    .book-spread {
-
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-
-    }
-
-
-
-    .book-page {
-
-      min-height: 0;
-
-      padding: 24px 28px 18px;
-
-    }
-
-
-
-    .book-left {
-
-      transform-origin: right center;
-
-    }
-
-
-
-    .book-right {
-
-      border-left: 1px solid rgba(120, 110, 91, 0.32);
-
-      transform-origin: left center;
-
-    }
-
-
-
-    .book-spread::after {
-
-      position: absolute;
-
-      z-index: 2;
-
-      top: 0;
-
-      bottom: 0;
-
-      left: 50%;
-
-      width: 15px;
-
-      content: "";
-
-      pointer-events: none;
-
-      transform: translateX(-50%);
-
-      background: linear-gradient(
-
-        to right,
-
-        rgba(64, 56, 44, 0.1),
-
-        rgba(64, 56, 44, 0.025) 30%,
-
-        rgba(255, 255, 255, 0.35) 50%,
-
-        rgba(64, 56, 44, 0.04) 70%,
-
-        rgba(64, 56, 44, 0.11)
-
-      );
-
-    }
-
-  }
-
-
-
-  @media (min-width: 1100px) {
-
-    .book-page {
-
-      min-height: 0;
-
-      padding: 26px 32px 18px;
-
-    }
-
-  }
-
-
-
-  @media (prefers-reduced-motion: reduce) {
-
-    .loading-line {
-
-      animation: none;
-
-    }
-
-  }
-
-`}</style>
-
+        .journal-background {
+          width: 100%;
+          height: calc(100svh - 4rem);
+          min-height: 0;
+          overflow: hidden;
+          color: white;
+          background:
+            radial-gradient(
+              ellipse at 50% 42%,
+              rgba(255, 255, 255, 0.055),
+              transparent 58%
+            ),
+            #0b0b0c;
+        }
+
+        .journal-stage {
+          width: 100%;
+          height: 100%;
+          padding: 12px 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .journal-layout {
+          width: 100%;
+          max-width: 1400px;
+          margin: 0 auto;
+        }
+
+        .book-shell {
+          width: 100%;
+          margin: 0 auto;
+          padding: 15px 15px 18px;
+          border: 1px solid rgba(255, 255, 255, 0.13);
+          border-radius: 10px 15px 15px 10px;
+          background: linear-gradient(
+            105deg,
+            #101011 0%,
+            #282829 8%,
+            #111112 19%,
+            #09090a 100%
+          );
+          box-shadow:
+            0 25px 65px rgba(0, 0, 0, 0.45),
+            inset 2px 0 4px rgba(255, 255, 255, 0.08),
+            inset -2px 0 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .book-pages {
+          background: #d0ccc3;
+          border-radius: 3px;
+          box-shadow:
+            2px 4px 0 #a9a59d,
+            4px 7px 0 #88857e,
+            6px 10px 0 #5d5a55,
+            8px 13px 0 #252526,
+            10px 16px 22px rgba(0, 0, 0, 0.4);
+        }
+
+        .book-spread {
+          position: relative;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          height: clamp(390px, calc(100svh - 250px), 620px);
+          overflow: hidden;
+          border-radius: 3px;
+          background: #f4f1e9;
+          box-shadow:
+            0 0 0 1px rgba(64, 56, 44, 0.35),
+            inset 0 0 12px rgba(78, 65, 47, 0.08);
+        }
+
+        .book-page {
+          position: relative;
+          display: flex;
+          min-width: 0;
+          min-height: 0;
+          flex-direction: column;
+          justify-content: space-between;
+          overflow: hidden;
+          padding: 25px 25px 16px;
+          color: #292825;
+          background-color: #f8f6f0;
+          background-image: repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 31px,
+            rgba(120, 110, 91, 0.045) 32px
+          );
+        }
+
+        .book-left {
+          background-color: #faf8f2;
+          box-shadow: inset -13px 0 18px -17px rgba(48, 39, 28, 0.65);
+        }
+
+        .book-right {
+          background-color: #f3f0e8;
+          box-shadow: inset 13px 0 18px -17px rgba(48, 39, 28, 0.65);
+        }
+
+        .page-content {
+          position: relative;
+          z-index: 1;
+          min-height: 0;
+        }
+
+        .trade-heading {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          border-bottom: 1px solid rgba(120, 110, 91, 0.3);
+          padding-bottom: 15px;
+        }
+
+        .trade-symbol {
+          margin-top: 7px;
+          font-size: clamp(36px, 3.4vw, 52px);
+          line-height: 1;
+          font-weight: 650;
+          letter-spacing: -0.055em;
+        }
+
+        .trade-badge {
+          flex-shrink: 0;
+          margin-top: 3px;
+          border: 1px solid #d4cec2;
+          border-radius: 999px;
+          padding: 6px 10px;
+          color: #777064;
+          font-size: 9px;
+          font-weight: 650;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+        }
+
+        .eyebrow {
+          color: #a29b8e;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.19em;
+          text-transform: uppercase;
+        }
+
+        .detail-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: 24px;
+        }
+
+        .pnl-panel {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          margin-top: 17px;
+          border-top: 1px solid rgba(120, 110, 91, 0.28);
+          border-bottom: 1px solid rgba(120, 110, 91, 0.28);
+          padding: 14px 0;
+        }
+
+        .pnl-value {
+          margin-top: 6px;
+          font-size: clamp(28px, 2.8vw, 40px);
+          line-height: 1.1;
+          font-weight: 650;
+          letter-spacing: -0.045em;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .review-heading {
+          border-bottom: 1px solid rgba(120, 110, 91, 0.28);
+          padding-bottom: 15px;
+        }
+
+        .review-grid {
+          column-gap: 22px;
+        }
+
+        .notes-section {
+          margin-top: 15px;
+        }
+
+        .notes-copy {
+          display: -webkit-box;
+          overflow: hidden;
+          margin-top: 8px;
+          color: #6b665d;
+          font-size: 12px;
+          line-height: 1.65;
+          white-space: pre-wrap;
+          overflow-wrap: anywhere;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 5;
+        }
+
+        .screenshot-section {
+          margin-top: 12px;
+        }
+
+        .trade-screenshot {
+          display: block;
+          width: 100%;
+          max-height: 95px;
+          border: 1px solid #d6d0c5;
+          border-radius: 6px;
+          object-fit: contain;
+        }
+
+        .page-footer {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          margin-top: 10px;
+          border-top: 1px solid rgba(120, 110, 91, 0.24);
+          padding-top: 9px;
+          color: #a29b8e;
+          font-size: 9px;
+          letter-spacing: 0.16em;
+        }
+
+        .empty-state {
+          display: flex;
+          min-height: 0;
+          height: 100%;
+          flex-direction: column;
+          justify-content: center;
+          overflow-wrap: anywhere;
+        }
+
+        .loading-line {
+          height: 8px;
+          max-width: 100%;
+          border-radius: 999px;
+          background: rgba(120, 110, 91, 0.15);
+          animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .action-button {
+          width: fit-content;
+          border: 1px solid #d4cec2;
+          border-radius: 999px;
+          padding: 9px 15px;
+          color: #575248;
+          font-size: 12px;
+          transition: background 150ms ease;
+        }
+
+        .action-button:hover {
+          background: white;
+        }
+
+        .dark-button {
+          border-color: #292825;
+          background: #292825;
+          color: white;
+        }
+
+        .dark-button:hover {
+          background: #48453f;
+        }
+
+        .book-navigation {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          margin-top: 14px;
+        }
+
+        .nav-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 9px;
+          min-height: 36px;
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          border-radius: 999px;
+          padding: 7px 16px;
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 12px;
+          transition:
+            background 150ms ease,
+            border-color 150ms ease;
+        }
+
+        .nav-button:hover:not(:disabled) {
+          border-color: rgba(255, 255, 255, 0.32);
+          background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-button:disabled {
+          cursor: not-allowed;
+          opacity: 0.25;
+        }
+
+        .example-control {
+          margin-top: 8px;
+          text-align: center;
+        }
+
+        .example-control button {
+          color: rgba(255, 255, 255, 0.38);
+          font-size: 10px;
+          transition: color 150ms ease;
+        }
+
+        .example-control button:hover {
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.45;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .book-spread {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          }
+
+          .book-page {
+            padding: 25px 28px 16px;
+          }
+
+          .book-left {
+            box-shadow: inset -13px 0 18px -17px rgba(48, 39, 28, 0.65);
+          }
+
+          .book-right {
+            border-left: 1px solid rgba(120, 110, 91, 0.32);
+            box-shadow: inset 13px 0 18px -17px rgba(48, 39, 28, 0.65);
+          }
+
+          .book-spread::after {
+            position: absolute;
+            z-index: 2;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 15px;
+            content: "";
+            pointer-events: none;
+            transform: translateX(-50%);
+            background: linear-gradient(
+              to right,
+              rgba(64, 56, 44, 0.1),
+              rgba(64, 56, 44, 0.025) 30%,
+              rgba(255, 255, 255, 0.35) 50%,
+              rgba(64, 56, 44, 0.04) 70%,
+              rgba(64, 56, 44, 0.11)
+            );
+          }
+        }
+
+        @media (min-width: 1100px) {
+          .book-page {
+            padding-right: 36px;
+            padding-left: 36px;
+          }
+        }
+
+        @media (max-height: 720px) and (min-width: 768px) {
+          .journal-stage {
+            padding-top: 7px;
+            padding-bottom: 7px;
+          }
+
+          .book-shell {
+            padding: 10px 10px 13px;
+          }
+
+          .book-spread {
+            height: calc(100svh - 205px);
+            min-height: 360px;
+          }
+
+          .book-page {
+            padding-top: 16px;
+            padding-bottom: 12px;
+          }
+
+          .detail-grid {
+            column-gap: 16px;
+          }
+
+          .detail-grid > div {
+            padding-top: 6px;
+            padding-bottom: 6px;
+          }
+
+          .pnl-panel {
+            margin-top: 10px;
+            padding: 10px 0;
+          }
+
+          .notes-section {
+            margin-top: 9px;
+          }
+
+          .notes-copy {
+            -webkit-line-clamp: 3;
+          }
+
+          .page-footer {
+            margin-top: 6px;
+            padding-top: 6px;
+          }
+
+          .example-control {
+            margin-top: 3px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .journal-background {
+            height: auto;
+            min-height: calc(100svh - 4rem);
+            overflow: visible;
+          }
+
+          .journal-stage {
+            height: auto;
+            min-height: calc(100svh - 4rem);
+            padding: 20px 12px 28px;
+          }
+
+          .book-shell {
+            padding: 9px 8px 12px;
+          }
+
+          .book-spread {
+            height: auto;
+            overflow: visible;
+          }
+
+          .book-page {
+            min-height: 390px;
+            padding: 23px 20px 16px;
+          }
+
+          .book-right {
+            border-top: 1px solid rgba(120, 110, 91, 0.32);
+          }
+
+          .book-navigation {
+            gap: 8px;
+          }
+
+          .nav-button {
+            gap: 6px;
+            padding-right: 12px;
+            padding-left: 12px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .loading-line {
+            animation: none;
+          }
+        }
+      `}</style>
     </main>
   );
 }
