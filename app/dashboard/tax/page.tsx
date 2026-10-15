@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import jsPDF from "jspdf";
 import { createClient } from "@/lib/supabase/client";
+import PnlValue from "@/components/dashboard/PnlValue";
 
 type Trade = {
   id: string;
@@ -218,13 +219,13 @@ function BreakdownTable({
                 {money(row.grossLoss)}
               </span>
 
-              <span
+              <PnlValue
+                value={row.pnl}
+                showSign
                 className={`text-right text-[12px] font-semibold ${pnlClass(
                   row.pnl,
                 )}`}
-              >
-                {money(row.pnl)}
-              </span>
+              />
             </div>
           ))}
         </div>
@@ -1096,21 +1097,24 @@ export default function TaxCenterPage() {
         <div className="grid grid-cols-2 gap-3 xl:grid-cols-7">
           <StatCard
             label="Net P&L"
-            value={money(stats.netPnl)}
+            value={stats.netPnl}
+            isPnl
             icon={<TrendingUp className="h-3.5 w-3.5" />}
             valueClass={pnlClass(stats.netPnl)}
           />
 
           <StatCard
             label="Gross Profit"
-            value={money(stats.grossProfit)}
+            value={stats.grossProfit}
+            isPnl
             icon={<TrendingUp className="h-3.5 w-3.5" />}
             valueClass="text-white/80"
           />
 
           <StatCard
             label="Gross Loss"
-            value={money(stats.grossLoss)}
+            value={stats.grossLoss}
+            isPnl
             icon={<TrendingDown className="h-3.5 w-3.5" />}
             valueClass="text-white/45"
           />
@@ -1261,13 +1265,13 @@ export default function TaxCenterPage() {
                       {money(month.grossLoss)}
                     </span>
 
-                    <span
+                    <PnlValue
+                      value={month.pnl}
+                      showSign
                       className={`text-right text-[12px] font-semibold ${pnlClass(
                         month.pnl,
                       )}`}
-                    >
-                      {money(month.pnl)}
-                    </span>
+                    />
                   </div>
                 ))}
               </div>
@@ -1377,11 +1381,13 @@ function StatCard({
   value,
   icon,
   valueClass = "text-white",
+  isPnl = false,
 }: {
   label: string;
-  value: string;
+  value: string | number;
   icon: React.ReactNode;
   valueClass?: string;
+  isPnl?: boolean;
 }) {
   return (
     <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-4 shadow-[0_14px_35px_rgba(0,0,0,0.16)]">
@@ -1395,11 +1401,19 @@ function StatCard({
         </span>
       </div>
 
-      <p
-        className={`mt-3 text-[18px] font-semibold tracking-[-0.035em] ${valueClass}`}
-      >
-        {value}
-      </p>
+      {isPnl ? (
+        <PnlValue
+          value={typeof value === "string" ? Number(value.replace(/[^0-9.-]/g, "")) : value}
+          showSign
+          className={`mt-3 text-[18px] font-semibold tracking-[-0.035em] tabular-nums ${valueClass}`}
+        />
+      ) : (
+        <p
+          className={`mt-3 text-[18px] font-semibold tracking-[-0.035em] ${valueClass}`}
+        >
+          {value}
+        </p>
+      )}
     </div>
   );
 }
