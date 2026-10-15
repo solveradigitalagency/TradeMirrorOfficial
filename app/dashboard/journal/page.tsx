@@ -448,19 +448,9 @@ export default function JournalPage() {
                             {bookDateLabel(currentTrade.trade_date)}
                           </h1>
                           <span className="blue-rule" />
-                          <p className="book-trade-number">
-                            TRADE #{String(activeIndex + 1).padStart(3, "0")}
-                          </p>
                         </section>
 
                         <section className="chart-section">
-                          <div className="book-section-heading">
-                            <span className="eyebrow">Price action</span>
-                            <span className="chart-instrument">
-                              {currentTrade.symbol || "TRADE"}
-                            </span>
-                          </div>
-
                           <div className="book-chart-frame">
                             {currentTrade.screenshot_url ? (
                               // eslint-disable-next-line @next/next/no-img-element
@@ -631,41 +621,40 @@ export default function JournalPage() {
                 </article>
               </div>
             </div>
+            {/* PAGE CORNER NAVIGATION */}
+            {currentTrade && !loading && !error && journalTrades.length > 1 && (
+              <nav className="page-corner-navigation" aria-label="Trade navigation">
+                <button
+                  type="button"
+                  className="page-corner page-corner-previous"
+                  onClick={() => goToTrade(activeIndex - 1)}
+                  aria-label="Previous trade"
+                  title="Previous trade"
+                >
+                  <span aria-hidden="true">‹</span>
+                </button>
+                <button
+                  type="button"
+                  className="page-corner page-corner-next"
+                  onClick={() => goToTrade(activeIndex + 1)}
+                  aria-label="Next trade"
+                  title="Next trade"
+                >
+                  <span aria-hidden="true">›</span>
+                </button>
+              </nav>
+            )}
           </div>
 
-          {/* BOOK NAVIGATION */}
-          {currentTrade && !loading && !error && (
-            <nav className="book-navigation" aria-label="Trade navigation">
-              <button
-                onClick={() => goToTrade(activeIndex - 1)}
-                disabled={journalTrades.length < 2}
-                aria-label="Previous trade"
-                className="nav-button"
-              >
-                <span aria-hidden="true">←</span>
-                Previous
-              </button>
-
-              <div className="text-center">
-                <p className="text-xs font-medium tabular-nums text-white/75">
-                  {activeIndex + 1} of {journalTrades.length}
-                </p>
-                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-white/35">
-                  {isDemo ? "Sample entry" : "Journal entries"}
-                </p>
-              </div>
-
-              <button
-                onClick={() => goToTrade(activeIndex + 1)}
-                disabled={journalTrades.length < 2}
-                aria-label="Next trade"
-                className="nav-button"
-              >
-                Next
-                <span aria-hidden="true">→</span>
-              </button>
-            </nav>
-          )}
+          {/* JOURNAL COUNT */}
+          <div className="journal-count">
+            <span className="journal-count-number">
+              {journalTrades.length}
+            </span>
+            <span className="journal-count-label">
+              JOURNAL ENTRIES
+            </span>
+          </div>
 
           {/* Share and Download PNG & error */}
           <div className="share-actions">
@@ -682,14 +671,6 @@ export default function JournalPage() {
             <p className="export-error" role="alert">
               {exportError}
             </p>
-          )}
-
-          {!loading && !error && (
-            <div className="example-control">
-              <button onClick={toggleExample}>
-                {showExample ? "Hide sample entry" : "View sample entry"}
-              </button>
-            </div>
           )}
         </section>
       </div>
@@ -767,10 +748,11 @@ export default function JournalPage() {
 
       <style jsx>{`
         .journal-background {
+          position: relative;
           width: 100%;
-          height: calc(100svh - 4rem);
-          min-height: 0;
-          overflow: hidden;
+          min-height: calc(100svh - 4rem);
+          height: auto;
+          overflow: visible;
           color: white;
           background:
             radial-gradient(
@@ -783,17 +765,27 @@ export default function JournalPage() {
 
         .journal-stage {
           width: 100%;
-          height: 100%;
-          padding: 12px 28px;
+          min-height: calc(100svh - 4rem);
+          height: auto;
+          padding: 28px 28px 32px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .journal-layout {
+          position: relative;
           width: 100%;
           max-width: 1160px;
           margin: 0 auto;
+          padding-bottom: 12px;
+        }
+
+        @media (max-width: 767px) {
+          .journal-stage {
+            min-height: auto;
+            padding: 20px 12px 28px;
+          }
         }
 
         /* Book Shell - Navy Leather Cover */
@@ -833,17 +825,8 @@ export default function JournalPage() {
         }
 
         .book-shell::after {
-          position: absolute;
-          z-index: -1;
-          bottom: -66px;
-          left: 50%;
-          width: 24px;
-          height: 91px;
-          content: "";
-          transform: translateX(-50%);
-          background: linear-gradient(90deg, #071629, #16467b 48%, #0b2340);
-          clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
-          filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.4));
+          content: none;
+          display: none;
         }
 
         /* Book Pages */
@@ -1172,96 +1155,102 @@ export default function JournalPage() {
           background: #48453f;
         }
 
-        .book-navigation {
+        .page-corner-navigation {
+          position: absolute;
+          z-index: 10;
+          right: 17px;
+          bottom: 17px;
+          left: 17px;
           display: flex;
-          align-items: center;
           justify-content: space-between;
-          gap: 16px;
-          margin-top: 14px;
+          align-items: flex-end;
+          pointer-events: none;
         }
 
-        .nav-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 9px;
-          min-height: 36px;
-          border: 1px solid rgba(255, 255, 255, 0.16);
-          border-radius: 999px;
-          padding: 7px 16px;
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 12px;
+        .page-corner {
+          display: grid;
+          width: 46px;
+          height: 46px;
+          place-items: center;
+          border: 1px solid rgba(93, 77, 56, 0.24);
+          background: rgba(248, 246, 240, 0.88);
+          color: #10243e;
+          cursor: pointer;
+          pointer-events: auto;
           transition:
             background 150ms ease,
-            border-color 150ms ease;
+            box-shadow 150ms ease;
         }
 
-        .nav-button:hover:not(:disabled) {
-          border-color: rgba(255, 255, 255, 0.32);
-          background: rgba(255, 255, 255, 0.06);
+        .page-corner-previous {
+          border-radius: 3px 14px 3px 3px;
         }
 
-        .nav-button:disabled {
-          cursor: not-allowed;
-          opacity: 0.25;
+        .page-corner-next {
+          border-radius: 14px 3px 3px 3px;
         }
 
-        .example-control {
-          margin-top: 8px;
+        .page-corner span {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 30px;
+          line-height: 1;
+        }
+
+        .page-corner:hover {
+          background: #fffdf7;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        @media (max-width: 767px) {
+          .page-corner-navigation {
+            right: 8px;
+            bottom: 12px;
+            left: 8px;
+          }
+
+          .page-corner {
+            width: 38px;
+            height: 38px;
+          }
+        }
+
+        .journal-count {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 5px;
+          margin-top: 16px;
           text-align: center;
         }
 
-        .example-control button {
-          color: rgba(255, 255, 255, 0.38);
-          font-size: 10px;
-          transition: color 150ms ease;
+        .journal-count-number {
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 13px;
+          font-variant-numeric: tabular-nums;
         }
 
-        .example-control button:hover {
-          color: rgba(255, 255, 255, 0.8);
+        .journal-count-label {
+          color: rgba(255, 255, 255, 0.35);
+          font-size: 9px;
+          letter-spacing: 0.2em;
         }
 
         .share-actions {
           display: flex;
-          align-items: center;
           justify-content: center;
-          flex-wrap: wrap;
-          gap: 10px;
           margin-top: 14px;
-        }
-
-        .share-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 38px;
-          padding: 0 16px;
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.06);
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 12px;
-          font-weight: 500;
-          transition: background 150ms ease, opacity 150ms ease;
-        }
-
-        .share-button:hover:not(:disabled) {
-          background: rgba(255, 255, 255, 0.12);
+          padding-bottom: 12px;
         }
 
         .share-button-primary {
-          border-color: #fff;
+          min-height: 42px;
+          padding: 0 22px;
+          border: 1px solid #fff;
+          border-radius: 999px;
           background: #fff;
           color: #111;
-        }
-
-        .share-button-primary:hover:not(:disabled) {
-          background: #e7e7e7;
-        }
-
-        .share-button:disabled {
-          cursor: not-allowed;
-          opacity: 0.45;
+          font-size: 12px;
+          font-weight: 600;
         }
 
         .export-error {
@@ -1360,8 +1349,8 @@ export default function JournalPage() {
             gap: 8px;
           }
 
-          .share-button {
-            min-height: 36px;
+          .share-button-primary {
+            min-height: 38px;
             padding: 0 12px;
             font-size: 11px;
           }
@@ -1426,17 +1415,6 @@ export default function JournalPage() {
               rgba(66, 48, 28, 0.13)
             );
           }
-
-          /* Retain other responsive adjustments as-is from original code */
-          .book-navigation {
-            gap: 16px;
-          }
-
-          .nav-button {
-            gap: 9px;
-            padding-right: 16px;
-            padding-left: 16px;
-          }
         }
 
         @media (min-width: 1100px) {
@@ -1500,308 +1478,41 @@ export default function JournalPage() {
             margin-top: 6px;
             padding-top: 6px;
           }
-
-          .example-control {
-            margin-top: 3px;
-          }
-
-          /* Adjustments for short screens */
-          .left-screenshot-section {
-            margin-top: 8px;
-          }
-          .left-trade-screenshot {
-            border-radius: 4px;
-          }
         }
 
-        /* Mobile Stack & Ribbon Adjustments */
-        @media (max-width: 767px) {
-          .journal-background {
-            height: auto;
-            min-height: calc(100svh - 4rem);
-            overflow: visible;
-          }
-
-          .journal-stage {
-            height: auto;
-            min-height: calc(100svh - 4rem);
-            padding: 20px 12px 28px;
-          }
-
-          /* Book shell proper mobile padding/radius */
-          .book-shell {
-            padding: 12px;
-            border-radius: 17px;
-          }
-
-          .book-shell::after {
-            bottom: -42px;
-            height: 62px;
-            width: 19px;
-          }
-
-          .book-shell::before {
-            inset: 5px;
-            border-radius: 12px;
-          }
-
-          .book-spread {
-            height: auto;
-            overflow: visible;
-          }
-
-          .book-page {
-            min-height: 390px;
-            padding: 23px 20px 16px;
-          }
-
-          .book-right {
-            border-top: 1px solid rgba(120, 110, 91, 0.32);
-          }
-
-          .review-content {
-            overflow: visible;
-          }
-
-          .notes-copy {
-            -webkit-line-clamp: 6;
-          }
-
-          .trade-screenshot {
-            max-height: 260px;
-          }
-
-          .book-navigation {
-            gap: 8px;
-          }
-
-          .nav-button {
-            gap: 6px;
-            padding-right: 12px;
-            padding-left: 12px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .loading-line {
-            animation: none;
-          }
-        }
-
-        /* Editorial book masthead */
-        .book-masthead {
-          display: flex;
-          align-items: center;
-          gap: 9px;
-          min-height: 34px;
-          border-bottom: 1px solid rgba(93, 77, 56, 0.23);
-          padding-bottom: 10px;
-          font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .brand-mark {
-          display: grid;
-          width: 25px;
-          height: 25px;
-          flex-shrink: 0;
-          place-items: center;
-          border: 1.5px solid #1658a5;
-          border-radius: 5px 5px 2px 2px;
-          color: #1658a5;
-          font-size: 10px;
-          font-weight: 800;
-          letter-spacing: -0.1em;
-        }
-
-        .brand-name {
-          color: #10243e;
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.16em;
-        }
-
-        .masthead-label {
-          margin-left: auto;
-          color: #777366;
-          font-size: 8px;
-          letter-spacing: 0.12em;
-          white-space: nowrap;
-        }
-
-        .masthead-tagline {
-          margin-left: auto;
-          color: #777366;
-          font-size: 8px;
-          letter-spacing: 0.12em;
-          text-align: right;
-        }
-
-        .trade-date-section {
-          margin-top: 24px;
-        }
-
-        .book-date {
-          color: #10243e;
-          font-size: clamp(22px, 2vw, 30px);
-          font-weight: 600;
-          line-height: 1.2;
-          letter-spacing: 0.045em;
-        }
-
-        .blue-rule {
-          display: block;
-          width: 42px;
-          height: 2px;
-          margin-top: 12px;
-          background: #1762bd;
-        }
-
-        .book-trade-number {
-          margin-top: 14px;
-          color: #10243e;
-          font-size: 15px;
-          font-weight: 600;
-          letter-spacing: 0.12em;
-        }
-
-        .chart-section {
-          display: flex;
-          flex: 1;
-          flex-direction: column;
-          min-height: 100px;
-          margin-top: 18px;
-        }
-
-        .book-section-heading {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 10px;
-          margin-bottom: 8px;
-          font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .chart-instrument {
-          color: #777366;
-          font-size: 9px;
-          letter-spacing: 0.12em;
-        }
-
-        .book-chart-frame {
-          position: relative;
-          display: flex;
-          flex: 1;
-          align-items: center;
-          justify-content: center;
-          min-width: 0;
-          min-height: 100px;
-          overflow: hidden;
-          border: 1px solid rgba(16, 36, 62, 0.25);
-          border-radius: 7px;
-          background: #0a1726;
-          box-shadow: 0 5px 14px rgba(38, 32, 23, 0.12);
-        }
-
-        .book-chart-image {
-          display: block;
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          object-position: center;
-        }
-
-        .book-chart-placeholder {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          padding: 20px;
-          color: rgba(240, 239, 231, 0.65);
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 9px;
-          letter-spacing: 0.17em;
-          text-align: center;
-        }
-
-        .placeholder-mark {
-          color: #6593ca;
-          font-family: Georgia, "Times New Roman", serif;
-          font-size: 32px;
-        }
-
-        .placeholder-caption {
-          color: rgba(240, 239, 231, 0.4);
-          font-size: 10px;
-          letter-spacing: 0;
-        }
-
-        .setup-section {
-          flex-shrink: 0;
-          margin-top: 19px;
-        }
-
-        .book-section-title {
-          color: #10243e;
-          font-size: 17px;
-          font-weight: 600;
-          letter-spacing: 0.12em;
-          line-height: 1.3;
-        }
-
-        .setup-copy,
-        .reflection-copy {
-          margin-top: 14px;
-          color: #252f3b;
-          font-family: Georgia, "Times New Roman", serif;
-          font-size: 13px;
-          line-height: 1.65;
-          overflow-wrap: anywhere;
-          white-space: pre-wrap;
-        }
-
-        .setup-copy {
-          display: -webkit-box;
-          overflow: hidden;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 4;
-        }
-
-        .book-right-masthead {
-          min-height: 34px;
-        }
-
-        .book-details-section {
-          margin-top: 27px;
-        }
-
+        /* Book Details - STRONGER MOCKUP COLUMNS */
         .book-detail-list {
+          width: 100%;
           margin-top: 9px;
         }
 
         .book-detail-row {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+          grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
           align-items: center;
-          gap: 12px;
-          min-height: 42px;
-          border-bottom: 1px solid rgba(93, 77, 56, 0.18);
-        }
-
-        .book-detail-label,
-        .book-detail-value {
-          min-width: 0;
-          font-size: 12px;
-          line-height: 1.4;
+          column-gap: 20px;
+          width: 100%;
+          min-height: 43px;
+          border-bottom: 1px solid rgba(93, 77, 56, 0.2);
+          padding: 8px 0;
         }
 
         .book-detail-label {
+          display: block;
           color: #26364a;
+          font-size: 13px;
+          line-height: 1.4;
+          white-space: normal;
         }
 
         .book-detail-value {
+          display: block;
+          min-width: 0;
           color: #10243e;
+          font-size: 13px;
           font-weight: 500;
+          line-height: 1.4;
+          text-align: left;
           overflow-wrap: anywhere;
         }
 
