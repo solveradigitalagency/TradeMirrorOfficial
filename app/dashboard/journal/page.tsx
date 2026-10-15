@@ -117,6 +117,52 @@ function Detail({
   );
 }
 
+// ----- BookDetail ROW and utils -----
+function BookDetail({
+  label,
+  value,
+  positive,
+}: {
+  label: string;
+  value: string | number | null | undefined;
+  positive?: boolean;
+}) {
+  return (
+    <div className="book-detail-row">
+      <span className="book-detail-label">{label}</span>
+      <span
+        className={`book-detail-value ${
+          positive === true
+            ? "book-value-positive"
+            : positive === false
+              ? "book-value-negative"
+              : ""
+        }`}
+      >
+        {value == null || value === "" ? "—" : value}
+      </span>
+    </div>
+  );
+}
+
+const bookDateLabel = (value: string | null) => {
+  if (!value) return "UNDATED";
+
+  const date = new Date(`${value.slice(0, 10)}T12:00:00`);
+
+  if (Number.isNaN(date.getTime())) return value.toUpperCase();
+
+  return date
+    .toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
+    .toUpperCase();
+};
+
+// ----------------------------------
+
 export default function JournalPage() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
@@ -391,84 +437,64 @@ export default function JournalPage() {
                   ) : currentTrade ? (
                     <>
                       <div className="page-content trade-page-content">
-                        <header className="trade-heading">
-                          <div className="min-w-0">
-                            <p className="eyebrow">
-                              {isDemo ? "Sample entry" : "Trade journal"}
-                            </p>
-                            <h1 className="trade-symbol">
-                              {currentTrade.symbol || "Trade"}
-                            </h1>
-                            <p className="mt-1 text-xs text-stone-500">
-                              {dateLabel(currentTrade.trade_date)}
-                            </p>
-                          </div>
-
-                          <span className="trade-badge">
-                            {isDemo
-                              ? "Preview"
-                              : currentTrade.result || "Recorded"}
-                          </span>
+                        <header className="book-masthead">
+                          <div className="brand-mark">TM</div>
+                          <span className="brand-name">TRADEMIRROR</span>
+                          <span className="masthead-label">TRADING JOURNAL</span>
                         </header>
 
-                        {/* Only the essential trade details remain. */}
-                        <div className="detail-grid trade-details">
-                          <Detail
-                            label="Direction"
-                            value={currentTrade.direction}
-                          />
-                          <Detail
-                            label="Contracts"
-                            value={number(currentTrade.quantity)}
-                          />
-                        </div>
+                        <section className="trade-date-section">
+                          <h1 className="book-date">
+                            {bookDateLabel(currentTrade.trade_date)}
+                          </h1>
+                          <span className="blue-rule" />
+                          <p className="book-trade-number">
+                            TRADE #{String(activeIndex + 1).padStart(3, "0")}
+                          </p>
+                        </section>
 
-                        {/* P&L now sits directly below the two details. */}
-                        <div className="pnl-panel">
-                          <div>
-                            <p className="eyebrow">Realized P&amp;L</p>
-                            <p
-                              className={`pnl-value ${
-                                Number(currentTrade.pnl ?? 0) > 0
-                                  ? "text-emerald-700"
-                                  : Number(currentTrade.pnl ?? 0) < 0
-                                    ? "text-rose-700"
-                                    : "text-stone-800"
-                              }`}
-                            >
-                              {money(currentTrade.pnl)}
-                            </p>
+                        <section className="chart-section">
+                          <div className="book-section-heading">
+                            <span className="eyebrow">Price action</span>
+                            <span className="chart-instrument">
+                              {currentTrade.symbol || "TRADE"}
+                            </span>
                           </div>
-                          <div className="text-right">
-                            <p className="eyebrow">R-multiple</p>
-                            <p className="mt-2 text-lg font-semibold text-stone-700">
-                              {currentTrade.r_multiple == null
-                                ? "—"
-                                : `${number(currentTrade.r_multiple)}R`}
-                            </p>
-                          </div>
-                        </div>
 
-                        {currentTrade.screenshot_url && (
-                          <div className="left-screenshot-section">
-                            <p className="eyebrow mb-2">Chart screenshot</p>
-                            <div className="left-screenshot-frame">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <div className="book-chart-frame">
+                            {currentTrade.screenshot_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={currentTrade.screenshot_url}
-                                alt="Trade chart screenshot"
-                                className="left-trade-screenshot"
+                                alt={`${currentTrade.symbol || "Trade"} chart`}
+                                className="book-chart-image"
                               />
-                            </div>
+                            ) : (
+                              <div className="book-chart-placeholder">
+                                <span className="placeholder-mark">TM</span>
+                                <span>CHART SCREENSHOT</span>
+                                <span className="placeholder-caption">
+                                  No chart attached to this trade
+                                </span>
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </section>
+
+                        <section className="setup-section">
+                          <h2 className="book-section-title">THE SETUP</h2>
+                          <span className="blue-rule" />
+                          <p className="setup-copy">
+                            {currentTrade.setup ||
+                              currentTrade.notes ||
+                              "No setup notes recorded for this trade."}
+                          </p>
+                        </section>
                       </div>
 
-                      <footer className="page-footer">
+                      <footer className="page-footer book-page-footer">
                         <span>TRADEMIRROR</span>
-                        <span>
-                          {String(activeIndex * 2 + 1).padStart(2, "0")}
-                        </span>
+                        <span>{String(activeIndex * 2 + 24).padStart(2, "0")}</span>
                       </footer>
                     </>
                   ) : (
@@ -522,59 +548,69 @@ export default function JournalPage() {
                     </div>
                   ) : currentTrade ? (
                     <>
-                      <div className="page-content review-content">
-                        <header className="review-heading">
-                          <p className="eyebrow">Review &amp; reflection</p>
-                          <h2 className="mt-1 text-3xl font-semibold tracking-tight">
-                            The details.
-                          </h2>
+                      <div className="page-content review-content book-review-page">
+                        <header className="book-masthead book-right-masthead">
+                          <span className="masthead-tagline">
+                            BETTER TRADES. CLEARER THINKING.
+                          </span>
                         </header>
 
-                        {/* Session, market condition, and grade removed. */}
-                        <div className="detail-grid review-grid">
-                          <Detail
-                            label="Setup"
-                            value={currentTrade.setup}
-                          />
-                          <Detail
-                            label="Emotion"
-                            value={currentTrade.emotion}
-                          />
-                          <Detail
-                            label="Execution"
-                            value={currentTrade.execution_rating}
-                          />
-                          <Detail
-                            label="Followed plan"
-                            value={
-                              currentTrade.followed_plan == null
-                                ? "—"
-                                : currentTrade.followed_plan
-                                  ? "Yes"
-                                  : "No"
-                            }
-                          />
-                        </div>
+                        <section className="book-details-section">
+                          <h2 className="book-section-title">TRADE DETAILS</h2>
+                          <span className="blue-rule" />
+                          <div className="book-detail-list">
+                            <BookDetail
+                              label="Instrument"
+                              value={currentTrade.symbol}
+                            />
+                            <BookDetail
+                              label="Direction"
+                              value={currentTrade.direction}
+                            />
+                            <BookDetail
+                              label="Contracts"
+                              value={number(currentTrade.quantity)}
+                            />
+                            <BookDetail
+                              label="P&L"
+                              value={money(currentTrade.pnl)}
+                              positive={
+                                currentTrade.pnl == null
+                                  ? undefined
+                                  : currentTrade.pnl >= 0
+                              }
+                            />
+                            <BookDetail
+                              label="Followed Plan"
+                              value={
+                                currentTrade.followed_plan == null
+                                  ? "—"
+                                  : currentTrade.followed_plan
+                                    ? "YES"
+                                    : "NO"
+                              }
+                              positive={currentTrade.followed_plan === true}
+                            />
+                            <BookDetail
+                              label="Emotion"
+                              value={currentTrade.emotion}
+                            />
+                          </div>
+                        </section>
 
-                        <div className="notes-section">
-                          <p className="eyebrow">Notes &amp; reflection</p>
-                          <p
-                            className="notes-copy"
-                            title={currentTrade.notes || undefined}
-                          >
+                        <section className="reflection-section">
+                          <h2 className="book-section-title">REFLECTION</h2>
+                          <span className="blue-rule" />
+                          <p className="reflection-copy">
                             {currentTrade.notes ||
-                              "No notes recorded for this trade."}
+                              "No reflection recorded for this trade."}
                           </p>
-                        </div>
+                        </section>
                       </div>
 
-                      <footer className="page-footer">
-                        <span>
-                          {isDemo ? "SAMPLE ENTRY" : "TRADING REFLECTION"}
-                        </span>
-                        <span>
-                          {String(activeIndex * 2 + 2).padStart(2, "0")}
-                        </span>
+                      <footer className="page-footer book-page-footer">
+                        <span className="book-footer-symbol">⌂</span>
+                        <span>{String(activeIndex * 2 + 25).padStart(2, "0")}</span>
                       </footer>
                     </>
                   ) : (
@@ -756,52 +792,100 @@ export default function JournalPage() {
 
         .journal-layout {
           width: 100%;
-          max-width: 1400px;
+          max-width: 1160px;
           margin: 0 auto;
         }
 
+        /* Book Shell - Navy Leather Cover */
         .book-shell {
+          position: relative;
+          isolation: isolate;
           width: 100%;
           margin: 0 auto;
-          padding: 15px 15px 18px;
-          border: 1px solid rgba(255, 255, 255, 0.13);
-          border-radius: 10px 15px 15px 10px;
-          background: linear-gradient(
-            105deg,
-            #101011 0%,
-            #282829 8%,
-            #111112 19%,
-            #09090a 100%
-          );
+          padding: 17px;
+          border: 1px solid #263a50;
+          border-radius: 23px 27px 27px 23px;
+          background:
+            radial-gradient(ellipse at 20% 8%, rgba(95, 130, 164, 0.2), transparent 38%),
+            radial-gradient(ellipse at 80% 95%, rgba(0, 0, 0, 0.45), transparent 45%),
+            repeating-linear-gradient(
+              115deg,
+              rgba(255, 255, 255, 0.012) 0px,
+              rgba(255, 255, 255, 0.012) 1px,
+              transparent 1px,
+              transparent 4px
+            ),
+            linear-gradient(135deg, #182b40 0%, #091522 48%, #14283c 100%);
           box-shadow:
-            0 25px 65px rgba(0, 0, 0, 0.45),
-            inset 2px 0 4px rgba(255, 255, 255, 0.08),
-            inset -2px 0 4px rgba(0, 0, 0, 0.8);
+            0 35px 80px rgba(0, 0, 0, 0.55),
+            0 8px 22px rgba(0, 0, 0, 0.35),
+            inset 2px 0 4px rgba(255, 255, 255, 0.08);
         }
 
+        .book-shell::before {
+          position: absolute;
+          z-index: -1;
+          inset: 7px;
+          border: 1px dashed rgba(140, 172, 202, 0.6);
+          border-radius: 17px 21px 21px 17px;
+          content: "";
+          pointer-events: none;
+        }
+
+        .book-shell::after {
+          position: absolute;
+          z-index: -1;
+          bottom: -66px;
+          left: 50%;
+          width: 24px;
+          height: 91px;
+          content: "";
+          transform: translateX(-50%);
+          background: linear-gradient(90deg, #071629, #16467b 48%, #0b2340);
+          clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
+          filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.4));
+        }
+
+        /* Book Pages */
         .book-pages {
-          background: #d0ccc3;
-          border-radius: 3px;
+          position: relative;
+          background: #c8c0b2;
+          border-radius: 5px;
           box-shadow:
-            2px 4px 0 #a9a59d,
-            4px 7px 0 #88857e,
-            6px 10px 0 #5d5a55,
-            8px 13px 0 #252526,
-            10px 16px 22px rgba(0, 0, 0, 0.4);
+            2px 2px 0 #e1d8c8,
+            4px 4px 0 #a79d8e,
+            6px 6px 0 #d2c9ba,
+            8px 8px 0 #81796d,
+            11px 12px 22px rgba(0, 0, 0, 0.4);
         }
 
+        /* Book Spread & Pages - Paper Look */
         .book-spread {
           position: relative;
           display: grid;
           grid-template-columns: minmax(0, 1fr);
-          height: clamp(390px, calc(100svh - 250px), 620px);
+          height: clamp(560px, calc(100svh - 220px), 760px);
           overflow: hidden;
-          border-radius: 3px;
-          background: #f4f1e9;
+          border-radius: 4px;
+          background: #f1e8d9;
           box-shadow:
-            0 0 0 1px rgba(64, 56, 44, 0.35),
-            inset 0 0 12px rgba(78, 65, 47, 0.08);
+            0 0 0 1px rgba(87, 70, 49, 0.45),
+            inset 0 0 18px rgba(93, 68, 42, 0.12);
         }
+
+        @media (min-width: 768px) {
+          .book-spread {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          }
+        }
+
+        @media (max-height: 760px) and (min-width: 768px) {
+          .book-spread {
+            height: calc(100svh - 190px);
+            min-height: 480px;
+          }
+        }
+
 
         .book-page {
           position: relative;
@@ -811,25 +895,34 @@ export default function JournalPage() {
           flex-direction: column;
           justify-content: space-between;
           overflow: hidden;
-          padding: 25px 25px 16px;
-          color: #292825;
-          background-color: #f8f6f0;
-          background-image: repeating-linear-gradient(
-            to bottom,
-            transparent 0,
-            transparent 31px,
-            rgba(120, 110, 91, 0.045) 32px
-          );
+          padding: 30px 30px 19px;
+          color: #10243e;
+          font-family: Georgia, "Times New Roman", serif;
+          background-color: #f4ecdf;
+          background-image:
+            radial-gradient(ellipse at 15% 10%, rgba(255, 255, 255, 0.52), transparent 55%),
+            radial-gradient(ellipse at 90% 90%, rgba(157, 124, 84, 0.08), transparent 50%),
+            repeating-linear-gradient(
+              0deg,
+              rgba(99, 77, 51, 0.018) 0px,
+              rgba(99, 77, 51, 0.018) 1px,
+              transparent 1px,
+              transparent 4px
+            );
         }
 
         .book-left {
-          background-color: #faf8f2;
-          box-shadow: inset -13px 0 18px -17px rgba(48, 39, 28, 0.65);
+          background-color: #f7efe3;
+          box-shadow:
+            inset -16px 0 22px -19px rgba(54, 39, 24, 0.75),
+            inset 4px 0 8px rgba(255, 255, 255, 0.3);
         }
 
         .book-right {
-          background-color: #f3f0e8;
-          box-shadow: inset 13px 0 18px -17px rgba(48, 39, 28, 0.65);
+          background-color: #f3eadc;
+          box-shadow:
+            inset 16px 0 22px -19px rgba(54, 39, 24, 0.75),
+            inset -4px 0 8px rgba(255, 255, 255, 0.25);
         }
 
         .page-content {
@@ -875,8 +968,9 @@ export default function JournalPage() {
           min-height: 0;
           object-fit: contain;
           object-position: center;
-          border: 1px solid #d6d0c5;
-          border-radius: 6px;
+          border: 1px solid rgba(27, 43, 58, 0.3);
+          border-radius: 7px;
+          box-shadow: 0 5px 14px rgba(38, 32, 23, 0.12);
         }
 
         /* Keep the reflection on the right page, without scrolling. */
@@ -900,9 +994,26 @@ export default function JournalPage() {
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 10;
           margin-top: 6px;
-          color: #6b665d;
-          font-size: 11px;
-          line-height: 1.5;
+          color: #353b43;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 13px;
+          line-height: 1.75;
+        }
+
+        /* Editorial Section Headings */
+        .trade-heading .eyebrow,
+        .review-heading .eyebrow,
+        .left-screenshot-section > .eyebrow,
+        .notes-section > .eyebrow {
+          color: #777366;
+        }
+
+        .review-heading h2 {
+          color: #10243e;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: clamp(27px, 2.6vw, 36px);
+          font-weight: 600;
+          letter-spacing: -0.025em;
         }
 
         .trade-heading {
@@ -910,25 +1021,28 @@ export default function JournalPage() {
           align-items: flex-start;
           justify-content: space-between;
           gap: 12px;
-          border-bottom: 1px solid rgba(120, 110, 91, 0.3);
-          padding-bottom: 15px;
+          border-bottom: 1px solid rgba(82, 69, 51, 0.25);
+          padding-bottom: 17px;
         }
 
         .trade-symbol {
-          margin-top: 7px;
-          font-size: clamp(36px, 3.4vw, 52px);
+          margin-top: 9px;
+          color: #10243e;
+          font-size: clamp(38px, 3.6vw, 54px);
           line-height: 1;
-          font-weight: 650;
-          letter-spacing: -0.055em;
+          font-weight: 600;
+          letter-spacing: -0.045em;
         }
 
         .trade-badge {
           flex-shrink: 0;
           margin-top: 3px;
-          border: 1px solid #d4cec2;
+          border: 1px solid rgba(77, 92, 104, 0.28);
+          background: rgba(255, 255, 255, 0.22);
+          color: #5d6470;
+          font-family: Arial, Helvetica, sans-serif;
           border-radius: 999px;
           padding: 6px 10px;
-          color: #777064;
           font-size: 9px;
           font-weight: 650;
           text-transform: uppercase;
@@ -936,10 +1050,11 @@ export default function JournalPage() {
         }
 
         .eyebrow {
-          color: #a29b8e;
+          color: #777366;
+          font-family: Arial, Helvetica, sans-serif;
           font-size: 9px;
-          font-weight: 700;
-          letter-spacing: 0.19em;
+          font-weight: 600;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
         }
 
@@ -959,14 +1074,18 @@ export default function JournalPage() {
           padding-bottom: 8px;
         }
 
+        .detail-grid > div {
+          border-color: rgba(93, 77, 56, 0.19);
+        }
+
         .pnl-panel {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 16px;
           margin-top: 12px;
-          border-top: 1px solid rgba(120, 110, 91, 0.28);
-          border-bottom: 1px solid rgba(120, 110, 91, 0.28);
+          border-top: 1px solid rgba(93, 77, 56, 0.25);
+          border-bottom: 1px solid rgba(93, 77, 56, 0.25);
           padding: 13px 0;
         }
 
@@ -980,7 +1099,7 @@ export default function JournalPage() {
         }
 
         .review-heading {
-          border-bottom: 1px solid rgba(120, 110, 91, 0.28);
+          border-bottom: 1px solid rgba(93, 77, 56, 0.25);
           padding-bottom: 10px;
         }
 
@@ -1004,11 +1123,12 @@ export default function JournalPage() {
           justify-content: space-between;
           gap: 12px;
           margin-top: 8px;
-          border-top: 1px solid rgba(120, 110, 91, 0.24);
+          border-top: 1px solid rgba(93, 77, 56, 0.2);
           padding-top: 8px;
-          color: #a29b8e;
+          color: #827a6c;
+          font-family: Arial, Helvetica, sans-serif;
           font-size: 9px;
-          letter-spacing: 0.16em;
+          letter-spacing: 0.15em;
         }
 
         .empty-state {
@@ -1275,16 +1395,16 @@ export default function JournalPage() {
           }
 
           .book-page {
-            padding: 25px 28px 16px;
+            padding: 30px 32px 19px;
           }
 
           .book-left {
-            box-shadow: inset -13px 0 18px -17px rgba(48, 39, 28, 0.65);
+            box-shadow: inset -17px 0 22px -19px rgba(54, 39, 24, 0.75);
           }
 
           .book-right {
-            border-left: 1px solid rgba(120, 110, 91, 0.32);
-            box-shadow: inset 13px 0 18px -17px rgba(48, 39, 28, 0.65);
+            border-left: 1px solid rgba(107, 87, 62, 0.25);
+            box-shadow: inset 17px 0 22px -19px rgba(54, 39, 24, 0.75);
           }
 
           .book-spread::after {
@@ -1293,18 +1413,29 @@ export default function JournalPage() {
             top: 0;
             bottom: 0;
             left: 50%;
-            width: 15px;
+            width: 19px;
             content: "";
             pointer-events: none;
             transform: translateX(-50%);
             background: linear-gradient(
               to right,
-              rgba(64, 56, 44, 0.1),
-              rgba(64, 56, 44, 0.025) 30%,
-              rgba(255, 255, 255, 0.35) 50%,
-              rgba(64, 56, 44, 0.04) 70%,
-              rgba(64, 56, 44, 0.11)
+              rgba(66, 48, 28, 0.13),
+              rgba(66, 48, 28, 0.035) 30%,
+              rgba(255, 255, 255, 0.42) 50%,
+              rgba(66, 48, 28, 0.035) 70%,
+              rgba(66, 48, 28, 0.13)
             );
+          }
+
+          /* Retain other responsive adjustments as-is from original code */
+          .book-navigation {
+            gap: 16px;
+          }
+
+          .nav-button {
+            gap: 9px;
+            padding-right: 16px;
+            padding-left: 16px;
           }
         }
 
@@ -1383,6 +1514,7 @@ export default function JournalPage() {
           }
         }
 
+        /* Mobile Stack & Ribbon Adjustments */
         @media (max-width: 767px) {
           .journal-background {
             height: auto;
@@ -1396,8 +1528,21 @@ export default function JournalPage() {
             padding: 20px 12px 28px;
           }
 
+          /* Book shell proper mobile padding/radius */
           .book-shell {
-            padding: 9px 8px 12px;
+            padding: 12px;
+            border-radius: 17px;
+          }
+
+          .book-shell::after {
+            bottom: -42px;
+            height: 62px;
+            width: 19px;
+          }
+
+          .book-shell::before {
+            inset: 5px;
+            border-radius: 12px;
           }
 
           .book-spread {
@@ -1442,6 +1587,332 @@ export default function JournalPage() {
             animation: none;
           }
         }
+
+        /* Editorial book masthead */
+        .book-masthead {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          min-height: 34px;
+          border-bottom: 1px solid rgba(93, 77, 56, 0.23);
+          padding-bottom: 10px;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .brand-mark {
+          display: grid;
+          width: 25px;
+          height: 25px;
+          flex-shrink: 0;
+          place-items: center;
+          border: 1.5px solid #1658a5;
+          border-radius: 5px 5px 2px 2px;
+          color: #1658a5;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: -0.1em;
+        }
+
+        .brand-name {
+          color: #10243e;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+        }
+
+        .masthead-label {
+          margin-left: auto;
+          color: #777366;
+          font-size: 8px;
+          letter-spacing: 0.12em;
+          white-space: nowrap;
+        }
+
+        .masthead-tagline {
+          margin-left: auto;
+          color: #777366;
+          font-size: 8px;
+          letter-spacing: 0.12em;
+          text-align: right;
+        }
+
+        .trade-date-section {
+          margin-top: 24px;
+        }
+
+        .book-date {
+          color: #10243e;
+          font-size: clamp(22px, 2vw, 30px);
+          font-weight: 600;
+          line-height: 1.2;
+          letter-spacing: 0.045em;
+        }
+
+        .blue-rule {
+          display: block;
+          width: 42px;
+          height: 2px;
+          margin-top: 12px;
+          background: #1762bd;
+        }
+
+        .book-trade-number {
+          margin-top: 14px;
+          color: #10243e;
+          font-size: 15px;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+        }
+
+        .chart-section {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          min-height: 100px;
+          margin-top: 18px;
+        }
+
+        .book-section-heading {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          margin-bottom: 8px;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .chart-instrument {
+          color: #777366;
+          font-size: 9px;
+          letter-spacing: 0.12em;
+        }
+
+        .book-chart-frame {
+          position: relative;
+          display: flex;
+          flex: 1;
+          align-items: center;
+          justify-content: center;
+          min-width: 0;
+          min-height: 100px;
+          overflow: hidden;
+          border: 1px solid rgba(16, 36, 62, 0.25);
+          border-radius: 7px;
+          background: #0a1726;
+          box-shadow: 0 5px 14px rgba(38, 32, 23, 0.12);
+        }
+
+        .book-chart-image {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          object-position: center;
+        }
+
+        .book-chart-placeholder {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 20px;
+          color: rgba(240, 239, 231, 0.65);
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 9px;
+          letter-spacing: 0.17em;
+          text-align: center;
+        }
+
+        .placeholder-mark {
+          color: #6593ca;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 32px;
+        }
+
+        .placeholder-caption {
+          color: rgba(240, 239, 231, 0.4);
+          font-size: 10px;
+          letter-spacing: 0;
+        }
+
+        .setup-section {
+          flex-shrink: 0;
+          margin-top: 19px;
+        }
+
+        .book-section-title {
+          color: #10243e;
+          font-size: 17px;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          line-height: 1.3;
+        }
+
+        .setup-copy,
+        .reflection-copy {
+          margin-top: 14px;
+          color: #252f3b;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 13px;
+          line-height: 1.65;
+          overflow-wrap: anywhere;
+          white-space: pre-wrap;
+        }
+
+        .setup-copy {
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 4;
+        }
+
+        .book-right-masthead {
+          min-height: 34px;
+        }
+
+        .book-details-section {
+          margin-top: 27px;
+        }
+
+        .book-detail-list {
+          margin-top: 9px;
+        }
+
+        .book-detail-row {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+          align-items: center;
+          gap: 12px;
+          min-height: 42px;
+          border-bottom: 1px solid rgba(93, 77, 56, 0.18);
+        }
+
+        .book-detail-label,
+        .book-detail-value {
+          min-width: 0;
+          font-size: 12px;
+          line-height: 1.4;
+        }
+
+        .book-detail-label {
+          color: #26364a;
+        }
+
+        .book-detail-value {
+          color: #10243e;
+          font-weight: 500;
+          overflow-wrap: anywhere;
+        }
+
+        .book-value-positive {
+          color: #00805f;
+          font-weight: 600;
+        }
+
+        .book-value-negative {
+          color: #b33d3d;
+          font-weight: 600;
+        }
+
+        .reflection-section {
+          margin-top: 29px;
+        }
+
+        .reflection-copy {
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 7;
+          margin-top: 15px;
+          font-size: 13px;
+          line-height: 1.75;
+        }
+
+        .book-page-footer {
+          position: relative;
+          min-height: 24px;
+        }
+
+        .book-footer-symbol {
+          position: absolute;
+          left: 50%;
+          color: #969084;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 23px;
+          transform: translateX(-50%);
+        }
+
+        @media (min-width: 768px) {
+          .book-page {
+            padding: 28px 30px 18px;
+          }
+
+          .trade-date-section {
+            margin-top: 26px;
+          }
+
+          .chart-section {
+            margin-top: 18px;
+          }
+
+          .setup-section {
+            margin-top: 20px;
+          }
+
+          .book-details-section {
+            margin-top: 30px;
+          }
+
+          .book-detail-row {
+            min-height: 43px;
+          }
+
+          .reflection-section {
+            margin-top: 31px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .book-date {
+            font-size: 24px;
+          }
+
+          .book-masthead {
+            gap: 6px;
+          }
+
+          .brand-name {
+            font-size: 9px;
+          }
+
+          .masthead-label,
+          .masthead-tagline {
+            font-size: 7px;
+          }
+
+          .chart-section {
+            flex: none;
+            min-height: 220px;
+          }
+
+          .book-chart-frame {
+            min-height: 190px;
+          }
+
+          .setup-copy {
+            -webkit-line-clamp: 5;
+          }
+
+          .book-detail-row {
+            min-height: 43px;
+          }
+
+          .reflection-copy {
+            -webkit-line-clamp: 6;
+          }
+        }
+
       `}</style>
     </main>
   );
