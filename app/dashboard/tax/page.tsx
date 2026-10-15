@@ -93,10 +93,10 @@ function shortMoney(value: number) {
   return money(value);
 }
 
-// Neutralized colors for Net P&L
+// Net P&L colors: positive green, negative red, neutral off-white
 function pnlClass(value: number) {
-  if (value > 0) return "text-white/80";
-  if (value < 0) return "text-white/45";
+  if (value > 0) return "text-emerald-400";
+  if (value < 0) return "text-rose-400";
   return "text-white/45";
 }
 
@@ -211,11 +211,21 @@ function BreakdownTable({
                 {row.trades}
               </span>
 
-              <span className="text-[11px] text-white/70">
+              {/* Gross Profit coloring */}
+              <span
+                className={`text-[11px] font-medium ${
+                  row.grossProfit > 0 ? "text-emerald-400" : "text-white/45"
+                }`}
+              >
                 {money(row.grossProfit)}
               </span>
 
-              <span className="text-[11px] text-white/45">
+              {/* Gross Loss coloring */}
+              <span
+                className={`text-[11px] font-medium ${
+                  row.grossLoss < 0 ? "text-rose-400" : "text-white/45"
+                }`}
+              >
                 {money(row.grossLoss)}
               </span>
 
@@ -1191,11 +1201,7 @@ export default function TaxCenterPage() {
                     >
                       <div className="mb-2 text-[9px] font-medium opacity-0 transition group-hover:opacity-100">
                         <span
-                          className={
-                            month.pnl >= 0
-                              ? "text-white/80"
-                              : "text-white/45"
-                          }
+                          className={pnlClass(month.pnl)}
                         >
                           {shortMoney(month.pnl)}
                         </span>
@@ -1257,11 +1263,11 @@ export default function TaxCenterPage() {
                       {month.trades}
                     </span>
 
-                    <span className="text-[11px] text-white/70">
+                    <span className={`text-[11px] font-medium ${month.grossProfit > 0 ? "text-emerald-400" : "text-white/45"}`}>
                       {money(month.grossProfit)}
                     </span>
 
-                    <span className="text-[11px] text-white/45">
+                    <span className={`text-[11px] font-medium ${month.grossLoss < 0 ? "text-rose-400" : "text-white/45"}`}>
                       {money(month.grossLoss)}
                     </span>
 
