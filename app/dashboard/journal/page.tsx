@@ -445,7 +445,7 @@ export default function JournalPage() {
                         {/* Book Masthead */}
                         <div className="book-masthead">
                           <div className="brand-lockup">
-                            <span className="brand-mark">TM</span>
+                            {/* Removed <span className="brand-mark">TM</span> */}
                             <span className="brand-name">TRADEMIRROR</span>
                           </div>
                           <span className="masthead-label">TRADING JOURNAL</span>
@@ -1006,17 +1006,7 @@ export default function JournalPage() {
           min-width: 0;
         }
 
-        .brand-mark {
-          display: grid;
-          width: 26px;
-          height: 26px;
-          place-items: center;
-          border: 1.5px solid #164b91;
-          border-radius: 5px;
-          color: #164b91;
-          font-size: 10px;
-          font-weight: 700;
-        }
+        /* .brand-mark removed (no longer needed for TM logo) */
 
         .brand-name {
           color: #10243e;
