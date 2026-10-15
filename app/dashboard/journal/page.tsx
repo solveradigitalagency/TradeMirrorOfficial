@@ -1398,71 +1398,6 @@ export default function JournalPage() {
           box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
         }
 
-        /* ---- Rewritten detail row styles ---- */
-        .detail-grid {
-          display: flex;
-          flex-direction: column;
-          grid-template-columns: none;
-          width: 100%;
-          margin-top: 12px;
-        }
-
-        .detail-grid > div {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-          align-items: center;
-          gap: 16px;
-          padding: 10px 0;
-          border-bottom: 1px solid rgba(120, 110, 91, 0.32);
-        }
-
-        .detail-grid > div > p {
-          min-width: 0;
-          margin-top: 0;
-        }
-
-        .detail-grid > div > p:last-child {
-          text-align: right;
-          overflow-wrap: anywhere;
-        }
-
-        .detail-row {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-          align-items: center;
-          gap: 16px;
-          min-width: 0;
-          padding: 11px 0;
-          border-bottom: 1px solid rgba(120, 110, 91, 0.25);
-        }
-
-        .detail-label {
-          min-width: 0;
-          color: #343a42;
-          font-family: Georgia, "Times New Roman", serif;
-          font-size: 13px;
-          line-height: 1.45;
-        }
-
-        .detail-value {
-          min-width: 0;
-          color: #10243e;
-          font-size: 13px;
-          font-weight: 500;
-          line-height: 1.45;
-          overflow-wrap: anywhere;
-        }
-
-        .detail-value-accent {
-          color: #00805f;
-          font-weight: 650;
-        }
-
-        .detail-row:last-child {
-          border-bottom-color: rgba(120, 110, 91, 0.18);
-        }
-        /* ---- End rewritten detail row styles ---- */
-
         @media (max-width: 640px) {
           .share-actions {
             gap: 8px;
@@ -1732,6 +1667,116 @@ export default function JournalPage() {
           z-index: 2;
           margin-top: 8px;
           padding-top: 8px;
+        }
+
+        /* ===== Targeted journal layout repair ===== */
+
+        /* LEFT PAGE: reserve space for the footer and setup. */
+        .book-left {
+          min-height: 0;
+        }
+
+        .book-left > .page-content {
+          display: flex;
+          flex: 1 1 0;
+          flex-direction: column;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        .book-left .trade-page-content {
+          display: flex;
+          flex: 1 1 0;
+          flex-direction: column;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        /* Let the chart shrink before it pushes into the setup/footer. */
+        .book-left .left-screenshot-section {
+          flex: 1 1 0;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        .book-left .left-screenshot-frame {
+          flex: 1 1 0;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        .book-left .left-trade-screenshot {
+          display: block;
+          width: 100%;
+          height: 100%;
+          min-height: 0;
+          object-fit: contain;
+        }
+
+        /* Setup stays together and never grows over the footer. */
+        .book-left .setup-section {
+          flex: 0 0 auto;
+          min-height: 0;
+          margin-top: 12px;
+          padding-top: 10px;
+          border-top: 1px solid rgba(120, 110, 91, 0.28);
+        }
+
+        .book-left .setup-copy {
+          margin-top: 6px;
+          line-height: 1.45;
+          overflow-wrap: anywhere;
+        }
+
+        /* Footer stays at the bottom, separated from the content. */
+        .book-left > .page-footer {
+          position: relative;
+          flex: 0 0 auto;
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: 1px solid rgba(120, 110, 91, 0.24);
+        }
+
+        /* RIGHT PAGE: separate every detail into a readable row. */
+        .book-right .detail-grid {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          margin-top: 12px;
+        }
+
+        /* These selectors match the Detail component with detail-row spans. */
+        .book-right .detail-row {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+          align-items: center;
+          gap: 16px;
+          width: 100%;
+          min-width: 0;
+          padding: 10px 0;
+          border-bottom: 1px solid rgba(120, 110, 91, 0.32);
+        }
+
+        .book-right .detail-label {
+          min-width: 0;
+          color: #343a42;
+          text-align: left;
+          overflow-wrap: anywhere;
+        }
+
+        .book-right .detail-value {
+          min-width: 0;
+          color: #10243e;
+          text-align: right;
+          overflow-wrap: anywhere;
+        }
+
+        .book-right .detail-value-accent {
+          color: #00805f;
+        }
+
+        .book-right .detail-row:last-child {
+          border-bottom-color: rgba(120, 110, 91, 0.32);
         }
       `}</style>
     </main>
