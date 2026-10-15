@@ -285,9 +285,11 @@ function TraderRow({
           {trader.profile.show_pnl ? (
             <span
               className={`text-[10px] font-semibold ${
-                trader.pnl >= 0
-                  ? "text-white/80"
-                  : "text-white/45"
+                trader.pnl > 0
+                  ? "text-emerald-400"
+                  : trader.pnl < 0
+                  ? "text-red-400"
+                  : "text-white/60"
               }`}
             >
               {formatMoney(trader.pnl)}
@@ -1015,9 +1017,11 @@ export default function DiscoverPage() {
                         <>
                           <p
                             className={`truncate text-[18px] font-semibold tracking-[-0.04em] sm:text-[22px] ${
-                              selectedTrader.pnl >= 0
-                                ? "text-white/80"
-                                : "text-white/45"
+                              selectedTrader.pnl > 0
+                                ? "text-emerald-400"
+                                : selectedTrader.pnl < 0
+                                ? "text-red-400"
+                                : "text-white/60"
                             }`}
                           >
                             {formatMoney(
