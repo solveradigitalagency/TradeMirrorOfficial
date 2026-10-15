@@ -209,22 +209,3 @@ a[aria-disabled="true"],
 .ai-heartbeat {
   animation: ai-heartbeat 2s ease-in-out infinite;
 }
-
-/*
- * =========================================================
- * POSITIVE/NEGATIVE NUMBER COLORING UTILITIES
- * =========================================================
- * 
- * Use these classes to color numbers depending on sign:
- *   <span class="number-value number-positive">+$2000</span>
- *   <span class="number-value number-negative">-$1700</span>
- * You may apply .number-value to all formatted numbers, but only 
- * use one sign class at a time. 
- */
-.number-value.number-positive {
-  color: #18b562 !important; /* a bright green */
-}
-
-.number-value.number-negative {
-  color: #e04848 !important; /* a vivid red */
-}
