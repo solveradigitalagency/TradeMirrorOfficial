@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import PnlValue from "@/components/dashboard/PnlValue";
 
 type TradeRow = {
   id: string;
@@ -1165,7 +1166,7 @@ export default function TradesPage() {
                             : "text-white/60"
                       }`}
                     >
-                      {formatMoney(trade.pnl)}
+                      <PnlValue value={trade.pnl} showSign className="text-[10px] font-semibold" />
                     </span>
 
                     <span
@@ -1275,7 +1276,7 @@ export default function TradesPage() {
                         : "text-white/60"
                   }`}
                 >
-                  {formatMoney(selected.pnl)}
+                  <PnlValue value={selected.pnl} showSign className="text-[16px] font-semibold" />
                 </span>
               </div>
 
