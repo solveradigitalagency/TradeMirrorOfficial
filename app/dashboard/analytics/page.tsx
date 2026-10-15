@@ -12,6 +12,7 @@ import {
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import PnlValue from "@/components/dashboard/PnlValue";
 
 type Trade = {
   id: string;
@@ -80,7 +81,7 @@ function MetricCard({
   negative,
 }: {
   title: string;
-  value: string;
+  value: string | React.ReactNode;
   positive?: boolean;
   negative?: boolean;
 }) {
@@ -90,7 +91,7 @@ function MetricCard({
         {title}
       </p>
 
-      <p
+      <div
         className={`mt-4 text-[22px] font-semibold tracking-[-0.04em] ${
           positive
             ? "text-white"
@@ -100,7 +101,7 @@ function MetricCard({
         }`}
       >
         {value}
-      </p>
+      </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/0 to-transparent transition-all duration-300 group-hover:via-white/15" />
     </div>
@@ -140,15 +141,15 @@ function AnalysisBar({
         />
       </div>
 
-      <span
+      <PnlValue
+        value={pnl}
+        showSign
         className={`text-right text-[12px] font-semibold ${
           pnl >= 0
             ? "text-white/85"
             : "text-white/45"
         }`}
-      >
-        {formatMoney(pnl)}
-      </span>
+      />
 
       <span className="text-right text-[11px] text-white/35">
         {percentage.toFixed(1)}%
@@ -752,9 +753,11 @@ export default function AnalyticsPage() {
                   value={
                     loading
                       ? "—"
-                      : formatMoney(
-                          metrics.netPnl
-                        )
+                      : <PnlValue
+                          value={metrics.netPnl}
+                          showSign
+                          className="text-[22px] font-semibold tracking-[-0.04em]"
+                        />
                   }
                   positive={
                     metrics.netPnl >= 0
@@ -791,9 +794,11 @@ export default function AnalyticsPage() {
                   value={
                     loading
                       ? "—"
-                      : formatMoney(
-                          metrics.expectancy
-                        )
+                      : <PnlValue
+                          value={metrics.expectancy}
+                          showSign
+                          className="text-[22px] font-semibold tracking-[-0.04em]"
+                        />
                   }
                   positive={
                     metrics.expectancy >= 0
@@ -808,9 +813,11 @@ export default function AnalyticsPage() {
                   value={
                     loading
                       ? "—"
-                      : formatMoney(
-                          metrics.avgWinner
-                        )
+                      : <PnlValue
+                          value={metrics.avgWinner}
+                          showSign
+                          className="text-[22px] font-semibold tracking-[-0.04em]"
+                        />
                   }
                   positive
                 />
@@ -820,9 +827,11 @@ export default function AnalyticsPage() {
                   value={
                     loading
                       ? "—"
-                      : formatMoney(
-                          -metrics.avgLoser
-                        )
+                      : <PnlValue
+                          value={-metrics.avgLoser}
+                          showSign
+                          className="text-[22px] font-semibold tracking-[-0.04em]"
+                        />
                   }
                   negative
                 />
@@ -832,9 +841,11 @@ export default function AnalyticsPage() {
                   value={
                     loading
                       ? "—"
-                      : formatMoney(
-                          metrics.maxDrawdown
-                        )
+                      : <PnlValue
+                          value={metrics.maxDrawdown}
+                          showSign
+                          className="text-[22px] font-semibold tracking-[-0.04em]"
+                        />
                   }
                   negative={
                     metrics.maxDrawdown < 0
@@ -1020,17 +1031,19 @@ export default function AnalyticsPage() {
                           {/* LABELS */}
 
                           <div className="absolute left-5 top-4 text-[10px] text-white/25">
-                            {formatMoney(
-                              equityMax,
-                              0
-                            )}
+                            <PnlValue
+                              value={equityMax}
+                              showSign
+                              className="text-[10px] text-white/25"
+                            />
                           </div>
 
                           <div className="absolute bottom-4 left-5 text-[10px] text-white/25">
-                            {formatMoney(
-                              equityMin,
-                              0
-                            )}
+                            <PnlValue
+                              value={equityMin}
+                              showSign
+                              className="text-[10px] text-white/25"
+                            />
                           </div>
 
                           <div className="absolute bottom-4 right-5 text-[10px] text-white/25">
@@ -1106,11 +1119,13 @@ export default function AnalyticsPage() {
                         Max Drawdown
                       </p>
 
-                      <p className="mt-2 text-2xl font-semibold text-white/50">
-                        {formatMoney(
-                          metrics.maxDrawdown
-                        )}
-                      </p>
+                      <div className="mt-2 text-2xl font-semibold text-white/50">
+                        <PnlValue
+                          value={metrics.maxDrawdown}
+                          showSign
+                          className="text-2xl font-semibold text-white/50"
+                        />
+                      </div>
                     </div>
 
                     <div className="rounded-[13px] border border-white/[0.07] bg-white/[0.018] p-5">
