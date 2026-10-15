@@ -100,22 +100,26 @@ const dateLabel = (value: string | null) => {
   });
 };
 
+// ---- Rewritten Detail component ----
 function Detail({
   label,
   value,
+  accent = false,
 }: {
   label: string;
   value: string | number | null | undefined;
+  accent?: boolean;
 }) {
   return (
-    <div className="min-w-0 border-b border-stone-300/80 py-2">
-      <p className="eyebrow">{label}</p>
-      <p className="mt-1 truncate text-[13px] font-medium text-stone-800">
+    <div className="detail-row">
+      <span className="detail-label">{label}</span>
+      <span className={`detail-value ${accent ? "detail-value-accent" : ""}`}>
         {value == null || value === "" ? "—" : value}
-      </p>
+      </span>
     </div>
   );
 }
+// ---- End Detail ----
 
 // ----- BookDetail ROW and utils -----
 function BookDetail({
@@ -437,19 +441,41 @@ export default function JournalPage() {
                   ) : currentTrade ? (
                     <>
                       <div className="page-content trade-page-content">
-                        <header className="book-masthead">
-                          <div className="brand-mark">TM</div>
-                          <span className="brand-name">TRADEMIRROR</span>
+
+                        {/* Book Masthead */}
+                        <div className="book-masthead">
+                          <div className="brand-lockup">
+                            <span className="brand-mark">TM</span>
+                            <span className="brand-name">TRADEMIRROR</span>
+                          </div>
                           <span className="masthead-label">TRADING JOURNAL</span>
+                        </div>
+
+                        {/* Trade Heading */}
+                        <header className="trade-heading">
+                          <div className="min-w-0">
+                            <h1 className="trade-date">
+                              {currentTrade.trade_date
+                                ? new Date(`${currentTrade.trade_date.slice(0, 10)}T12:00:00`)
+                                    .toLocaleDateString("en-US", {
+                                      month: "long",
+                                      day: "numeric",
+                                      year: "numeric",
+                                    })
+                                    .toUpperCase()
+                                : "UNDATED TRADE"}
+                            </h1>
+                            <div className="section-accent" />
+                            <p className="trade-symbol">
+                              {currentTrade.symbol || "TRADE"}
+                            </p>
+                          </div>
+                          <span className="trade-badge">
+                            {isDemo ? "Sample entry" : currentTrade.result || "Recorded"}
+                          </span>
                         </header>
 
-                        <section className="trade-date-section">
-                          <h1 className="book-date">
-                            {bookDateLabel(currentTrade.trade_date)}
-                          </h1>
-                          <span className="blue-rule" />
-                        </section>
-
+                        {/* Chart Section */}
                         <section className="chart-section">
                           <div className="book-chart-frame">
                             {currentTrade.screenshot_url ? (
@@ -471,9 +497,10 @@ export default function JournalPage() {
                           </div>
                         </section>
 
+                        {/* Setup Section */}
                         <section className="setup-section">
                           <h2 className="book-section-title">THE SETUP</h2>
-                          <span className="blue-rule" />
+                          <span className="blue-rule section-accent" />
                           <p className="setup-copy">
                             {currentTrade.setup ||
                               currentTrade.notes ||
@@ -538,62 +565,44 @@ export default function JournalPage() {
                     </div>
                   ) : currentTrade ? (
                     <>
-                      <div className="page-content review-content book-review-page">
-                        <header className="book-masthead book-right-masthead">
-                          <span className="masthead-tagline">
-                            BETTER TRADES. CLEARER THINKING.
-                          </span>
+                      <div className="page-content review-content">
+                        <header className="right-masthead">
+                          <span>BETTER TRADES. CLEARER THINKING.</span>
                         </header>
 
-                        <section className="book-details-section">
-                          <h2 className="book-section-title">TRADE DETAILS</h2>
-                          <span className="blue-rule" />
-                          <div className="book-detail-list">
-                            <BookDetail
-                              label="Instrument"
-                              value={currentTrade.symbol}
-                            />
-                            <BookDetail
-                              label="Direction"
-                              value={currentTrade.direction}
-                            />
-                            <BookDetail
-                              label="Contracts"
-                              value={number(currentTrade.quantity)}
-                            />
-                            <BookDetail
+                        <section className="journal-section trade-details-section">
+                          <h2 className="section-title">TRADE DETAILS</h2>
+                          <div className="section-accent" />
+
+                          <div className="detail-grid">
+                            <Detail label="Instrument" value={currentTrade.symbol} />
+                            <Detail label="Direction" value={currentTrade.direction} />
+                            <Detail label="Contracts" value={number(currentTrade.quantity)} />
+                            <Detail
                               label="P&L"
                               value={money(currentTrade.pnl)}
-                              positive={
-                                currentTrade.pnl == null
-                                  ? undefined
-                                  : currentTrade.pnl >= 0
-                              }
+                              accent={Number(currentTrade.pnl ?? 0) > 0}
                             />
-                            <BookDetail
+                            <Detail
                               label="Followed Plan"
                               value={
                                 currentTrade.followed_plan == null
-                                  ? "—"
-                                  : currentTrade.followed_plan
-                                    ? "YES"
-                                    : "NO"
+                                ? "—"
+                                : currentTrade.followed_plan
+                                  ? "YES"
+                                  : "NO"
                               }
-                              positive={currentTrade.followed_plan === true}
+                              accent={currentTrade.followed_plan === true}
                             />
-                            <BookDetail
-                              label="Emotion"
-                              value={currentTrade.emotion}
-                            />
+                            <Detail label="Emotion" value={currentTrade.emotion} />
                           </div>
                         </section>
 
-                        <section className="reflection-section">
-                          <h2 className="book-section-title">REFLECTION</h2>
-                          <span className="blue-rule" />
-                          <p className="reflection-copy">
-                            {currentTrade.notes ||
-                              "No reflection recorded for this trade."}
+                        <section className="journal-section reflection-section">
+                          <h2 className="section-title">REFLECTION</h2>
+                          <div className="section-accent" />
+                          <p className="notes-copy">
+                            {currentTrade.notes || "No notes recorded for this trade."}
                           </p>
                         </section>
                       </div>
@@ -923,6 +932,143 @@ export default function JournalPage() {
           min-height: 0;
         }
 
+        .right-masthead {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          min-height: 40px;
+          margin-bottom: 24px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(120, 110, 91, 0.28);
+          color: #777064;
+          font-size: 8px;
+          letter-spacing: 0.15em;
+          text-align: right;
+        }
+
+        .journal-section {
+          min-width: 0;
+        }
+
+        .section-title {
+          color: #10243e;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 19px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
+        .section-accent {
+          width: 42px;
+          height: 2px;
+          margin-top: 12px;
+          background: #1765bd;
+        }
+
+        .trade-details-section {
+          /* extra space if needed, see base journal-section */
+        }
+
+        .setup-section .section-accent,
+        .reflection-section .section-accent {
+          margin-top: 13px;
+        }
+
+        .reflection-section {
+          margin-top: 28px;
+        }
+
+        .notes-copy {
+          margin-top: 14px;
+          color: #343a42;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 13px;
+          line-height: 1.8;
+          overflow-wrap: anywhere;
+          white-space: pre-wrap;
+        }
+
+        .book-masthead {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          min-height: 40px;
+          margin-bottom: 22px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(120, 110, 91, 0.28);
+        }
+
+        .brand-lockup {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          min-width: 0;
+        }
+
+        .brand-mark {
+          display: grid;
+          width: 26px;
+          height: 26px;
+          place-items: center;
+          border: 1.5px solid #164b91;
+          border-radius: 5px;
+          color: #164b91;
+          font-size: 10px;
+          font-weight: 700;
+        }
+
+        .brand-name {
+          color: #10243e;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.17em;
+        }
+
+        .masthead-label {
+          color: #777064;
+          font-size: 8px;
+          letter-spacing: 0.15em;
+          text-align: right;
+        }
+
+        .trade-heading {
+          display: block;
+          padding-bottom: 14px;
+          border-bottom: 1px solid rgba(120, 110, 91, 0.28);
+        }
+
+        .trade-date {
+          color: #10243e;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: clamp(22px, 2.2vw, 31px);
+          font-weight: 700;
+          letter-spacing: 0.045em;
+          line-height: 1.2;
+        }
+
+        .trade-symbol {
+          margin-top: 13px;
+          color: #10243e;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 16px;
+          font-weight: 700;
+          letter-spacing: 0.13em;
+        }
+
+        .trade-badge {
+          display: inline-block;
+          margin-top: 12px;
+          border: 1px solid #d4cec2;
+          border-radius: 999px;
+          padding: 5px 9px;
+          color: #777064;
+          font-size: 9px;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+        }
+
         /* Screenshot uses whatever space remains below the P&L. */
         .left-screenshot-section {
           display: flex;
@@ -960,158 +1106,24 @@ export default function JournalPage() {
         .review-content {
           flex: 1;
           min-height: 0;
-          overflow: hidden;
-          padding-right: 2px;
+          overflow: auto;
+          padding-right: 3px;
         }
 
-        .notes-section {
-          min-height: 0;
-          margin-top: 10px;
-        }
-
-        .notes-copy {
-          display: -webkit-box;
-          overflow: hidden;
-          overflow-wrap: anywhere;
-          white-space: pre-wrap;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 10;
-          margin-top: 6px;
-          color: #353b43;
-          font-family: Georgia, "Times New Roman", serif;
-          font-size: 13px;
-          line-height: 1.75;
-        }
-
-        /* Editorial Section Headings */
-        .trade-heading .eyebrow,
-        .review-heading .eyebrow,
-        .left-screenshot-section > .eyebrow,
-        .notes-section > .eyebrow {
-          color: #777366;
-        }
-
-        .review-heading h2 {
-          color: #10243e;
-          font-family: Georgia, "Times New Roman", serif;
-          font-size: clamp(27px, 2.6vw, 36px);
-          font-weight: 600;
-          letter-spacing: -0.025em;
-        }
-
-        .trade-heading {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 12px;
-          border-bottom: 1px solid rgba(82, 69, 51, 0.25);
-          padding-bottom: 17px;
-        }
-
-        .trade-symbol {
-          margin-top: 9px;
-          color: #10243e;
-          font-size: clamp(38px, 3.6vw, 54px);
-          line-height: 1;
-          font-weight: 600;
-          letter-spacing: -0.045em;
-        }
-
-        .trade-badge {
-          flex-shrink: 0;
-          margin-top: 3px;
-          border: 1px solid rgba(77, 92, 104, 0.28);
-          background: rgba(255, 255, 255, 0.22);
-          color: #5d6470;
-          font-family: Arial, Helvetica, sans-serif;
-          border-radius: 999px;
-          padding: 6px 10px;
-          font-size: 9px;
-          font-weight: 650;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-        }
-
-        .eyebrow {
-          color: #777366;
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 9px;
-          font-weight: 600;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-        }
-
-        .detail-grid {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          column-gap: 24px;
-        }
-
-        .trade-details {
-          margin-top: 4px;
-          column-gap: 24px;
-        }
-
-        .trade-details > div {
-          padding-top: 8px;
-          padding-bottom: 8px;
-        }
-
-        .detail-grid > div {
-          border-color: rgba(93, 77, 56, 0.19);
-        }
-
-        .pnl-panel {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          margin-top: 12px;
-          border-top: 1px solid rgba(93, 77, 56, 0.25);
-          border-bottom: 1px solid rgba(93, 77, 56, 0.25);
-          padding: 13px 0;
-        }
-
-        .pnl-value {
-          margin-top: 6px;
-          font-size: clamp(28px, 2.8vw, 40px);
-          line-height: 1.1;
-          font-weight: 650;
-          letter-spacing: -0.045em;
-          font-variant-numeric: tabular-nums;
-        }
-
-        .review-heading {
-          border-bottom: 1px solid rgba(93, 77, 56, 0.25);
-          padding-bottom: 10px;
-        }
-
-        .review-grid {
-          column-gap: 22px;
-        }
-
-        .review-grid > div {
-          padding-top: 6px;
-          padding-bottom: 6px;
-        }
-
-        /* Remove or override any legacy or now-unused screenshot-section/trade-screenshot rules if needed; we'll leave them for simplicity in case others use them elsewhere. */
-
-        .page-footer {
-          position: relative;
-          z-index: 1;
-          display: flex;
-          flex-shrink: 0;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          margin-top: 8px;
-          border-top: 1px solid rgba(93, 77, 56, 0.2);
-          padding-top: 8px;
-          color: #827a6c;
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 9px;
-          letter-spacing: 0.15em;
+        @media (min-width: 768px) {
+          .review-content {
+            overflow: hidden;
+          }
+          .detail-row {
+            padding: 9px 0;
+          }
+          .reflection-section {
+            margin-top: 24px;
+          }
+          .notes-copy {
+            font-size: 12px;
+            line-height: 1.7;
+          }
         }
 
         .empty-state {
@@ -1155,12 +1167,14 @@ export default function JournalPage() {
           background: #48453f;
         }
 
+
+        /* --- Page Corner Navigation - FOLDED CORNER STYLE --- */
         .page-corner-navigation {
           position: absolute;
           z-index: 10;
-          right: 17px;
-          bottom: 17px;
-          left: 17px;
+          right: 0;
+          bottom: 0;
+          left: 0;
           display: flex;
           justify-content: space-between;
           align-items: flex-end;
@@ -1168,51 +1182,90 @@ export default function JournalPage() {
         }
 
         .page-corner {
+          position: relative;
           display: grid;
-          width: 46px;
-          height: 46px;
+          width: 48px;
+          height: 48px;
           place-items: center;
-          border: 1px solid rgba(93, 77, 56, 0.24);
-          background: rgba(248, 246, 240, 0.88);
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
           color: #10243e;
           cursor: pointer;
           pointer-events: auto;
-          transition:
-            background 150ms ease,
-            box-shadow 150ms ease;
+          isolation: isolate;
         }
 
-        .page-corner-previous {
-          border-radius: 3px 14px 3px 3px;
+        .page-corner::before {
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          content: "";
+          background: linear-gradient(
+            135deg,
+            #d8d0c1 0%,
+            #faf7ef 44%,
+            #e9e1d3 100%
+          );
+          box-shadow:
+            -2px -2px 4px rgba(71, 57, 39, 0.12),
+            inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+          opacity: 0;
+          transition: opacity 160ms ease;
         }
 
-        .page-corner-next {
-          border-radius: 14px 3px 3px 3px;
+        .page-corner-previous::before {
+          clip-path: polygon(0 0, 100% 100%, 0 100%);
+        }
+
+        .page-corner-next::before {
+          clip-path: polygon(100% 0, 100% 100%, 0 100%);
         }
 
         .page-corner span {
+          position: absolute;
+          bottom: 5px;
           font-family: Arial, Helvetica, sans-serif;
-          font-size: 30px;
+          font-size: 26px;
           line-height: 1;
+          opacity: 0.82;
+          transition:
+            transform 160ms ease,
+            opacity 160ms ease;
         }
 
-        .page-corner:hover {
-          background: #fffdf7;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        .page-corner-previous span {
+          left: 8px;
+        }
+
+        .page-corner-next span {
+          right: 8px;
+        }
+
+        .page-corner:hover::before,
+        .page-corner:focus-visible::before {
+          opacity: 1;
+        }
+
+        .page-corner:hover span {
+          opacity: 1;
+          transform: translateY(-2px);
+        }
+
+        .page-corner:focus-visible {
+          outline: 2px solid #2563eb;
+          outline-offset: -3px;
         }
 
         @media (max-width: 767px) {
-          .page-corner-navigation {
-            right: 8px;
-            bottom: 12px;
-            left: 8px;
-          }
-
           .page-corner {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
           }
         }
+
+        /* --- End Folded Corners --- */
 
         .journal-count {
           display: flex;
@@ -1344,6 +1397,50 @@ export default function JournalPage() {
           box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
         }
 
+        /* ---- Rewritten detail row styles ---- */
+        .detail-grid {
+          display: block;
+          width: 100%;
+          margin-top: 12px;
+        }
+
+        .detail-row {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+          align-items: center;
+          gap: 16px;
+          min-width: 0;
+          padding: 11px 0;
+          border-bottom: 1px solid rgba(120, 110, 91, 0.25);
+        }
+
+        .detail-label {
+          min-width: 0;
+          color: #343a42;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 13px;
+          line-height: 1.45;
+        }
+
+        .detail-value {
+          min-width: 0;
+          color: #10243e;
+          font-size: 13px;
+          font-weight: 500;
+          line-height: 1.45;
+          overflow-wrap: anywhere;
+        }
+
+        .detail-value-accent {
+          color: #00805f;
+          font-weight: 650;
+        }
+
+        .detail-row:last-child {
+          border-bottom-color: rgba(120, 110, 91, 0.18);
+        }
+        /* ---- End rewritten detail row styles ---- */
+
         @media (max-width: 640px) {
           .share-actions {
             gap: 8px;
@@ -1445,33 +1542,20 @@ export default function JournalPage() {
           }
 
           .detail-grid {
-            column-gap: 16px;
+            /* still block */
           }
 
-          .detail-grid > div {
-            padding-top: 5px;
-            padding-bottom: 5px;
+          .detail-row {
+            padding: 8px 0;
           }
 
-          .pnl-panel {
-            margin-top: 8px;
-            padding: 9px 0;
-          }
-
-          .review-heading {
-            padding-bottom: 8px;
-          }
-
-          .notes-section {
-            margin-top: 7px;
+          .reflection-section {
+            margin-top: 18px;
           }
 
           .notes-copy {
-            -webkit-line-clamp: 3;
-          }
-
-          .trade-screenshot {
-            max-height: 135px;
+            font-size: 11px;
+            line-height: 1.5;
           }
 
           .page-footer {
@@ -1524,20 +1608,6 @@ export default function JournalPage() {
         .book-value-negative {
           color: #b33d3d;
           font-weight: 600;
-        }
-
-        .reflection-section {
-          margin-top: 29px;
-        }
-
-        .reflection-copy {
-          display: -webkit-box;
-          overflow: hidden;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 7;
-          margin-top: 15px;
-          font-size: 13px;
-          line-height: 1.75;
         }
 
         .book-page-footer {
