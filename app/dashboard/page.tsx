@@ -164,12 +164,15 @@ function MetricCard({
             />
           </div>
 
+          {/* Fixed Net P&L Card styling */}
           <p
             className={`mt-3 text-[28px] font-semibold tracking-[-0.04em] ${
               title === "Net P&L"
                 ? value.startsWith("-")
-                  ? "text-white/45"
-                  : "text-white/75"
+                  ? "text-red-400"
+                  : value.startsWith("+")
+                    ? "text-emerald-400"
+                    : "text-white"
                 : "text-white"
             }`}
           >
@@ -1441,14 +1444,15 @@ export default function DashboardPage({
                             {trade.direction}
                           </span>
 
+                          {/* Fixed P&L color logic for trade list */}
                           <span
-                            className={
-                              Number(
-                                trade.pnl
-                              ) >= 0
-                                ? "font-semibold text-white/75"
-                                : "font-semibold text-white/45"
-                            }
+                            className={`font-medium ${
+                              Number(trade.pnl) > 0
+                                ? "text-emerald-400"
+                                : Number(trade.pnl) < 0
+                                  ? "text-red-400"
+                                  : "text-white/50"
+                            }`}
                           >
                             {formatMoney(
                               Number(
@@ -1632,11 +1636,14 @@ export default function DashboardPage({
                             </p>
                           </div>
 
+                          {/* Fixed YOUR TRADES P&L color logic */}
                           <span
-                            className={`text-[10px] font-semibold ${
-                              Number(trade.pnl) >= 0
-                                ? "text-white/75"
-                                : "text-white/45"
+                            className={`text-[10px] font-medium ${
+                              Number(trade.pnl) > 0
+                                ? "text-emerald-400"
+                                : Number(trade.pnl) < 0
+                                  ? "text-red-400"
+                                  : "text-white/50"
                             }`}
                           >
                             {formatMoney(Number(trade.pnl))}
