@@ -1072,9 +1072,10 @@ export default function JournalPage() {
         /* Screenshot uses whatever space remains below the P&L. */
         .left-screenshot-section {
           display: flex;
-          flex: 1;
+          flex: 1 1 0;
           flex-direction: column;
           min-height: 0;
+          overflow: hidden;
           margin-top: 12px;
           padding-bottom: 2px;
         }
@@ -1399,9 +1400,30 @@ export default function JournalPage() {
 
         /* ---- Rewritten detail row styles ---- */
         .detail-grid {
-          display: block;
+          display: flex;
+          flex-direction: column;
+          grid-template-columns: none;
           width: 100%;
           margin-top: 12px;
+        }
+
+        .detail-grid > div {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+          align-items: center;
+          gap: 16px;
+          padding: 10px 0;
+          border-bottom: 1px solid rgba(120, 110, 91, 0.32);
+        }
+
+        .detail-grid > div > p {
+          min-width: 0;
+          margin-top: 0;
+        }
+
+        .detail-grid > div > p:last-child {
+          text-align: right;
+          overflow-wrap: anywhere;
         }
 
         .detail-row {
@@ -1694,6 +1716,23 @@ export default function JournalPage() {
           }
         }
 
+        /* Keep the page footer in its own space. */
+        .book-page {
+          min-height: 0;
+        }
+
+        .trade-page-content {
+          flex: 1 1 0;
+          min-height: 0;
+        }
+
+        .page-footer {
+          flex-shrink: 0;
+          position: relative;
+          z-index: 2;
+          margin-top: 8px;
+          padding-top: 8px;
+        }
       `}</style>
     </main>
   );
