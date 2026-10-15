@@ -1,7 +1,14 @@
 
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { toBlob } from "html-to-image";
 import { createClient } from "@/lib/supabase/client";
 
 type Trade = {
@@ -119,6 +126,16 @@ export default function JournalPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // Export state and book ref
+  const bookRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
+
+  // --- Share preview states ---
+  const [isSharePreviewOpen, setIsSharePreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
+
   const loadTrades = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -204,6 +221,117 @@ export default function JournalPage() {
   const currentTrade = journalTrades[activeIndex] ?? null;
   const isDemo = currentTrade?.id === "demo-trade";
 
+  // --- PNG export and sharing functions ---
+
+  const createBookPng = async (): Promise<Blob> => {
+    const book = bookRef.current;
+
+    if (!book) {
+      throw new Error("The journal book could not be found.");
+    }
+
+    if ("fonts" in document) {
+      await document.fonts.ready;
+    }
+
+    const images = Array.from(book.querySelectorAll("img"));
+
+    await Promise.all(
+      images.map(async (img) => {
+        if (img.complete) {
+          if (img.naturalWidth === 0 && img.src) {
+            throw new Error(
+              "A journal image could not be loaded. Please reload and try again."
+            );
+          }
+          return;
+        }
+
+        await new Promise<void>((resolve, reject) => {
+          img.addEventListener("load", () => resolve(), { once: true });
+          img.addEventListener(
+            "error",
+            () => reject(new Error("A journal image could not be loaded.")),
+            { once: true }
+          );
+        });
+      })
+    );
+
+    const blob = await toBlob(book, {
+      pixelRatio: 3,
+      cacheBust: true,
+      backgroundColor: "#101011",
+    });
+
+    if (!blob) {
+      throw new Error("Could not generate the journal PNG.");
+    }
+
+    return blob;
+  };
+
+  // REPLACE OLD shareJournalPng + downloadJournalPng WITH THIS SECTION
+
+  const shareJournalPng = async () => {
+    setIsExporting(true);
+    setExportError("");
+
+    try {
+      const blob = await createBookPng();
+      const url = URL.createObjectURL(blob);
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+
+      setPreviewBlob(blob);
+      setPreviewUrl(url);
+      setIsSharePreviewOpen(true);
+    } catch (error) {
+      console.error("Journal preview failed:", error);
+
+      setExportError(
+        error instanceof Error
+          ? error.message
+          : "Unable to prepare your journal preview."
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const downloadPreviewPng = () => {
+    if (!previewBlob) return;
+
+    const url = URL.createObjectURL(previewBlob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `trademirror-journal-${
+      currentTrade?.symbol || "entry"
+    }-${currentTrade?.trade_date || "trade"}.png`.replace(
+      /[^a-zA-Z0-9._-]/g,
+      "-"
+    );
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const closeSharePreview = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+
+    setPreviewUrl(null);
+    setPreviewBlob(null);
+    setIsSharePreviewOpen(false);
+  };
+
   function toggleExample() {
     if (showExample) {
       setShowExample(false);
@@ -226,7 +354,7 @@ export default function JournalPage() {
     <main className="journal-background">
       <div className="journal-stage">
         <section className="journal-layout">
-          <div className="book-shell">
+          <div className="book-shell" ref={bookRef}>
             <div className="book-pages">
               <div className="book-spread">
                 {/* LEFT PAGE: TRADE */}
@@ -503,6 +631,23 @@ export default function JournalPage() {
             </nav>
           )}
 
+          {/* Share and Download PNG & error */}
+          <div className="share-actions">
+            <button
+              type="button"
+              onClick={shareJournalPng}
+              disabled={isExporting || !currentTrade || loading || !!error}
+              className="share-button share-button-primary"
+            >
+              {isExporting ? "Preparing preview…" : "Share Journal"}
+            </button>
+          </div>
+          {exportError && (
+            <p className="export-error" role="alert">
+              {exportError}
+            </p>
+          )}
+
           {!loading && !error && (
             <div className="example-control">
               <button onClick={toggleExample}>
@@ -512,6 +657,77 @@ export default function JournalPage() {
           )}
         </section>
       </div>
+
+      {/* Share Preview Overlay */}
+      {isSharePreviewOpen && previewUrl && (
+        <div
+          className="share-preview-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Journal PNG preview"
+        >
+          <header className="share-preview-toolbar">
+            <div className="share-preview-heading">
+              <span className="share-preview-title">Journal Preview</span>
+              <span className="share-preview-subtitle">
+                {currentTrade?.symbol || "Trade"} · PNG
+              </span>
+            </div>
+            <div className="share-preview-actions">
+              <button
+                type="button"
+                className="preview-icon-button"
+                onClick={downloadPreviewPng}
+                aria-label="Save journal as PNG"
+                title="Save PNG"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <path d="m7 10 5 5 5-5" />
+                  <path d="M12 15V3" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="preview-icon-button"
+                onClick={closeSharePreview}
+                aria-label="Close preview"
+                title="Close"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="m18 6-12 12M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </header>
+          <div className="share-preview-canvas">
+            <img
+              src={previewUrl}
+              alt="Full journal entry preview"
+              className="share-preview-image"
+            />
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .journal-background {
@@ -883,6 +1099,165 @@ export default function JournalPage() {
 
         .example-control button:hover {
           color: rgba(255, 255, 255, 0.8);
+        }
+
+        .share-actions {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 14px;
+        }
+
+        .share-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 38px;
+          padding: 0 16px;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.06);
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 12px;
+          font-weight: 500;
+          transition: background 150ms ease, opacity 150ms ease;
+        }
+
+        .share-button:hover:not(:disabled) {
+          background: rgba(255, 255, 255, 0.12);
+        }
+
+        .share-button-primary {
+          border-color: #fff;
+          background: #fff;
+          color: #111;
+        }
+
+        .share-button-primary:hover:not(:disabled) {
+          background: #e7e7e7;
+        }
+
+        .share-button:disabled {
+          cursor: not-allowed;
+          opacity: 0.45;
+        }
+
+        .export-error {
+          margin-top: 8px;
+          color: #fca5a5;
+          font-size: 12px;
+          text-align: center;
+        }
+
+        /* Share Preview Styles */
+        .share-preview-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          display: flex;
+          flex-direction: column;
+          background: #0b0b0c;
+          color: #f5f5f5;
+        }
+
+        .share-preview-toolbar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          min-height: 68px;
+          padding: 12px 24px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(16, 16, 17, 0.96);
+        }
+
+        .share-preview-heading {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .share-preview-title {
+          font-size: 14px;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+        }
+
+        .share-preview-subtitle {
+          color: rgba(255, 255, 255, 0.5);
+          font-size: 11px;
+        }
+
+        .share-preview-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .preview-icon-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          border: 1px solid rgba(255, 255, 255, 0.13);
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.05);
+          color: #f5f5f5;
+          cursor: pointer;
+          transition: background 150ms ease;
+        }
+
+        .preview-icon-button:hover {
+          background: rgba(255, 255, 255, 0.13);
+        }
+
+        .share-preview-canvas {
+          display: flex;
+          flex: 1;
+          align-items: center;
+          justify-content: center;
+          min-height: 0;
+          padding: 24px;
+          overflow: auto;
+        }
+
+        .share-preview-image {
+          display: block;
+          width: auto;
+          height: auto;
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          border-radius: 4px;
+          box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
+        }
+
+        @media (max-width: 640px) {
+          .share-actions {
+            gap: 8px;
+          }
+
+          .share-button {
+            min-height: 36px;
+            padding: 0 12px;
+            font-size: 11px;
+          }
+          .share-preview-toolbar {
+            min-height: 60px;
+            padding: 10px 14px;
+          }
+
+          .share-preview-canvas {
+            padding: 12px;
+          }
+
+          .preview-icon-button {
+            width: 38px;
+            height: 38px;
+          }
         }
 
         @keyframes pulse {
