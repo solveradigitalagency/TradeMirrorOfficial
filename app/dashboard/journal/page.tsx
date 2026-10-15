@@ -111,8 +111,11 @@ function Detail({
   accent?: boolean;
 }) {
   return (
-    <div className="detail-row">
-      <span className="detail-label">{label}</span>
+    <div className="detail-row detail-row--with-line">
+      <span className="detail-label">
+        {label}
+        <span className="colon">:</span>
+      </span>
       <span className={`detail-value ${accent ? "detail-value-accent" : ""}`}>
         {value == null || value === "" ? "—" : value}
       </span>
@@ -1736,7 +1739,8 @@ export default function JournalPage() {
         }
 
         /* These selectors match the Detail component with detail-row spans. */
-        .book-right .detail-row {
+        .book-right .detail-row,
+        .book-right .detail-row.detail-row--with-line {
           display: grid;
           grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
           align-items: center;
@@ -1744,7 +1748,11 @@ export default function JournalPage() {
           width: 100%;
           min-width: 0;
           padding: 10px 0;
-          border-bottom: 1px solid rgba(120, 110, 91, 0.32);
+          border-bottom: 1px solid rgba(130, 110, 91, 0.13); /* Subtle horizontal line */
+        }
+        .book-right .detail-row:last-child,
+        .book-right .detail-row.detail-row--with-line:last-child {
+          border-bottom: none;
         }
 
         .book-right .detail-label {
@@ -1752,6 +1760,12 @@ export default function JournalPage() {
           color: #343a42;
           text-align: left;
           overflow-wrap: anywhere;
+          font-family: Georgia, "Times New Roman", serif;
+        }
+        .book-right .detail-label .colon {
+          margin-left: 2px;
+          margin-right: 6px;
+          color: #7c776d;
         }
 
         .book-right .detail-value {
@@ -1765,8 +1779,14 @@ export default function JournalPage() {
           color: #00805f;
         }
 
-        .book-right .detail-row:last-child {
-          border-bottom-color: rgba(120, 110, 91, 0.32);
+        /* Ensure very subtle, light line separator for rows */
+        .book-right .detail-row,
+        .book-right .detail-row.detail-row--with-line {
+          border-bottom: 1px solid rgba(102, 92, 73, 0.11);
+        }
+        .book-right .detail-row:last-child,
+        .book-right .detail-row.detail-row--with-line:last-child {
+          border-bottom: none;
         }
       `}</style>
     </main>
