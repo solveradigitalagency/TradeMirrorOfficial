@@ -111,7 +111,7 @@ function Detail({
   accent?: boolean;
 }) {
   return (
-    <div className="min-w-0 border-b border-stone-400/70 py-3 last:border-b-0">
+    <div className="min-w-0 border-b border-stone-400/35 py-1.5 last:border-b-0">
       <span className="detail-label">
         {label}
         <span className="colon">:</span>
@@ -574,54 +574,57 @@ export default function JournalPage() {
                         <header className="right-masthead">
                           <span>BETTER TRADES. CLEARER THINKING.</span>
                         </header>
+                        <div className="flex min-h-0 flex-col">
+                          <section className="journal-section trade-details-section">
+                            <h2 className="section-title">TRADE DETAILS</h2>
+                            <div className="section-accent" />
 
-                        <section className="journal-section trade-details-section">
-                          <h2 className="section-title">TRADE DETAILS</h2>
-                          <div className="section-accent" />
-
-                          <div className="detail-grid">
-                            <Detail label="Instrument" value={currentTrade.symbol} />
-                            <Detail label="Direction" value={currentTrade.direction} />
-                            <Detail label="Contracts" value={number(currentTrade.quantity)} />
-                            <div className="min-w-0 border-b border-stone-400/70 py-3 last:border-b-0">
-                              <span className="detail-label">
-                                P&amp;L
-                                <span className="colon">:</span>
-                              </span>
-                              <span
-                                className={`pnl-value ${
-                                  Number(currentTrade.pnl ?? 0) > 0
-                                    ? "text-emerald-700"
-                                    : Number(currentTrade.pnl ?? 0) < 0
-                                    ? "text-rose-700"
-                                    : "text-stone-500"
-                                }`}
-                              >
-                                {money(currentTrade.pnl)}
-                              </span>
+                            <div className="detail-grid">
+                              <Detail label="Instrument" value={currentTrade.symbol} />
+                              <Detail label="Direction" value={currentTrade.direction} />
+                              <Detail label="Contracts" value={number(currentTrade.quantity)} />
+                              <div className="min-w-0 border-b border-stone-400/35 py-1.5 last:border-b-0">
+                                <span className="detail-label">
+                                  P&amp;L
+                                  <span className="colon">:</span>
+                                </span>
+                                <span
+                                  className={`pnl-value ${
+                                    Number(currentTrade.pnl ?? 0) > 0
+                                      ? "text-emerald-700"
+                                      : Number(currentTrade.pnl ?? 0) < 0
+                                      ? "text-rose-700"
+                                      : "text-stone-500"
+                                  }`}
+                                >
+                                  {money(currentTrade.pnl)}
+                                </span>
+                              </div>
+                              <Detail
+                                label="Followed Plan"
+                                value={
+                                  currentTrade.followed_plan == null
+                                  ? "—"
+                                  : currentTrade.followed_plan
+                                    ? "YES"
+                                    : "NO"
+                                }
+                                accent={currentTrade.followed_plan === true}
+                              />
+                              <Detail label="Emotion" value={currentTrade.emotion} />
                             </div>
-                            <Detail
-                              label="Followed Plan"
-                              value={
-                                currentTrade.followed_plan == null
-                                ? "—"
-                                : currentTrade.followed_plan
-                                  ? "YES"
-                                  : "NO"
-                              }
-                              accent={currentTrade.followed_plan === true}
-                            />
-                            <Detail label="Emotion" value={currentTrade.emotion} />
-                          </div>
-                        </section>
-
-                        <section className="journal-section reflection-section">
-                          <h2 className="section-title">REFLECTION</h2>
-                          <div className="section-accent" />
-                          <p className="notes-copy">
-                            {currentTrade.notes || "No notes recorded for this trade."}
-                          </p>
-                        </section>
+                          </section>
+                          {/* Reflection section - compact mt-5 */}
+                          <section className="mt-5 min-w-0">
+                            <h2 className="text-xl font-bold tracking-[0.12em] text-[#142943]">
+                              REFLECTION
+                            </h2>
+                            <div className="mt-2 h-[2px] w-10 bg-blue-600" />
+                            <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-[#3f3a33]">
+                              {currentTrade.notes?.trim() || "No reflection recorded for this trade."}
+                            </p>
+                          </section>
+                        </div>
                       </div>
 
                       <footer className="page-footer book-page-footer">
