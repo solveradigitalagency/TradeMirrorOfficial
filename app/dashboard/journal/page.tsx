@@ -111,7 +111,7 @@ function Detail({
   accent?: boolean;
 }) {
   return (
-    <div className="detail-row detail-row--with-line">
+    <div className="min-w-0 border-b border-stone-400/70 py-3 last:border-b-0">
       <span className="detail-label">
         {label}
         <span className="colon">:</span>
@@ -512,9 +512,11 @@ export default function JournalPage() {
                         </section>
                       </div>
 
+                      {/* -- Footer updated to new format -- */}
                       <footer className="page-footer book-page-footer">
-                        <span>TRADEMIRROR</span>
-                        <span>{String(activeIndex * 2 + 24).padStart(2, "0")}</span>
+                        <span>
+                          TRADEMIRROR #{activeIndex + 24}
+                        </span>
                       </footer>
                     </>
                   ) : (
@@ -581,11 +583,23 @@ export default function JournalPage() {
                             <Detail label="Instrument" value={currentTrade.symbol} />
                             <Detail label="Direction" value={currentTrade.direction} />
                             <Detail label="Contracts" value={number(currentTrade.quantity)} />
-                            <Detail
-                              label="P&L"
-                              value={money(currentTrade.pnl)}
-                              accent={Number(currentTrade.pnl ?? 0) > 0}
-                            />
+                            <div className="min-w-0 border-b border-stone-400/70 py-3 last:border-b-0">
+                              <span className="detail-label">
+                                P&amp;L
+                                <span className="colon">:</span>
+                              </span>
+                              <span
+                                className={`pnl-value ${
+                                  Number(currentTrade.pnl ?? 0) > 0
+                                    ? "text-emerald-700"
+                                    : Number(currentTrade.pnl ?? 0) < 0
+                                    ? "text-rose-700"
+                                    : "text-stone-500"
+                                }`}
+                              >
+                                {money(currentTrade.pnl)}
+                              </span>
+                            </div>
                             <Detail
                               label="Followed Plan"
                               value={
