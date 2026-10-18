@@ -13,7 +13,7 @@ import {
   UserRound,
   TrendingUp,
   BookOpen,
-  Sparkles,
+  // Sparkles, // Removed Sparkles import
 } from "lucide-react";
 
 import { useEffect, useMemo, useState } from "react";
@@ -590,11 +590,7 @@ export default function DashboardPage({
   const [notifications, setNotifications] = useState<Notification[]>([]);
   // const [notificationsLoading, setNotificationsLoading] = useState(false); // Not used per instructions
 
-  // ADD AI OVERVIEW PANEL STATES HERE
-  const [aiOverviewOpen, setAiOverviewOpen] = useState(false);
-  // Temporary for now.
-  // Later this will come from whether the weekly AI review has actually been generated.
-  const aiReviewReady = true;
+  // AI Weekly Overview states removed
 
   useEffect(() => {
     async function loadDashboard() {
@@ -1092,70 +1088,7 @@ export default function DashboardPage({
                 )}
               </button>
 
-              {/* AI WEEKLY OVERVIEW BUTTON */}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setAiOverviewOpen((prev) => !prev)}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
-                    aiReviewReady
-                      ? "border-white/[0.16] bg-white/[0.05] text-white"
-                      : "border-white/[0.06] bg-white/[0.025] text-white/45"
-                  }`}
-                  aria-label="AI Weekly Overview"
-                >
-                  {aiReviewReady && (
-                    <span className="absolute inset-0 rounded-xl bg-white/[0.06] blur-md ai-heartbeat" />
-                  )}
-
-                  <Sparkles
-                    className={`relative h-[18px] w-[18px] transition-all duration-300 ${
-                      aiReviewReady
-                        ? "ai-heartbeat drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-                        : "group-hover:text-white/80"
-                    }`}
-                  />
-                </button>
-
-                {aiOverviewOpen && (
-                  <div className="absolute right-0 top-12 z-50 w-[330px] overflow-hidden rounded-2xl border border-white/[0.08] bg-card/95 shadow-2xl shadow-black/40 backdrop-blur-2xl">
-                    {/* subtle glow */}
-                    <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/[0.06] blur-3xl" />
-
-                    <div className="relative p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.05]">
-                          <Sparkles className="h-4 w-4 text-white" />
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-[13px] font-semibold text-white">
-                              AI Weekly Overview
-                            </p>
-                            <span className="rounded-full border border-white/[0.12] bg-white/[0.06] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-white">
-                              Ready
-                            </span>
-                          </div>
-                          <p className="mt-1.5 text-[12px] leading-5 text-white/45">
-                            Your weekly trading review is ready. TradeMirror analyzed your
-                            performance and trading behavior from this week.
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          window.location.href = "/dashboard/ai-review";
-                        }}
-                        className="mt-4 flex h-9 w-full items-center justify-center rounded-xl bg-white text-[12px] font-semibold text-black transition hover:bg-white/85"
-                      >
-                        View Weekly Review
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* AI WEEKLY OVERVIEW BUTTON REMOVED */}
 
               {/* Removed Settings2 button here as per instruction */}
 
