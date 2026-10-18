@@ -9,6 +9,7 @@ import {
   Save,
   Loader2,
   FileImage,
+  Pencil, // <-- Add Pencil
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -38,6 +39,10 @@ type TradeRow = {
   notes: string | null;
   screenshot_url: string | null;
   created_at: string;
+  // We'll assume these columns exist server-side for mappings below
+  emotion?: string | null;
+  execution_rating?: string | null;
+  visibility?: "Private" | "Followers" | "Public" | null;
 };
 
 type Filter = "All" | "Wins" | "Losses" | "Breakeven" | "Long" | "Short";
@@ -57,6 +62,12 @@ type FormState = {
   notes: string;
   screenshot_url: string;
 };
+
+// Add a modal mode: 'add' (default) or { mode: 'edit', id: string }
+type ModalState =
+  | { mode: "add" }
+  | { mode: "edit"; id: string }
+  | null;
 
 const emptyForm: FormState = {
   trade_date: new Date().toISOString().split("T")[0],
@@ -207,6 +218,7 @@ function AddTradeModal({
   onSubmit,
   saving,
   error,
+  mode,
 }: {
   form: FormState;
   setForm: React.Dispatch<React.SetStateAction<FormState>>;
@@ -214,6 +226,7 @@ function AddTradeModal({
   onSubmit: (screenshotFile: File | null) => void;
   saving: boolean;
   error: string;
+  mode: "add" | "edit";
 }) {
   const update = <K extends keyof FormState>(
     key: K,
@@ -297,7 +310,7 @@ function AddTradeModal({
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-[17px] font-semibold tracking-[-0.025em] text-white">
-                NEW JOURNAL ENTRY
+                {mode === "add" ? "NEW JOURNAL ENTRY" : "EDIT JOURNAL ENTRY"}
               </h2>
 
               <p className="mt-1.5 text-[12px] text-white/35">
@@ -685,7 +698,11 @@ function AddTradeModal({
               <Save className="h-3.5 w-3.5" />
             )}
 
-            {saving ? "Saving..." : "Save journal entry"}
+            {saving
+              ? "Saving..."
+              : mode === "add"
+                ? "Save journal entry"
+                : "Save changes"}
           </button>
         </div>
       </div>
@@ -706,8 +723,8 @@ export default function TradesPage() {
   const [selectedTrade, setSelectedTrade] =
     useState<string | null>(null);
 
-  const [showAddTrade, setShowAddTrade] =
-    useState(false);
+  // This replaces showAddTrade. If null, no modal, else edit/add with an optional id.
+  const [modalState, setModalState] = useState<ModalState>(null);
 
   const [form, setForm] =
     useState<FormState>(emptyForm);
@@ -784,9 +801,7 @@ export default function TradesPage() {
     loadTrades();
   }, []);
 
-  async function handleAddTrade(
-    screenshotFile: File | null
-  ) {
+  async function handleTradeModalSubmit(screenshotFile: File | null) {
     setFormError("");
 
     if (!form.pnl.trim()) {
@@ -831,6 +846,7 @@ export default function TradesPage() {
     }
 
     let screenshotUrl: string | null = null;
+    let screenshotWasUpdated = false;
 
     if (screenshotFile) {
       const fileExtension =
@@ -871,12 +887,15 @@ export default function TradesPage() {
         .getPublicUrl(filePath);
 
       screenshotUrl = publicUrl;
+      screenshotWasUpdated = true;
     }
 
-    const { data, error } = await supabase
-      .from("trades")
-      .insert({
-        user_id: user.id,
+    if (modalState && modalState.mode === "edit") {
+      // Update existing trade
+      const tradeId = modalState.id;
+
+      // Build the update object
+      const updatePayload: any = {
         trade_date: form.trade_date,
         symbol: form.symbol.trim().toUpperCase(),
         market: "Futures",
@@ -888,36 +907,91 @@ export default function TradesPage() {
         setup: form.setup.trim() || null,
         grade: form.execution_rating || null,
         emotion: form.emotion || null,
-        execution_rating:
-          form.execution_rating || null,
+        execution_rating: form.execution_rating || null,
         visibility: form.visibility,
         notes: form.notes.trim() || null,
-        screenshot_url: screenshotUrl,
-      })
-      .select()
-      .single();
+      };
 
-    if (error) {
-      console.error("TRADE INSERT ERROR:", error);
+      if (screenshotWasUpdated) {
+        updatePayload.screenshot_url = screenshotUrl;
+      } // else do not touch screenshot_url, keeps original
 
-      setFormError(
-        error.message ||
-          "Unable to save this journal entry."
+      // Compose update call
+      const { data, error } = await supabase
+        .from("trades")
+        .update(updatePayload)
+        .eq("id", tradeId)
+        .eq("user_id", user.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("TRADE UPDATE ERROR:", error);
+
+        setFormError(
+          error.message || "Unable to save this journal entry."
+        );
+        setSaving(false);
+        return;
+      }
+
+      // Update the trade locally (replace old in place)
+      setTrades((current) =>
+        current.map((row) =>
+          row.id === tradeId ? { ...row, ...data } : row
+        )
       );
-
+      setSelectedTrade(tradeId);
+      setForm(emptyForm);
+      setModalState(null);
       setSaving(false);
-      return;
+    } else {
+      // Add new trade
+      const { data, error } = await supabase
+        .from("trades")
+        .insert({
+          user_id: user.id,
+          trade_date: form.trade_date,
+          symbol: form.symbol.trim().toUpperCase(),
+          market: "Futures",
+          direction: form.direction,
+          quantity: Number(form.quantity) || 1,
+          pnl,
+          result: form.result,
+          followed_plan: form.followed_plan,
+          setup: form.setup.trim() || null,
+          grade: form.execution_rating || null,
+          emotion: form.emotion || null,
+          execution_rating: form.execution_rating || null,
+          visibility: form.visibility,
+          notes: form.notes.trim() || null,
+          screenshot_url: screenshotUrl,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("TRADE INSERT ERROR:", error);
+
+        setFormError(
+          error.message ||
+            "Unable to save this journal entry."
+        );
+
+        setSaving(false);
+        return;
+      }
+
+      setTrades((current) => [
+        data as TradeRow,
+        ...current,
+      ]);
+
+      setSelectedTrade(data.id);
+      setForm(emptyForm);
+      setModalState(null);
+      setSaving(false);
     }
-
-    setTrades((current) => [
-      data as TradeRow,
-      ...current,
-    ]);
-
-    setSelectedTrade(data.id);
-    setForm(emptyForm);
-    setShowAddTrade(false);
-    setSaving(false);
   }
 
   const filteredTrades = useMemo(() => {
@@ -1000,7 +1074,7 @@ export default function TradesPage() {
             onClick={() => {
               setForm(emptyForm);
               setFormError("");
-              setShowAddTrade(true);
+              setModalState({ mode: "add" });
             }}
             className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-white px-3 text-[10px] font-semibold text-black transition hover:bg-white/85 sm:gap-2 sm:px-4 sm:text-[11px]"
           >
@@ -1266,18 +1340,69 @@ export default function TradesPage() {
                   )}
                 </div>
 
-                <span
-                  className={`text-[16px] font-semibold ${
-                    selected.result === "Breakeven" ||
-                    (selected.result === null && Number(selected.pnl) === 0)
-                      ? "text-white/50"
-                      : Number(selected.pnl) >= 0
-                        ? "text-white"
-                        : "text-white/60"
-                  }`}
-                >
-                  <PnlValue value={selected.pnl} showSign className="text-[16px] font-semibold" />
-                </span>
+                {/* P&L + Edit button group */}
+                <div className="flex shrink-0 items-center gap-3">
+                  <span
+                    className={`text-[16px] font-semibold ${
+                      selected.result === "Breakeven" ||
+                      (selected.result === null && Number(selected.pnl) === 0)
+                        ? "text-white/50"
+                        : Number(selected.pnl) >= 0
+                          ? "text-white"
+                          : "text-white/60"
+                    }`}
+                  >
+                    <PnlValue
+                      value={selected.pnl}
+                      showSign
+                      className="text-[16px] font-semibold"
+                    />
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormError("");
+                      setForm({
+                        ...emptyForm,
+                        trade_date: selected.trade_date,
+                        pnl: String(selected.pnl ?? 0),
+                        result:
+                          selected.result ??
+                          (Number(selected.pnl) === 0
+                            ? "Breakeven"
+                            : Number(selected.pnl) > 0
+                              ? "Win"
+                              : "Loss"),
+                        symbol: selected.symbol,
+                        direction: selected.direction,
+                        quantity: String(selected.quantity ?? 1),
+                        setup: selected.setup ?? "",
+                        followed_plan: selected.followed_plan ?? true,
+                        notes: selected.notes ?? "",
+                        screenshot_url: selected.screenshot_url ?? "",
+                        // Wire through emotion/rating/visibility if present
+                        emotion: typeof selected.emotion === "string"
+                          ? selected.emotion
+                          : "Focused",
+                        execution_rating:
+                          typeof selected.execution_rating === "string"
+                            ? selected.execution_rating
+                            : selected.grade
+                              ? String(selected.grade)
+                              : "Great execution",
+                        visibility:
+                          (selected.visibility as any) ||
+                          "Private",
+                      });
+                      setModalState({ mode: "edit", id: selected.id });
+                    }}
+                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 text-[10px] font-medium text-white/65 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+                  >
+                    <Pencil className="h-3 w-3" />
+                    Edit trade
+                  </button>
+                </div>
+                {/* End of action group */}
               </div>
 
               <div className="grid min-h-0 gap-4 overflow-y-auto p-3 sm:p-4 lg:h-[calc(100%-53px)] lg:grid-cols-[1fr_1fr] lg:gap-5 xl:grid-cols-[1.05fr_0.95fr]">
@@ -1485,19 +1610,20 @@ export default function TradesPage() {
         </section>
       </div>
 
-      {/* ADD TRADE MODAL */}
-      {showAddTrade && (
+      {/* ADD/EDIT TRADE MODAL */}
+      {modalState && (
         <AddTradeModal
           form={form}
           setForm={setForm}
           onClose={() => {
             if (!saving) {
-              setShowAddTrade(false);
+              setModalState(null);
             }
           }}
-          onSubmit={handleAddTrade}
+          onSubmit={handleTradeModalSubmit}
           saving={saving}
           error={formError}
+          mode={modalState.mode}
         />
       )}
     </main>
