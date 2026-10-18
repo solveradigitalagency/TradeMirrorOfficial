@@ -582,7 +582,7 @@ export default function JournalPage() {
                             <div className="detail-grid">
                               <Detail label="Instrument" value={currentTrade.symbol} />
                               <Detail label="Direction" value={currentTrade.direction} />
-                              <Detail label="Contracts" value={number(currentTrade.quantity)} />
+                              {/* <Detail label="Contracts" value={number(currentTrade.quantity)} /> */}
                               <div className="min-w-0 border-b border-stone-400/35 py-1.5 last:border-b-0">
                                 <span className="detail-label">
                                   P&amp;L
