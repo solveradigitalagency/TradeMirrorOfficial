@@ -549,7 +549,7 @@ export default function JournalPage() {
                 </article>
 
                 {/* RIGHT PAGE: REVIEW */}
-                <article className="book-page book-right">
+                <article className="book-page book-right journal-right-page">
                   {loading ? (
                     <div className="empty-state">
                       <div className="loading-line w-24" />
@@ -570,11 +570,11 @@ export default function JournalPage() {
                     </div>
                   ) : currentTrade ? (
                     <>
-                      <div className="page-content review-content">
+                      <div className="page-content review-content journal-right-page-content">
                         <header className="right-masthead">
                           <span>BETTER TRADES. CLEARER THINKING.</span>
                         </header>
-                        <div className="flex min-h-0 flex-col">
+                        <div className="flex min-h-0 flex-col" style={{ flex: 1, minHeight: 0 }}>
                           <section className="journal-section trade-details-section">
                             <h2 className="section-title">TRADE DETAILS</h2>
                             <div className="section-accent" />
@@ -614,13 +614,25 @@ export default function JournalPage() {
                               <Detail label="Emotion" value={currentTrade.emotion} />
                             </div>
                           </section>
-                          {/* Reflection section - compact mt-5 */}
-                          <section className="mt-5 min-w-0">
+                          {/* Reflection section - new structure */}
+                          <section className="reflection-section">
                             <h2 className="text-xl font-bold tracking-[0.12em] text-[#142943]">
                               REFLECTION
                             </h2>
                             <div className="mt-2 h-[2px] w-10 bg-blue-600" />
-                            <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-[#3f3a33]">
+                            <p
+                              className="reflection-text"
+                              style={{
+                                fontSize:
+                                  (currentTrade.notes?.trim().length ?? 0) > 700
+                                    ? "11px"
+                                    : (currentTrade.notes?.trim().length ?? 0) > 450
+                                      ? "12px"
+                                      : (currentTrade.notes?.trim().length ?? 0) > 250
+                                        ? "13px"
+                                        : "15px",
+                              }}
+                            >
                               {currentTrade.notes?.trim() || "No reflection recorded for this trade."}
                             </p>
                           </section>
@@ -898,7 +910,6 @@ export default function JournalPage() {
           }
         }
 
-
         .book-page {
           position: relative;
           display: flex;
@@ -936,6 +947,21 @@ export default function JournalPage() {
             inset 16px 0 22px -19px rgba(54, 39, 24, 0.75),
             inset -4px 0 8px rgba(255, 255, 255, 0.25);
         }
+
+        /* ----------- ADDED/UPDATED FOR FLEXIBLE RIGHT PAGE ----------- */
+        .journal-right-page {
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          box-sizing: border-box;
+        }
+        .journal-right-page-content {
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 auto;
+          min-height: 0;
+        }
+        /* ------------------------------------------------------------ */
 
         .page-content {
           position: relative;
@@ -994,18 +1020,40 @@ export default function JournalPage() {
           margin-top: 13px;
         }
 
+        /* -------- UPDATED REFLECTION SECTION CSS --------- */
         .reflection-section {
-          margin-top: 28px;
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          flex: 1 1 auto;
+          margin-top: 20px;
+          overflow: hidden;
         }
-
-        .notes-copy {
-          margin-top: 14px;
-          color: #343a42;
-          font-family: Georgia, "Times New Roman", serif;
-          font-size: 13px;
-          line-height: 1.8;
+        .reflection-section h2 {
+          flex: 0 0 auto;
+          margin-bottom: 12px;
+        }
+        .reflection-text {
+          min-height: 0;
+          flex: 1 1 auto;
+          overflow: hidden;
           overflow-wrap: anywhere;
           white-space: pre-wrap;
+          line-height: 1.5;
+          font-size: clamp(10px, 1vw, 16px);
+          color: #3f3a33;
+          margin-top: 0; /* Remove extra default top margin */
+        }
+        /* ---------------------------------------------- */
+
+        .reflection-section .section-accent {
+          margin-top: 13px;
+        }
+
+        /* Remove legacy margin-top for .reflection-section and .notes-copy */
+        .notes-copy {
+          /* The previous .notes-copy styling is no longer used for Reflection paragraph */
+          display: none;
         }
 
         .book-masthead {
@@ -1113,16 +1161,10 @@ export default function JournalPage() {
           box-shadow: 0 5px 14px rgba(38, 32, 23, 0.12);
         }
 
-        /* Keep the reflection on the right page, without scrolling. */
-        .review-content {
-          flex: 1;
-          min-height: 0;
-          overflow: auto;
-          padding-right: 3px;
-        }
+        /* The old "review-content" scroll style is overridden by the new flex layout */
 
         @media (min-width: 768px) {
-          .review-content {
+          .journal-right-page-content {
             overflow: hidden;
           }
           .detail-row {
@@ -1130,10 +1172,6 @@ export default function JournalPage() {
           }
           .reflection-section {
             margin-top: 24px;
-          }
-          .notes-copy {
-            font-size: 12px;
-            line-height: 1.7;
           }
         }
 
@@ -1177,7 +1215,6 @@ export default function JournalPage() {
         .dark-button:hover {
           background: #48453f;
         }
-
 
         /* --- Page Corner Navigation - FOLDED CORNER STYLE --- */
         .page-corner-navigation {
@@ -1520,11 +1557,7 @@ export default function JournalPage() {
             margin-top: 18px;
           }
 
-          .notes-copy {
-            font-size: 11px;
-            line-height: 1.5;
-          }
-
+          /* notes-copy no longer used */
           .page-footer {
             margin-top: 6px;
             padding-top: 6px;
@@ -1656,9 +1689,7 @@ export default function JournalPage() {
             min-height: 43px;
           }
 
-          .reflection-copy {
-            -webkit-line-clamp: 6;
-          }
+          /* Remove .reflection-copy for new .reflection-text */
         }
 
         /* Keep the page footer in its own space. */
