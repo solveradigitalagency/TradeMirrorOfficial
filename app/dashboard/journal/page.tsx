@@ -184,11 +184,113 @@ export default function JournalPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState("");
 
-  // --- Share preview states ---
-  const [isSharePreviewOpen, setIsSharePreviewOpen] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
+  // Remove all preview state since preview popup is gone
 
+  // --- PNG export and sharing functions ---
+
+  const createBookPng = async (): Promise<Blob> => {
+    const book = bookRef.current;
+
+    if (!book) {
+      throw new Error("The journal book could not be found.");
+    }
+
+    if ("fonts" in document) {
+      await document.fonts.ready;
+    }
+
+    const images = Array.from(book.querySelectorAll("img"));
+
+    await Promise.all(
+      images.map(async (img) => {
+        if (img.complete) {
+          if (img.naturalWidth === 0 && img.src) {
+            throw new Error(
+              "A journal image could not be loaded. Please reload and try again."
+            );
+          }
+          return;
+        }
+
+        await new Promise<void>((resolve, reject) => {
+          img.addEventListener("load", () => resolve(), { once: true });
+          img.addEventListener(
+            "error",
+            () => reject(new Error("A journal image could not be loaded.")),
+            { once: true }
+          );
+        });
+      })
+    );
+
+    const blob = await toBlob(book, {
+      pixelRatio: 3,
+      cacheBust: true,
+      backgroundColor: "#101011",
+    });
+
+    if (!blob) {
+      throw new Error("Could not generate the journal PNG.");
+    }
+
+    return blob;
+  };
+
+  // New PNG download function (direct download, no preview or share)
+  const downloadJournalPng = async () => {
+    setIsExporting(true);
+    setExportError("");
+
+    try {
+      const blob = await createBookPng();
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `trademirror-journal-${
+        currentTrade?.symbol || "entry"
+      }-${currentTrade?.trade_date || "trade"}.png`.replace(
+        /[^a-zA-Z0-9._-]/g,
+        "-"
+      );
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+      console.error("Journal PNG download failed:", error);
+
+      setExportError(
+        error instanceof Error
+          ? error.message
+          : "Unable to generate your journal PNG."
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  function toggleExample() {
+    if (showExample) {
+      setShowExample(false);
+      setActiveIndex(0);
+    } else {
+      setShowExample(true);
+      setActiveIndex(trades.length);
+    }
+  }
+
+  function goToTrade(index: number) {
+    if (!journalTrades.length) return;
+
+    setActiveIndex(
+      (index + journalTrades.length) % journalTrades.length
+    );
+  }
+
+  // === Moved loadTrades above useEffect as requested ===
   const loadTrades = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -258,6 +360,7 @@ export default function JournalPage() {
       setLoading(false);
     }
   }, []);
+  // === End of moved loadTrades ===
 
   useEffect(() => {
     void loadTrades();
@@ -273,135 +376,6 @@ export default function JournalPage() {
 
   const currentTrade = journalTrades[activeIndex] ?? null;
   const isDemo = currentTrade?.id === "demo-trade";
-
-  // --- PNG export and sharing functions ---
-
-  const createBookPng = async (): Promise<Blob> => {
-    const book = bookRef.current;
-
-    if (!book) {
-      throw new Error("The journal book could not be found.");
-    }
-
-    if ("fonts" in document) {
-      await document.fonts.ready;
-    }
-
-    const images = Array.from(book.querySelectorAll("img"));
-
-    await Promise.all(
-      images.map(async (img) => {
-        if (img.complete) {
-          if (img.naturalWidth === 0 && img.src) {
-            throw new Error(
-              "A journal image could not be loaded. Please reload and try again."
-            );
-          }
-          return;
-        }
-
-        await new Promise<void>((resolve, reject) => {
-          img.addEventListener("load", () => resolve(), { once: true });
-          img.addEventListener(
-            "error",
-            () => reject(new Error("A journal image could not be loaded.")),
-            { once: true }
-          );
-        });
-      })
-    );
-
-    const blob = await toBlob(book, {
-      pixelRatio: 3,
-      cacheBust: true,
-      backgroundColor: "#101011",
-    });
-
-    if (!blob) {
-      throw new Error("Could not generate the journal PNG.");
-    }
-
-    return blob;
-  };
-
-  // REPLACE OLD shareJournalPng + downloadJournalPng WITH THIS SECTION
-
-  const shareJournalPng = async () => {
-    setIsExporting(true);
-    setExportError("");
-
-    try {
-      const blob = await createBookPng();
-      const url = URL.createObjectURL(blob);
-
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-
-      setPreviewBlob(blob);
-      setPreviewUrl(url);
-      setIsSharePreviewOpen(true);
-    } catch (error) {
-      console.error("Journal preview failed:", error);
-
-      setExportError(
-        error instanceof Error
-          ? error.message
-          : "Unable to prepare your journal preview."
-      );
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const downloadPreviewPng = () => {
-    if (!previewBlob) return;
-
-    const url = URL.createObjectURL(previewBlob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = `trademirror-journal-${
-      currentTrade?.symbol || "entry"
-    }-${currentTrade?.trade_date || "trade"}.png`.replace(
-      /[^a-zA-Z0-9._-]/g,
-      "-"
-    );
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
-
-  const closeSharePreview = () => {
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-
-    setPreviewUrl(null);
-    setPreviewBlob(null);
-    setIsSharePreviewOpen(false);
-  };
-
-  function toggleExample() {
-    if (showExample) {
-      setShowExample(false);
-      setActiveIndex(0);
-    } else {
-      setShowExample(true);
-      setActiveIndex(trades.length);
-    }
-  }
-
-  function goToTrade(index: number) {
-    if (!journalTrades.length) return;
-
-    setActiveIndex(
-      (index + journalTrades.length) % journalTrades.length
-    );
-  }
 
   return (
     <main className="journal-background">
@@ -701,11 +675,11 @@ export default function JournalPage() {
           <div className="share-actions">
             <button
               type="button"
-              onClick={shareJournalPng}
-              disabled={isExporting || !currentTrade || loading || !!error}
+              onClick={downloadJournalPng}
+              disabled={isExporting}
               className="share-button share-button-primary"
             >
-              {isExporting ? "Preparing preview…" : "Share Journal"}
+              {isExporting ? "Saving PNG..." : "Share Journal"}
             </button>
           </div>
           {exportError && (
@@ -716,76 +690,7 @@ export default function JournalPage() {
         </section>
       </div>
 
-      {/* Share Preview Overlay */}
-      {isSharePreviewOpen && previewUrl && (
-        <div
-          className="share-preview-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Journal PNG preview"
-        >
-          <header className="share-preview-toolbar">
-            <div className="share-preview-heading">
-              <span className="share-preview-title">Journal Preview</span>
-              <span className="share-preview-subtitle">
-                {currentTrade?.symbol || "Trade"} · PNG
-              </span>
-            </div>
-            <div className="share-preview-actions">
-              <button
-                type="button"
-                className="preview-icon-button"
-                onClick={downloadPreviewPng}
-                aria-label="Save journal as PNG"
-                title="Save PNG"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <path d="m7 10 5 5 5-5" />
-                  <path d="M12 15V3" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="preview-icon-button"
-                onClick={closeSharePreview}
-                aria-label="Close preview"
-                title="Close"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <path d="m18 6-12 12M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </header>
-          <div className="share-preview-canvas">
-            <img
-              src={previewUrl}
-              alt="Full journal entry preview"
-              className="share-preview-image"
-            />
-          </div>
-        </div>
-      )}
+      {/* The preview popup and states have been removed as requested */}
 
       <style jsx>{`
         .journal-background {
@@ -1362,88 +1267,7 @@ export default function JournalPage() {
         }
 
         /* Share Preview Styles */
-        .share-preview-overlay {
-          position: fixed;
-          inset: 0;
-          z-index: 9999;
-          display: flex;
-          flex-direction: column;
-          background: #0b0b0c;
-          color: #f5f5f5;
-        }
-
-        .share-preview-toolbar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          min-height: 68px;
-          padding: 12px 24px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          background: rgba(16, 16, 17, 0.96);
-        }
-
-        .share-preview-heading {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .share-preview-title {
-          font-size: 14px;
-          font-weight: 600;
-          letter-spacing: -0.02em;
-        }
-
-        .share-preview-subtitle {
-          color: rgba(255, 255, 255, 0.5);
-          font-size: 11px;
-        }
-
-        .share-preview-actions {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .preview-icon-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 42px;
-          height: 42px;
-          border: 1px solid rgba(255, 255, 255, 0.13);
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.05);
-          color: #f5f5f5;
-          cursor: pointer;
-          transition: background 150ms ease;
-        }
-
-        .preview-icon-button:hover {
-          background: rgba(255, 255, 255, 0.13);
-        }
-
-        .share-preview-canvas {
-          display: flex;
-          flex: 1;
-          align-items: center;
-          justify-content: center;
-          min-height: 0;
-          padding: 24px;
-          overflow: auto;
-        }
-
-        .share-preview-image {
-          display: block;
-          width: auto;
-          height: auto;
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
-          border-radius: 4px;
-          box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
-        }
+        /* .share-preview-overlay and related CSS are safely ignored as overlay JSX has been removed */
 
         @media (max-width: 640px) {
           .share-actions {
@@ -1454,19 +1278,6 @@ export default function JournalPage() {
             min-height: 38px;
             padding: 0 12px;
             font-size: 11px;
-          }
-          .share-preview-toolbar {
-            min-height: 60px;
-            padding: 10px 14px;
-          }
-
-          .share-preview-canvas {
-            padding: 12px;
-          }
-
-          .preview-icon-button {
-            width: 38px;
-            height: 38px;
           }
         }
 
