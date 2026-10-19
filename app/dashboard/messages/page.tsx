@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -115,7 +116,7 @@ function Avatar({
 
   return (
     <div
-      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] bg-gradient-to-br from-[#333333] to-[#0b0b0b] font-semibold text-white/65 ${sizeClass}`}
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.09] bg-[#202020] font-semibold tracking-wide text-white/70 ${sizeClass}`}
     >
       {profile?.avatar_url ? (
         <img
@@ -132,21 +133,15 @@ function Avatar({
 
 function MessagesContent() {
   const supabase = useMemo(() => createClient(), []);
-
   const searchParams = useSearchParams();
   const conversationParam = searchParams.get("conversation");
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [conversations, setConversations] = useState<ConversationPreview[]>(
-    [],
-  );
-  const [selectedConversationId, setSelectedConversationId] = useState<
-    string | null
-  >(null);
+  const [conversations, setConversations] = useState<ConversationPreview[]>([]);
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageText, setMessageText] = useState("");
 
-  // Step 3: Add attachment state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -162,18 +157,14 @@ function MessagesContent() {
   const messageInputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const selectedConversation =
-    conversations.find((conversation) => {
-      return conversation.id === selectedConversationId;
-    }) ?? null;
+    conversations.find((conversation) => conversation.id === selectedConversationId) ?? null;
 
   const filteredConversations = conversations.filter((conversation) => {
     const name =
       conversation.otherMember?.display_name ||
       conversation.otherMember?.username ||
       "";
-
     const username = conversation.otherMember?.username || "";
-
     const query = search.trim().toLowerCase();
 
     if (!query) return true;
@@ -204,18 +195,15 @@ function MessagesContent() {
 
       const conversationIds = [
         ...new Set(
-          memberRows.map(
-            (member: ConversationMember) => member.conversation_id,
-          ),
+          memberRows.map((member: ConversationMember) => member.conversation_id),
         ),
       ];
 
-      const { data: conversationRows, error: conversationError } =
-        await supabase
-          .from("conversations")
-          .select("id, created_at, updated_at")
-          .in("id", conversationIds)
-          .order("updated_at", { ascending: false });
+      const { data: conversationRows, error: conversationError } = await supabase
+        .from("conversations")
+        .select("id, created_at, updated_at")
+        .in("id", conversationIds)
+        .order("updated_at", { ascending: false });
 
       if (conversationError) {
         console.error("CONVERSATIONS ERROR:", conversationError);
@@ -255,16 +243,14 @@ function MessagesContent() {
         }
       }
 
-      const { data: recentMessages, error: recentMessagesError } =
-        await supabase
-          .from("messages")
-          .select(
-            // Step 4: Update message queries
-            "id, conversation_id, sender_id, content, created_at, read_at, attachment_url, attachment_name, attachment_type, attachment_size"
-          )
-          .in("conversation_id", conversationIds)
-          .order("created_at", { ascending: false })
-          .limit(200);
+      const { data: recentMessages, error: recentMessagesError } = await supabase
+        .from("messages")
+        .select(
+          "id, conversation_id, sender_id, content, created_at, read_at, attachment_url, attachment_name, attachment_type, attachment_size",
+        )
+        .in("conversation_id", conversationIds)
+        .order("created_at", { ascending: false })
+        .limit(200);
 
       if (recentMessagesError) {
         console.error("RECENT MESSAGES ERROR:", recentMessagesError);
@@ -285,14 +271,10 @@ function MessagesContent() {
         );
 
         const profile =
-          profiles.find(
-            (candidate) => candidate.id === otherMember?.user_id,
-          ) ?? null;
+          profiles.find((candidate) => candidate.id === otherMember?.user_id) ?? null;
 
         const conversationMessages = messageRows
-          .filter(
-            (message) => message.conversation_id === conversation.id,
-          )
+          .filter((message) => message.conversation_id === conversation.id)
           .sort(
             (a, b) =>
               new Date(b.created_at).getTime() -
@@ -316,35 +298,21 @@ function MessagesContent() {
 
       previews.sort(
         (a, b) =>
-          new Date(
-            b.lastMessage?.created_at ?? b.updated_at,
-          ).getTime() -
-          new Date(
-            a.lastMessage?.created_at ?? a.updated_at,
-          ).getTime(),
+          new Date(b.lastMessage?.created_at ?? b.updated_at).getTime() -
+          new Date(a.lastMessage?.created_at ?? a.updated_at).getTime(),
       );
 
       setConversations(previews);
 
       setSelectedConversationId((current) => {
-        // If Discover sent us to a specific conversation,
-        // open that conversation automatically.
         if (
           conversationParam &&
-          previews.some(
-            (conversation) => conversation.id === conversationParam,
-          )
+          previews.some((conversation) => conversation.id === conversationParam)
         ) {
           return conversationParam;
         }
 
-        // Otherwise preserve the currently selected conversation.
-        if (
-          current &&
-          previews.some(
-            (conversation) => conversation.id === current,
-          )
-        ) {
+        if (current && previews.some((conversation) => conversation.id === current)) {
           return current;
         }
 
@@ -361,8 +329,7 @@ function MessagesContent() {
       const { data, error: messagesError } = await supabase
         .from("messages")
         .select(
-          // Step 4: Update message queries
-          "id, conversation_id, sender_id, content, created_at, read_at, attachment_url, attachment_name, attachment_type, attachment_size"
+          "id, conversation_id, sender_id, content, created_at, read_at, attachment_url, attachment_name, attachment_type, attachment_size",
         )
         .eq("conversation_id", conversationId)
         .order("created_at", { ascending: true });
@@ -387,19 +354,18 @@ function MessagesContent() {
         .map((message) => message.id);
 
       if (unreadIds.length) {
+        const readAt = new Date().toISOString();
+
         await supabase
           .from("messages")
-          .update({ read_at: new Date().toISOString() })
+          .update({ read_at: readAt })
           .in("id", unreadIds)
           .eq("conversation_id", conversationId);
 
         setMessages((current) =>
           current.map((message) =>
             unreadIds.includes(message.id)
-              ? {
-                  ...message,
-                  read_at: new Date().toISOString(),
-                }
+              ? { ...message, read_at: readAt }
               : message,
           ),
         );
@@ -407,10 +373,7 @@ function MessagesContent() {
         setConversations((current) =>
           current.map((conversation) =>
             conversation.id === conversationId
-              ? {
-                  ...conversation,
-                  unreadCount: 0,
-                }
+              ? { ...conversation, unreadCount: 0 }
               : conversation,
           ),
         );
@@ -456,17 +419,10 @@ function MessagesContent() {
     }
 
     loadMessages(selectedConversationId, currentUserId);
-  }, [
-    selectedConversationId,
-    currentUserId,
-    loadMessages,
-  ]);
+  }, [selectedConversationId, currentUserId, loadMessages]);
 
   useEffect(() => {
-    if (
-      conversationParam &&
-      selectedConversationId === conversationParam
-    ) {
+    if (conversationParam && selectedConversationId === conversationParam) {
       setMobileConversationOpen(true);
     }
   }, [conversationParam, selectedConversationId]);
@@ -488,14 +444,9 @@ function MessagesContent() {
           const incomingMessage = payload.new as Message;
 
           setMessages((current) => {
-            if (
-              current.some(
-                (message) => message.id === incomingMessage.id,
-              )
-            ) {
+            if (current.some((message) => message.id === incomingMessage.id)) {
               return current;
             }
-
             return [...current, incomingMessage];
           });
 
@@ -516,12 +467,8 @@ function MessagesContent() {
               )
               .sort(
                 (a, b) =>
-                  new Date(
-                    b.lastMessage?.created_at ?? b.updated_at,
-                  ).getTime() -
-                  new Date(
-                    a.lastMessage?.created_at ?? a.updated_at,
-                  ).getTime(),
+                  new Date(b.lastMessage?.created_at ?? b.updated_at).getTime() -
+                  new Date(a.lastMessage?.created_at ?? a.updated_at).getTime(),
               ),
           );
 
@@ -531,9 +478,7 @@ function MessagesContent() {
           ) {
             await supabase
               .from("messages")
-              .update({
-                read_at: new Date().toISOString(),
-              })
+              .update({ read_at: new Date().toISOString() })
               .eq("id", incomingMessage.id);
           }
         },
@@ -546,20 +491,15 @@ function MessagesContent() {
   }, [supabase, selectedConversationId, currentUserId]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
     if (mobileConversationOpen) {
-      setTimeout(() => {
-        messageInputRef.current?.focus();
-      }, 100);
+      setTimeout(() => messageInputRef.current?.focus(), 100);
     }
   }, [mobileConversationOpen]);
 
-  // Step 5: Replace sendMessage()
   async function sendMessage() {
     const content = messageText.trim();
 
@@ -607,9 +547,7 @@ function MessagesContent() {
 
         const fileExtension =
           selectedFile.name.split(".").pop()?.toLowerCase() || "file";
-
         const fileName = `${crypto.randomUUID()}.${fileExtension}`;
-
         const filePath = `${currentUserId}/${selectedConversationId}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -671,7 +609,6 @@ function MessagesContent() {
         if (current.some((message) => message.id === sentMessage.id)) {
           return current;
         }
-
         return [...current, sentMessage];
       });
 
@@ -688,12 +625,8 @@ function MessagesContent() {
           )
           .sort(
             (a, b) =>
-              new Date(
-                b.lastMessage?.created_at ?? b.updated_at,
-              ).getTime() -
-              new Date(
-                a.lastMessage?.created_at ?? a.updated_at,
-              ).getTime(),
+              new Date(b.lastMessage?.created_at ?? b.updated_at).getTime() -
+              new Date(a.lastMessage?.created_at ?? a.updated_at).getTime(),
           ),
       );
 
@@ -702,10 +635,7 @@ function MessagesContent() {
       setSending(false);
       setUploadingFile(false);
 
-      setTimeout(() => {
-        messageInputRef.current?.focus();
-      }, 50);
-
+      setTimeout(() => messageInputRef.current?.focus(), 50);
     } catch (error) {
       console.error("SEND MESSAGE ERROR:", error);
       setError("Your message couldn't be sent.");
@@ -734,7 +664,7 @@ function MessagesContent() {
   if (loading) {
     return (
       <main className="flex h-screen items-center justify-center bg-background text-white">
-        <div className="flex items-center gap-3 text-white/40">
+        <div className="flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-[#101010] px-5 py-4 text-white/40 shadow-xl">
           <Loader2 className="h-4 w-4 animate-spin" />
           <span className="text-[12px]">Loading messages...</span>
         </div>
@@ -743,298 +673,308 @@ function MessagesContent() {
   }
 
   return (
-    <main className="h-screen overflow-hidden bg-background px-4 py-4 text-white lg:px-5">
-      <div className="mx-auto flex h-full max-w-[1500px] flex-col">
-        {/* HEADER */}
-        <div className="flex shrink-0 items-center justify-between">
+    <main className="h-[100dvh] overflow-hidden bg-background px-2 py-2 text-white sm:px-4 sm:py-4 lg:px-5">
+      <div className="mx-auto flex h-full max-w-[1600px] flex-col">
+        {/* PAGE HEADER */}
+        <header className="flex shrink-0 items-center justify-between gap-4 px-1 pb-3 sm:pb-4">
           <div>
-            <h1 className="text-[20px] font-semibold tracking-[-0.035em] text-white">
-              Messages
-            </h1>
-
-            <p className="mt-1 text-[11px] text-white/30">
-              Talk with traders across TradeMirror.
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/[0.09] bg-[#151515]">
+                <MessageCircle className="h-4 w-4 text-white/75" />
+              </div>
+              <h1 className="text-[20px] font-semibold tracking-[-0.045em] text-white sm:text-[23px]">
+                Messages
+              </h1>
+            </div>
+            <p className="mt-1.5 pl-0.5 text-[11px] text-white/35">
+              Your conversations with the TradeMirror community.
             </p>
           </div>
 
-          <div className="hidden items-center rounded-lg border border-white/[0.07] bg-[#08111a] px-3 py-2 text-[10px] text-white/35 sm:flex">
-            <MessageCircle className="mr-2 h-3.5 w-3.5 text-white/60" />
-            {conversations.length}{" "}
-            {conversations.length === 1
-              ? "conversation"
-              : "conversations"}
+          <div className="hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#111111] px-3.5 py-2 sm:flex">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
+            <span className="text-[10px] text-white/50">
+              {conversations.length}{" "}
+              {conversations.length === 1 ? "conversation" : "conversations"}
+            </span>
           </div>
-        </div>
+        </header>
 
-        {/* ERROR */}
         {error && (
-          <div className="mt-3 shrink-0 rounded-lg border border-white/[0.12] bg-white/[0.035] px-3 py-2 text-[10px] text-white/70">
+          <div className="mb-3 shrink-0 rounded-xl border border-white/[0.1] bg-[#171717] px-4 py-3 text-[11px] text-white/70">
             {error}
           </div>
         )}
 
-        {/* MESSAGES SURFACE */}
-        <section className="mt-4 min-h-0 flex-1 overflow-hidden rounded-[18px] border border-white/[0.075] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[0_30px_90px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.025)]">
+        {/* MESSAGES APP */}
+        <section className="min-h-0 flex-1 overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#0d0d0d] shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
           <div className="flex h-full min-h-0">
-            {/* CONVERSATION LIST */}
+            {/* CONVERSATION SIDEBAR */}
             <aside
-              className={`flex w-full shrink-0 flex-col border-r border-white/[0.06] bg-[#101010]/80 md:w-[310px] ${
+              className={`flex w-full shrink-0 flex-col border-r border-white/[0.07] bg-[#101010] md:w-[300px] lg:w-[330px] ${
                 mobileConversationOpen ? "hidden md:flex" : "flex"
               }`}
             >
-              <div className="border-b border-white/[0.055] p-4">
-                <div className="relative">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/25" />
+              <div className="border-b border-white/[0.06] p-3.5 sm:p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <h2 className="text-[11px] font-semibold tracking-[0.02em] text-white/80">
+                    All conversations
+                  </h2>
+                  <span className="rounded-md bg-white/[0.05] px-2 py-1 text-[9px] tabular-nums text-white/40">
+                    {conversations.length}
+                  </span>
+                </div>
 
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/30" />
                   <input
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Search messages..."
-                    className="h-10 w-full rounded-xl border border-white/[0.07] bg-[#141414] pl-9 pr-3 text-[11px] text-white/75 outline-none transition placeholder:text-white/25 focus:border-white/25 focus:bg-[#181818]"
+                    placeholder="Search conversations"
+                    className="h-10 w-full rounded-xl border border-white/[0.08] bg-[#171717] pl-9 pr-3 text-[11px] text-white/80 outline-none transition placeholder:text-white/30 hover:border-white/[0.13] focus:border-white/25 focus:bg-[#1a1a1a]"
                   />
+                  {search && (
+                    <button
+                      type="button"
+                      onClick={() => setSearch("")}
+                      aria-label="Clear search"
+                      className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-white/35 transition hover:bg-white/[0.06] hover:text-white"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  )}
                 </div>
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto">
+              <div className="min-h-0 flex-1 overflow-y-auto p-2">
                 {filteredConversations.length === 0 ? (
-                  <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025]">
-                      <MessageCircle className="h-5 w-5 text-white/20" />
+                  <div className="flex h-full min-h-[240px] flex-col items-center justify-center px-7 text-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.035]">
+                      <MessageCircle className="h-5 w-5 text-white/30" />
                     </div>
-
-                    <p className="mt-4 text-[12px] font-medium text-white/55">
-                      {search
-                        ? "No conversations found"
-                        : "No messages yet"}
+                    <p className="mt-4 text-[12px] font-medium text-white/70">
+                      {search ? "No conversations found" : "No messages yet"}
                     </p>
-
-                    <p className="mt-1.5 max-w-[210px] text-[10px] leading-5 text-white/25">
-                      Discover traders and send them a message to start a
-                      conversation.
+                    <p className="mt-2 max-w-[220px] text-[10px] leading-5 text-white/35">
+                      {search
+                        ? "Try another name, username, or message."
+                        : "Discover traders and send someone a message to get started."}
                     </p>
                   </div>
                 ) : (
-                  <div className="p-2">
-                    {filteredConversations.map((conversation) => {
-                      const active =
-                        conversation.id === selectedConversationId;
+                  filteredConversations.map((conversation) => {
+                    const active = conversation.id === selectedConversationId;
+                    const displayName =
+                      conversation.otherMember?.display_name ||
+                      conversation.otherMember?.username ||
+                      "Trader";
+                    const username = conversation.otherMember?.username;
 
-                      const displayName =
-                        conversation.otherMember?.display_name ||
-                        conversation.otherMember?.username ||
-                        "Trader";
+                    return (
+                      <button
+                        key={conversation.id}
+                        type="button"
+                        onClick={() => selectConversation(conversation.id)}
+                        className={`group relative mb-1 flex w-full items-center gap-3 rounded-[14px] border px-3 py-3 text-left transition duration-200 ${
+                          active
+                            ? "border-white/[0.11] bg-white/[0.065]"
+                            : "border-transparent hover:border-white/[0.055] hover:bg-white/[0.03]"
+                        }`}
+                      >
+                        {active && (
+                          <span className="absolute bottom-3 left-0 top-3 w-[2px] rounded-full bg-white/80" />
+                        )}
 
-                      const username =
-                        conversation.otherMember?.username;
+                        <Avatar profile={conversation.otherMember} />
 
-                      return (
-                        <button
-                          key={conversation.id}
-                          type="button"
-                          onClick={() =>
-                            selectConversation(conversation.id)
-                          }
-                          className={`mb-1 flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${
-                            active
-                              ? "border border-white/[0.14] bg-white/[0.06]"
-                              : "border border-transparent hover:bg-white/[0.025]"
-                          }`}
-                        >
-                          <Avatar
-                            profile={conversation.otherMember}
-                            size="md"
-                          />
-
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-2">
-                              <p className="truncate text-[11px] font-semibold text-white/75">
-                                {displayName}
-                              </p>
-
-                              <span className="shrink-0 text-[9px] text-white/25">
-                                {formatTime(
-                                  conversation.lastMessage?.created_at ??
-                                    conversation.updated_at,
-                                )}
-                              </span>
-                            </div>
-
-                            <div className="mt-1 flex items-center justify-between gap-2">
-                              <p className="truncate text-[10px] text-white/30">
-                                {conversation.lastMessage
-                                  ? conversation.lastMessage.sender_id ===
-                                    currentUserId
-                                    ? `You: ${conversation.lastMessage.content}`
-                                    : conversation.lastMessage.content
-                                  : username
-                                    ? `@${username}`
-                                    : "Start a conversation"}
-                              </p>
-
-                              {conversation.unreadCount > 0 && (
-                                <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-white px-1 text-[8px] font-bold text-black">
-                                  {conversation.unreadCount > 9
-                                    ? "9+"
-                                    : conversation.unreadCount}
-                                </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="truncate text-[11px] font-semibold text-white/85">
+                              {displayName}
+                            </p>
+                            <span className="shrink-0 text-[9px] text-white/35">
+                              {formatTime(
+                                conversation.lastMessage?.created_at ??
+                                  conversation.updated_at,
                               )}
-                            </div>
+                            </span>
                           </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+
+                          <div className="mt-1.5 flex items-center justify-between gap-2">
+                            <p className="truncate text-[10px] text-white/40">
+                              {conversation.lastMessage
+                                ? conversation.lastMessage.sender_id === currentUserId
+                                  ? `You: ${conversation.lastMessage.content || (conversation.lastMessage.attachment_name ? "Attachment" : "")}`
+                                  : conversation.lastMessage.content ||
+                                    (conversation.lastMessage.attachment_name ? "Attachment" : "")
+                                : username
+                                  ? `@${username}`
+                                  : "Start a conversation"}
+                            </p>
+
+                            {conversation.unreadCount > 0 && (
+                              <span className="flex h-[18px] min-w-[18px] shrink-0 items-center justify-center rounded-full bg-white px-1 text-[9px] font-bold text-black">
+                                {conversation.unreadCount > 9
+                                  ? "9+"
+                                  : conversation.unreadCount}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })
                 )}
+              </div>
+
+              <div className="border-t border-white/[0.06] px-4 py-3">
+                <p className="text-[9px] text-white/25">
+                  Private conversations · TradeMirror
+                </p>
               </div>
             </aside>
 
-            {/* ACTIVE CONVERSATION */}
+            {/* CHAT PANEL */}
             <section
-              className={`min-w-0 flex-1 flex-col ${
+              className={`min-w-0 flex-1 flex-col bg-[#0c0c0c] ${
                 mobileConversationOpen ? "flex" : "hidden md:flex"
               }`}
             >
               {!selectedConversation ? (
                 <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 rounded-3xl bg-white/[0.035] blur-2xl" />
-
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-[20px] border border-white/[0.08] bg-[#151515] shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
-                      <MessageCircle className="h-7 w-7 text-white/55" />
-                    </div>
+                  <div className="flex h-[68px] w-[68px] items-center justify-center rounded-[22px] border border-white/[0.09] bg-[#151515] shadow-[0_16px_45px_rgba(0,0,0,0.2)]">
+                    <MessageCircle className="h-7 w-7 text-white/45" strokeWidth={1.4} />
                   </div>
-
-                  <h2 className="mt-5 text-[15px] font-semibold text-white/70">
+                  <h2 className="mt-5 text-[15px] font-semibold tracking-[-0.025em] text-white/80">
                     Your messages
                   </h2>
-
-                  <p className="mt-2 max-w-[320px] text-[11px] leading-5 text-white/25">
-                    Select a conversation from the left or discover a trader
-                    and send them a message.
+                  <p className="mt-2 max-w-[320px] text-[11px] leading-5 text-white/35">
+                    Select a conversation or discover another trader to start chatting.
                   </p>
                 </div>
               ) : (
                 <>
-                  {/* CONVERSATION HEADER */}
-                  <header className="flex shrink-0 items-center gap-3 border-b border-white/[0.055] bg-[#111111]/70 px-4 py-3.5">
+                  {/* CHAT HEADER */}
+                  <header className="flex shrink-0 items-center gap-3 border-b border-white/[0.07] bg-[#101010] px-3.5 py-3 sm:px-5 sm:py-4">
                     <button
                       type="button"
-                      onClick={() =>
-                        setMobileConversationOpen(false)
-                      }
-                      className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.025] text-white/40 transition hover:bg-white/[0.05] hover:text-white md:hidden"
+                      onClick={() => setMobileConversationOpen(false)}
+                      aria-label="Back to conversations"
+                      className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.025] text-white/60 transition hover:bg-white/[0.07] hover:text-white md:hidden"
                     >
-                      <ArrowLeft className="h-3.5 w-3.5" />
+                      <ArrowLeft className="h-4 w-4" />
                     </button>
 
-                    <Avatar
-                      profile={selectedConversation.otherMember}
-                      size="md"
-                    />
+                    <Avatar profile={selectedConversation.otherMember} size="lg" />
 
-                    <div className="min-w-0">
-                      <p className="truncate text-[12px] font-semibold text-white/80">
-                        {selectedConversation.otherMember
-                          ?.display_name ||
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[12px] font-semibold text-white/90">
+                        {selectedConversation.otherMember?.display_name ||
                           selectedConversation.otherMember?.username ||
                           "Trader"}
                       </p>
-
                       {selectedConversation.otherMember?.username && (
-                        <p className="mt-0.5 truncate text-[9px] text-white/30">
-                          @
-                          {selectedConversation.otherMember.username}
+                        <p className="mt-1 truncate text-[10px] text-white/40">
+                          @{selectedConversation.otherMember.username}
                         </p>
                       )}
                     </div>
+
+                    <div className="hidden items-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.025] px-3 py-2 sm:flex">
+                      <span className="h-1.5 w-1.5 rounded-full bg-white/50" />
+                      <span className="text-[9px] text-white/40">Conversation</span>
+                    </div>
                   </header>
 
-                  {/* MESSAGE AREA */}
-                  <div className="relative min-h-0 flex-1 overflow-y-auto bg-[#0a0a0a] px-4 py-5 sm:px-6">
+                  {/* MESSAGE HISTORY */}
+                  <div className="relative min-h-0 flex-1 overflow-y-auto bg-[#0c0c0c] px-3 py-5 sm:px-6 sm:py-6">
                     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                      <div className="absolute left-[30%] top-[-200px] h-[420px] w-[420px] rounded-full bg-white/[0.015] blur-[130px]" />
+                      <div className="absolute left-[25%] top-[-220px] h-[440px] w-[440px] rounded-full bg-white/[0.018] blur-[140px]" />
                     </div>
 
                     {loadingMessages ? (
                       <div className="relative flex h-full items-center justify-center">
-                        <Loader2 className="h-4 w-4 animate-spin text-white/25" />
+                        <div className="flex items-center gap-2.5 rounded-full border border-white/[0.07] bg-[#141414] px-4 py-2.5 text-white/35">
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          <span className="text-[10px]">Loading conversation</span>
+                        </div>
                       </div>
                     ) : selectedMessages.length === 0 ? (
                       <div className="relative flex h-full flex-col items-center justify-center text-center">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025]">
-                          <UserRound className="h-4 w-4 text-white/20" />
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#151515]">
+                          <UserRound className="h-5 w-5 text-white/35" />
                         </div>
-
-                        <p className="mt-3 text-[11px] font-medium text-white/45">
+                        <p className="mt-4 text-[12px] font-medium text-white/70">
                           Start the conversation
                         </p>
-
-                        <p className="mt-1 max-w-[240px] text-[9px] leading-5 text-white/20">
+                        <p className="mt-1.5 max-w-[250px] text-[10px] leading-5 text-white/35">
                           Send a message to{" "}
-                          {selectedConversation.otherMember
-                            ?.display_name ||
+                          {selectedConversation.otherMember?.display_name ||
                             selectedConversation.otherMember?.username ||
-                            "this trader"}
-                          .
+                            "this trader"}{" "}
+                          to get things started.
                         </p>
                       </div>
                     ) : (
-                      <div className="relative mx-auto flex max-w-[760px] flex-col gap-2">
+                      <div className="relative mx-auto flex max-w-[780px] flex-col gap-1">
                         {selectedMessages.map((message, index) => {
-                          const isMine =
-                            message.sender_id === currentUserId;
-
+                          const isMine = message.sender_id === currentUserId;
                           const previous = selectedMessages[index - 1];
-
-                          const sameSender =
-                            previous?.sender_id === message.sender_id;
+                          const next = selectedMessages[index + 1];
+                          const sameSender = previous?.sender_id === message.sender_id;
+                          const nextSameSender = next?.sender_id === message.sender_id;
 
                           return (
                             <div
                               key={message.id}
                               className={`flex ${
-                                isMine
-                                  ? "justify-end"
-                                  : "justify-start"
-                              } ${sameSender ? "mt-0.5" : "mt-2"}`}
+                                isMine ? "justify-end" : "justify-start"
+                              } ${sameSender ? "mt-0.5" : "mt-3"}`}
                             >
                               <div
-                                className={`max-w-[78%] sm:max-w-[65%] ${
-                                  isMine
-                                    ? "items-end"
-                                    : "items-start"
-                                } flex flex-col`}
+                                className={`flex max-w-[88%] flex-col sm:max-w-[72%] ${
+                                  isMine ? "items-end" : "items-start"
+                                }`}
                               >
                                 <div
-                                  className={`rounded-[16px] px-3.5 py-2.5 text-[11px] leading-5 ${
+                                  className={`overflow-hidden rounded-[17px] px-3.5 py-2.5 text-[11px] leading-[1.7] sm:px-4 ${
                                     isMine
-                                      ? "rounded-br-[5px] bg-white text-black shadow-[0_8px_25px_rgba(255,255,255,0.045)]"
-                                      : "rounded-bl-[5px] border border-white/[0.08] bg-[#171717] text-white/75 shadow-[0_10px_30px_rgba(0,0,0,0.16)]"
+                                      ? `bg-white text-[#111111] ${
+                                          nextSameSender
+                                            ? "rounded-br-[8px]"
+                                            : "rounded-br-[5px]"
+                                        }`
+                                      : `border border-white/[0.08] bg-[#191919] text-white/80 ${
+                                          nextSameSender
+                                            ? "rounded-bl-[8px]"
+                                            : "rounded-bl-[5px]"
+                                        }`
                                   }`}
                                 >
-                                  {/* Step 9: Render images and attachments */}
                                   {message.attachment_url && (
                                     <a
                                       href={message.attachment_url}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="mb-2 block overflow-hidden rounded-[11px]"
+                                      className={`mb-2 block overflow-hidden rounded-[11px] ${
+                                        isMine ? "bg-black/[0.04]" : "bg-black/20"
+                                      }`}
                                     >
                                       {message.attachment_type?.startsWith("image/") ? (
                                         <img
                                           src={message.attachment_url}
                                           alt={message.attachment_name || "Attachment"}
-                                          className="max-h-[360px] w-full max-w-[420px] object-cover transition hover:opacity-90"
+                                          className="max-h-[360px] w-full max-w-[420px] object-contain transition-opacity hover:opacity-90"
                                         />
                                       ) : (
-                                        <div className="flex items-center gap-3 bg-black/[0.12] px-3 py-3">
+                                        <div className="flex items-center gap-3 px-3 py-3">
                                           <Paperclip className="h-4 w-4 shrink-0" />
                                           <div className="min-w-0">
                                             <p className="truncate text-[10px] font-medium">
                                               {message.attachment_name || "Attachment"}
                                             </p>
                                             {message.attachment_size && (
-                                              <p className="mt-0.5 text-[8px] opacity-50">
+                                              <p className="mt-1 text-[9px] opacity-55">
                                                 {(message.attachment_size / 1024 / 1024).toFixed(2)} MB
                                               </p>
                                             )}
@@ -1045,73 +985,63 @@ function MessagesContent() {
                                   )}
 
                                   {message.content && (
-                                    <div>{message.content}</div>
+                                    <div className="whitespace-pre-wrap break-words">
+                                      {message.content}
+                                    </div>
                                   )}
                                 </div>
 
-                                <div
-                                  className={`mt-1 flex items-center gap-1.5 px-1 text-[8px] ${
-                                    isMine
-                                      ? "text-white/20"
-                                      : "text-white/20"
-                                  }`}
-                                >
-                                  <span>
-                                    {formatTime(
-                                      message.created_at,
-                                    )}
-                                  </span>
-
+                                <div className="mt-1.5 flex items-center gap-1.5 px-1 text-[9px] text-white/30">
+                                  <span>{formatTime(message.created_at)}</span>
                                   {isMine &&
                                     (message.read_at ? (
                                       <CheckCheck className="h-3 w-3 text-white/60" />
                                     ) : (
-                                      <Check className="h-3 w-3 text-white/20" />
+                                      <Check className="h-3 w-3 text-white/25" />
                                     ))}
                                 </div>
                               </div>
                             </div>
                           );
                         })}
-
                         <div ref={messagesEndRef} />
                       </div>
                     )}
                   </div>
 
-                  {/* COMPOSER */}
-                  <div className="shrink-0 border-t border-white/[0.055] bg-[#111111]/75 p-3 sm:p-4">
-                    {/* Step 7: Show the selected file before sending */}
+                  {/* MESSAGE COMPOSER */}
+                  <footer className="shrink-0 border-t border-white/[0.07] bg-[#101010] px-3 pb-3 pt-3 sm:px-5 sm:pb-4 sm:pt-4">
                     {selectedFile && (
-                      <div className="mx-auto mb-2 flex max-w-[760px] items-center gap-3 rounded-xl border border-white/[0.07] bg-[#151515] px-3 py-2.5">
-                        {selectedFile.type.startsWith("image/") ? (
-                          <ImageIcon className="h-4 w-4 shrink-0 text-white/60" />
-                        ) : (
-                          <Paperclip className="h-4 w-4 shrink-0 text-white/60" />
-                        )}
+                      <div className="mx-auto mb-3 flex max-w-[780px] items-center gap-3 rounded-xl border border-white/[0.08] bg-[#181818] px-3 py-2.5">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.035]">
+                          {selectedFile.type.startsWith("image/") ? (
+                            <ImageIcon className="h-4 w-4 text-white/65" />
+                          ) : (
+                            <Paperclip className="h-4 w-4 text-white/65" />
+                          )}
+                        </div>
 
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-[10px] font-medium text-white/65">
+                          <p className="truncate text-[10px] font-medium text-white/75">
                             {selectedFile.name}
                           </p>
-
-                          <p className="mt-0.5 text-[8px] text-white/25">
-                            {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                          <p className="mt-1 text-[9px] text-white/35">
+                            {(selectedFile.size / 1024 / 1024).toFixed(2)} MB · Ready to send
                           </p>
                         </div>
 
                         <button
                           type="button"
                           onClick={() => setSelectedFile(null)}
-                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white/25 transition hover:bg-white/[0.05] hover:text-white/70"
-                          title="Remove attachment"
+                          aria-label="Remove attachment"
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/35 transition hover:bg-white/[0.07] hover:text-white"
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <X className="h-4 w-4" />
                         </button>
                       </div>
                     )}
-                    <div className="mx-auto flex max-w-[760px] items-end gap-2 rounded-[14px] border border-white/[0.075] bg-[#151515] p-1.5 shadow-[0_15px_45px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.02)] transition focus-within:border-white/20">
-                      {/* Step 6: Add the file picker */}
+
+                    <div className="mx-auto flex max-w-[780px] items-end gap-2 rounded-[17px] border border-white/[0.09] bg-[#191919] p-1.5 shadow-[0_12px_35px_rgba(0,0,0,0.16)] transition focus-within:border-white/[0.2]">
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -1119,7 +1049,6 @@ function MessagesContent() {
                         className="hidden"
                         onChange={(event) => {
                           const file = event.target.files?.[0] ?? null;
-
                           if (!file) return;
 
                           if (file.size > 10 * 1024 * 1024) {
@@ -1138,23 +1067,22 @@ function MessagesContent() {
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={sending}
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-white/30 transition hover:bg-white/[0.05] hover:text-white/70 disabled:opacity-40"
+                        aria-label="Attach a file"
                         title="Attach a file"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white/40 transition hover:bg-white/[0.06] hover:text-white/85 disabled:opacity-40"
                       >
-                        <Paperclip className="h-4 w-4" strokeWidth={1.8} />
+                        <Paperclip className="h-[17px] w-[17px]" strokeWidth={1.8} />
                       </button>
 
                       <textarea
                         ref={messageInputRef}
                         value={messageText}
-                        onChange={(event) =>
-                          setMessageText(event.target.value)
-                        }
+                        onChange={(event) => setMessageText(event.target.value)}
                         onKeyDown={handleMessageKeyDown}
                         placeholder="Write a message..."
                         rows={1}
                         disabled={sending || uploadingFile}
-                        className="max-h-28 min-h-[38px] flex-1 resize-none bg-transparent px-2.5 py-2 text-[11px] leading-5 text-white/75 outline-none placeholder:text-white/25 disabled:opacity-50"
+                        className="max-h-28 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2.5 text-[11px] leading-5 text-white/85 outline-none placeholder:text-white/30 disabled:opacity-50"
                       />
 
                       <button
@@ -1165,23 +1093,22 @@ function MessagesContent() {
                           sending ||
                           uploadingFile
                         }
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white text-black shadow-[0_7px_20px_rgba(255,255,255,0.06)] transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/[0.05] disabled:text-white/20 disabled:shadow-none"
+                        aria-label="Send message"
+                        title="Send message"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-black transition hover:bg-white/90 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-white/[0.06] disabled:text-white/20"
                       >
                         {sending || uploadingFile ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
-                          <Send
-                            className="h-3.5 w-3.5"
-                            strokeWidth={2}
-                          />
+                          <Send className="h-4 w-4" strokeWidth={2} />
                         )}
                       </button>
                     </div>
 
-                    <p className="mx-auto mt-2 max-w-[760px] px-1 text-[8px] text-white/15">
-                      Press Enter to send · Shift + Enter for a new line
+                    <p className="mx-auto mt-2.5 max-w-[780px] px-1 text-[9px] text-white/25">
+                      Enter to send <span className="px-1 text-white/15">·</span> Shift + Enter for a new line
                     </p>
-                  </div>
+                  </footer>
                 </>
               )}
             </section>
@@ -1194,7 +1121,13 @@ function MessagesContent() {
 
 export default function MessagesPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense
+      fallback={
+        <main className="flex h-screen items-center justify-center bg-background text-white">
+          <Loader2 className="h-4 w-4 animate-spin text-white/40" />
+        </main>
+      }
+    >
       <MessagesContent />
     </Suspense>
   );
