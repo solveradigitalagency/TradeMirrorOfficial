@@ -13,7 +13,7 @@ import {
   UserRound,
   TrendingUp,
   BookOpen,
-  // Sparkles, // Removed Sparkles import
+  // Sparkles,
 } from "lucide-react";
 
 import { useEffect, useMemo, useState } from "react";
@@ -150,47 +150,42 @@ function MetricCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
+    <div className="relative min-w-0 overflow-hidden rounded-2xl border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-3 shadow-[0_12px_30px_rgba(0,0,0,0.2)] sm:p-5">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-1.5">
             <p className="text-[12px] font-medium text-white/65">
               {title}
             </p>
-
             <CircleHelp
               className="h-3.5 w-3.5 text-white/20"
               strokeWidth={1.8}
             />
           </div>
-
           {/* Fixed Net P&L Card styling */}
           <p
-            className={`mt-3 text-[28px] font-semibold tracking-[-0.04em] ${
+            className={`mt-3 text-[23px] font-semibold tracking-[-0.04em] sm:text-[28px] ${
               title === "Net P&L"
                 ? value.startsWith("-")
                   ? "text-red-400"
                   : value.startsWith("+")
-                    ? "text-emerald-400"
-                    : "text-white"
+                  ? "text-emerald-400"
+                  : "text-white"
                 : "text-white"
             }`}
           >
             {value}
           </p>
-
           <p
             className={`mt-1 text-[10px] font-medium ${
-              positive
-                ? "text-white/65"
-                : "text-white/45"
+              positive ? "text-white/65" : "text-white/45"
             }`}
           >
             {change}
           </p>
         </div>
-
-        <div className="mt-5">{children}</div>
+        {/* Responsive metric chart area */}
+        <div className="mt-2 sm:mt-5">{children}</div>
       </div>
     </div>
   );
@@ -204,9 +199,7 @@ function MiniLineChart({
   purple?: boolean;
 }) {
   const values =
-    data.length >= 2
-      ? data
-      : [0, 0, 0, 0, 0, 0];
+    data.length >= 2 ? data : [0, 0, 0, 0, 0, 0];
 
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -214,12 +207,8 @@ function MiniLineChart({
 
   const points = values
     .map((value, index) => {
-      const x =
-        (index / (values.length - 1)) * 130;
-
-      const y =
-        48 - ((value - min) / range) * 40;
-
+      const x = (index / (values.length - 1)) * 130;
+      const y = 48 - ((value - min) / range) * 40;
       return `${x},${y}`;
     })
     .join(" ");
@@ -229,7 +218,7 @@ function MiniLineChart({
   return (
     <svg
       viewBox="0 0 130 55"
-      className="h-[55px] w-[130px]"
+      className="h-[38px] w-[76px] sm:h-[55px] sm:w-[130px]"
       preserveAspectRatio="none"
     >
       <defs>
@@ -245,7 +234,6 @@ function MiniLineChart({
             stopColor="#ffffff"
             stopOpacity="0.22"
           />
-
           <stop
             offset="100%"
             stopColor="#ffffff"
@@ -256,9 +244,7 @@ function MiniLineChart({
 
       <polygon
         points={fillPoints}
-        fill={`url(#${
-          purple ? "purpleFill" : "greenFill"
-        })`}
+        fill={`url(#${purple ? "purpleFill" : "greenFill"})`}
       />
 
       <polyline
@@ -271,11 +257,7 @@ function MiniLineChart({
   );
 }
 
-function WinRateRing({
-  value,
-}: {
-  value: number;
-}) {
+function WinRateRing({ value }: { value: number }) {
   const circumference = 2 * Math.PI * 23;
 
   const offset =
@@ -285,7 +267,7 @@ function WinRateRing({
   return (
     <svg
       viewBox="0 0 60 60"
-      className="h-[64px] w-[64px] -rotate-90"
+      className="h-[34px] w-[34px] -rotate-90 sm:h-[64px] sm:w-[64px]"
     >
       <circle
         cx="30"
@@ -295,7 +277,6 @@ function WinRateRing({
         stroke="rgba(255,255,255,0.05)"
         strokeWidth="7"
       />
-
       <circle
         cx="30"
         cy="30"
@@ -311,11 +292,7 @@ function WinRateRing({
   );
 }
 
-function TradeBars({
-  trades,
-}: {
-  trades: Trade[];
-}) {
+function TradeBars({ trades }: { trades: Trade[] }) {
   const recent = trades.slice(0, 12).reverse();
 
   const values =
@@ -329,20 +306,17 @@ function TradeBars({
   );
 
   return (
-    <div className="flex h-[58px] w-[120px] items-end justify-end gap-[5px]">
+    <div className="flex h-[30px] w-[64px] items-end justify-end gap-[3px] sm:h-[58px] sm:w-[120px] sm:gap-[5px]">
       {values.map((value, index) => {
         const height = Math.max(
-          8,
-          (Math.abs(value) / max) * 54
+          6,
+          (Math.abs(value) / max) * (window.innerWidth >= 640 ? 54 : 24)
         );
-
         return (
           <div
             key={index}
-            className={`w-[7px] rounded-t-[3px] ${
-              value >= 0
-                ? "bg-white/65"
-                : "bg-white/25"
+            className={`w-[4px] rounded-t-[2px] sm:w-[7px] sm:rounded-t-[3px] ${
+              value >= 0 ? "bg-white/65" : "bg-white/25"
             }`}
             style={{
               height: `${height}px`,
@@ -354,11 +328,7 @@ function TradeBars({
   );
 }
 
-function EquityChart({
-  trades,
-}: {
-  trades: Trade[];
-}) {
+function EquityChart({ trades }: { trades: Trade[] }) {
   if (trades.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-[11px] text-white/20">
@@ -417,14 +387,12 @@ function EquityChart({
             stopColor="#ffffff"
             stopOpacity="0.30"
           />
-
           <stop
             offset="100%"
             stopColor="#ffffff"
             stopOpacity="0"
           />
         </linearGradient>
-
         <linearGradient
           id="equityStroke"
           x1="0"
@@ -432,15 +400,8 @@ function EquityChart({
           x2="1"
           y2="0"
         >
-          <stop
-            offset="0%"
-            stopColor="#a3a3a3"
-          />
-
-          <stop
-            offset="100%"
-            stopColor="#ffffff"
-          />
+          <stop offset="0%" stopColor="#a3a3a3" />
+          <stop offset="100%" stopColor="#ffffff" />
         </linearGradient>
       </defs>
 
@@ -565,30 +526,18 @@ export default function DashboardPage({
     },
   ];
 
-  const [allTrades, setAllTrades] =
-    useState<Trade[]>([]);
-
-  const [profile, setProfile] =
-    useState<Profile | null>(null);
-
-  const [range, setRange] =
-    useState<Range>("30D");
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState("");
-
+  const [allTrades, setAllTrades] = useState<Trade[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [range, setRange] = useState<Range>("30D");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [traders, setTraders] = useState<TraderProfile[]>([]);
   const [tradersLoading, setTradersLoading] = useState(false);
-
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  // const [notificationsLoading, setNotificationsLoading] = useState(false); // Not used per instructions
+  // const [notificationsLoading, setNotificationsLoading] = useState(false);
 
   // AI Weekly Overview states removed
 
@@ -604,9 +553,7 @@ export default function DashboardPage({
         });
 
         setAllTrades(previewTrades);
-
         setNotifications([]);
-
         setLoading(false);
 
         return;
@@ -623,41 +570,38 @@ export default function DashboardPage({
         return;
       }
 
-      const [
-        profileResult,
-        tradesResult,
-        notificationsResult,
-      ] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select("display_name, username")
-          .eq("id", user.id)
-          .single(),
+      const [profileResult, tradesResult, notificationsResult] =
+        await Promise.all([
+          supabase
+            .from("profiles")
+            .select("display_name, username")
+            .eq("id", user.id)
+            .single(),
 
-        supabase
-          .from("trades")
-          .select(
-            "id, trade_date, created_at, symbol, direction, pnl, r_multiple, result"
-          )
-          .eq("user_id", user.id)
-          .order("trade_date", {
-            ascending: false,
-          })
-          .order("created_at", {
-            ascending: false,
-          }),
+          supabase
+            .from("trades")
+            .select(
+              "id, trade_date, created_at, symbol, direction, pnl, r_multiple, result"
+            )
+            .eq("user_id", user.id)
+            .order("trade_date", {
+              ascending: false,
+            })
+            .order("created_at", {
+              ascending: false,
+            }),
 
-        supabase
-          .from("notifications")
-          .select(
-            "id, type, title, message, read, actor_user_id, related_trade_id, related_profile_id, created_at"
-          )
-          .eq("user_id", user.id)
-          .order("created_at", {
-            ascending: false,
-          })
-          .limit(30),
-      ]);
+          supabase
+            .from("notifications")
+            .select(
+              "id, type, title, message, read, actor_user_id, related_trade_id, related_profile_id, created_at"
+            )
+            .eq("user_id", user.id)
+            .order("created_at", {
+              ascending: false,
+            })
+            .limit(30),
+        ]);
 
       if (profileResult.error) {
         console.error(
@@ -674,9 +618,7 @@ export default function DashboardPage({
           code: tradesResult.error.code,
         });
 
-        setError(
-          "We couldn't load your trading data."
-        );
+        setError("We couldn't load your trading data.");
 
         setLoading(false);
         return;
@@ -694,14 +636,11 @@ export default function DashboardPage({
       }
 
       setProfile(
-        (profileResult.data as Profile | null) ??
-          null
+        (profileResult.data as Profile | null) ?? null
       );
-
       setAllTrades(
         (tradesResult.data ?? []) as Trade[]
       );
-
       setLoading(false);
     }
 
@@ -787,8 +726,7 @@ export default function DashboardPage({
       (trade) => trade.result === "Breakeven"
     );
 
-    const decidedTrades =
-      winners.length + losers.length;
+    const decidedTrades = winners.length + losers.length;
 
     const winRate =
       decidedTrades > 0
@@ -796,15 +734,13 @@ export default function DashboardPage({
         : 0;
 
     const grossProfit = winners.reduce(
-      (sum, trade) =>
-        sum + Number(trade.pnl),
+      (sum, trade) => sum + Number(trade.pnl),
       0
     );
 
     const grossLoss = Math.abs(
       losers.reduce(
-        (sum, trade) =>
-          sum + Number(trade.pnl),
+        (sum, trade) => sum + Number(trade.pnl),
         0
       )
     );
@@ -813,8 +749,8 @@ export default function DashboardPage({
       grossLoss > 0
         ? grossProfit / grossLoss
         : grossProfit > 0
-          ? grossProfit
-          : 0;
+        ? grossProfit
+        : 0;
 
     return {
       netPnl,
@@ -829,7 +765,6 @@ export default function DashboardPage({
 
   const pnlChartData = useMemo(() => {
     let running = 0;
-
     return [...filteredTrades]
       .reverse()
       .map((trade) => {
@@ -850,76 +785,57 @@ export default function DashboardPage({
       return [];
     }
 
-    const duration =
-      now.getTime() - start.getTime();
+    const duration = now.getTime() - start.getTime();
 
-    const previousStart = new Date(
-      start.getTime() - duration
-    );
+    const previousStart = new Date(start.getTime() - duration);
 
     return allTrades.filter((trade) => {
       const date = new Date(
         `${trade.trade_date}T12:00:00`
       );
-
-      return (
-        date >= previousStart &&
-        date < start
-      );
+      return date >= previousStart && date < start;
     });
   }, [allTrades, range]);
 
   const previousStats = useMemo(() => {
     const pnl = previousRangeTrades.reduce(
-      (sum, trade) =>
-        sum + Number(trade.pnl),
+      (sum, trade) => sum + Number(trade.pnl),
       0
     );
 
     // UPDATED WIN RATE LOGIC FOR PREVIOUS STATS
-    const winners =
-      previousRangeTrades.filter(
-        (trade) => trade.result === "Win"
-      );
+    const winners = previousRangeTrades.filter(
+      (trade) => trade.result === "Win"
+    );
+    const losers = previousRangeTrades.filter(
+      (trade) => trade.result === "Loss"
+    );
+    const breakevens = previousRangeTrades.filter(
+      (trade) => trade.result === "Breakeven"
+    );
 
-    const losers =
-      previousRangeTrades.filter(
-        (trade) => trade.result === "Loss"
-      );
-
-    const breakevens =
-      previousRangeTrades.filter(
-        (trade) => trade.result === "Breakeven"
-      );
-
-    const decidedTrades =
-      winners.length + losers.length;
-
+    const decidedTrades = winners.length + losers.length;
     const winRate =
       decidedTrades > 0
         ? (winners.length / decidedTrades) * 100
         : 0;
 
     const grossProfit = winners.reduce(
-      (sum, trade) =>
-        sum + Number(trade.pnl),
+      (sum, trade) => sum + Number(trade.pnl),
       0
     );
-
     const grossLoss = Math.abs(
       losers.reduce(
-        (sum, trade) =>
-          sum + Number(trade.pnl),
+        (sum, trade) => sum + Number(trade.pnl),
         0
       )
     );
-
     const profitFactor =
       grossLoss > 0
         ? grossProfit / grossLoss
         : grossProfit > 0
-          ? grossProfit
-          : 0;
+        ? grossProfit
+        : 0;
 
     return {
       pnl,
@@ -932,50 +848,26 @@ export default function DashboardPage({
     };
   }, [previousRangeTrades]);
 
-  function percentageChange(
-    current: number,
-    previous: number
-  ) {
+  function percentageChange(current: number, previous: number) {
     if (previous === 0) {
-      return current === 0
-        ? "No change"
-        : "New";
+      return current === 0 ? "No change" : "New";
     }
 
-    const change =
-      ((current - previous) /
-        Math.abs(previous)) *
-      100;
-
-    return `${
-      change >= 0 ? "+" : ""
-    }${change.toFixed(2)}% vs prev`;
+    const change = ((current - previous) / Math.abs(previous)) * 100;
+    return `${change >= 0 ? "+" : ""}${change.toFixed(2)}% vs prev`;
   }
 
-  function numberChange(
-    current: number,
-    previous: number
-  ) {
-    const difference =
-      current - previous;
-
-    return `${
-      difference >= 0 ? "+" : ""
-    }${difference} vs prev`;
+  function numberChange(current: number, previous: number) {
+    const difference = current - previous;
+    return `${difference >= 0 ? "+" : ""}${difference} vs prev`;
   }
 
   const displayName =
-    profile?.display_name ||
-    profile?.username ||
-    "Trader";
+    profile?.display_name || profile?.username || "Trader";
 
-  const recentTrades =
-    filteredTrades.slice(0, 5);
+  const recentTrades = filteredTrades.slice(0, 5);
 
-  const rangeLabel =
-    range === "All Time"
-      ? "all time"
-      : range;
+  const rangeLabel = range === "All Time" ? "all time" : range;
 
   const searchTradeResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -1006,24 +898,16 @@ export default function DashboardPage({
         <div className="absolute bottom-[-220px] right-[-180px] h-[500px] w-[500px] rounded-full bg-white/[0.015] blur-[150px]" />
       </div>
 
-      <div className="relative mx-auto max-w-[1700px] px-3 py-3 sm:px-5 sm:py-4 xl:px-7">
-
-        <div className="min-h-[calc(100vh-24px)] overflow-hidden rounded-[18px] border border-white/[0.07] bg-card/80 shadow-[0_35px_100px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.025)] backdrop-blur-2xl">
-
+      <div className="relative mx-auto max-w-[1700px] px-2 py-2 sm:px-5 sm:py-4 xl:px-7">
+        <div className="min-h-[calc(100vh-16px)] overflow-hidden rounded-2xl border border-white/[0.07] bg-card/80 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:min-h-[calc(100vh-24px)] sm:rounded-[18px]">
           {/* HEADER */}
 
-          <header className="flex items-start justify-between gap-3 px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-7 xl:px-8">
-
-            <DashboardGreeting
-              name={displayName}
-            />
+          <header className="flex items-center justify-between gap-2 px-3 pb-4 pt-4 sm:items-start sm:gap-3 sm:px-6 sm:pb-5 sm:pt-7 xl:px-8">
+            <DashboardGreeting name={displayName} />
 
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
-
-              {/* RANGE */}
-
+              {/* RANGE SELECTOR (desktop only) */}
               <div className="hidden items-center overflow-hidden rounded-xl border border-white/[0.08] bg-secondary p-1 md:flex">
-
                 {(
                   [
                     "Today",
@@ -1037,9 +921,7 @@ export default function DashboardPage({
                   <button
                     key={rangeOption}
                     type="button"
-                    onClick={() =>
-                      setRange(rangeOption)
-                    }
+                    onClick={() => setRange(rangeOption)}
                     className={`h-9 rounded-lg px-4 text-[11px] font-medium transition ${
                       range === rangeOption
                         ? "border border-white/[0.16] bg-white/[0.12] text-white shadow-[0_0_18px_rgba(35,133,245,0.12)]"
@@ -1049,7 +931,6 @@ export default function DashboardPage({
                     {rangeOption}
                   </button>
                 ))}
-
               </div>
 
               <button
@@ -1058,7 +939,7 @@ export default function DashboardPage({
                   setSearchOpen(true);
                   setNotificationsOpen(false);
                 }}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-secondary text-white/55 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-secondary text-white/60 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white sm:h-11 sm:w-11"
               >
                 <Search
                   className="h-[18px] w-[18px]"
@@ -1072,7 +953,7 @@ export default function DashboardPage({
                   setNotificationsOpen((value) => !value);
                   setSearchOpen(false);
                 }}
-                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-secondary text-white/55 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white"
+                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-secondary text-white/60 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white sm:h-11 sm:w-11"
               >
                 <Bell
                   className="h-[18px] w-[18px]"
@@ -1087,49 +968,55 @@ export default function DashboardPage({
                   </span>
                 )}
               </button>
-
-              {/* AI WEEKLY OVERVIEW BUTTON REMOVED */}
-
-              {/* Removed Settings2 button here as per instruction */}
-
             </div>
-
           </header>
 
+          {/* MOBILE DATE RANGE */}
+          <div className="border-b border-white/[0.06] px-3 pb-4 md:hidden">
+            <div className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {(
+                ["Today", "7D", "30D", "3M", "YTD", "All Time"] as Range[]
+              ).map((rangeOption) => (
+                <button
+                  key={rangeOption}
+                  type="button"
+                  onClick={() => setRange(rangeOption)}
+                  className={`shrink-0 rounded-full border px-3.5 py-2 text-[11px] font-medium transition ${
+                    range === rangeOption
+                      ? "border-white/20 bg-white text-black"
+                      : "border-white/[0.08] bg-white/[0.035] text-white/55"
+                  }`}
+                >
+                  {rangeOption}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* CONTENT */}
-
           <div className="px-3 pb-6 sm:px-6 sm:pb-8 xl:px-8">
-
             {/* KPI ROW */}
-
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-4">
               <MetricCard
                 title="Net P&L"
                 value={
                   loading
                     ? "—"
-                    : formatMoney(
-                        stats.netPnl
-                      )
+                    : formatMoney(stats.netPnl)
                 }
                 change={
                   loading
                     ? "Loading..."
                     : range === "All Time"
-                      ? `${filteredTrades.length} trades`
-                      : percentageChange(
-                          stats.netPnl,
-                          previousStats.pnl
-                        )
+                    ? `${filteredTrades.length} trades`
+                    : percentageChange(
+                        stats.netPnl,
+                        previousStats.pnl
+                      )
                 }
-                positive={
-                  stats.netPnl >= 0
-                }
+                positive={stats.netPnl >= 0}
               >
-                <MiniLineChart
-                  data={pnlChartData}
-                />
+                <MiniLineChart data={pnlChartData} />
               </MetricCard>
 
               <MetricCard
@@ -1137,34 +1024,22 @@ export default function DashboardPage({
                 value={
                   loading
                     ? "—"
-                    : `${stats.winRate.toFixed(
-                        1
-                      )}%`
+                    : `${stats.winRate.toFixed(1)}%`
                 }
                 change={
                   loading
                     ? "Loading..."
                     : range === "All Time"
-                      ? `${stats.winners} wins`
-                      : `${
-                          stats.winRate -
-                          previousStats.winRate >=
-                          0
-                            ? "+"
-                            : ""
-                        }${(
-                          stats.winRate -
-                          previousStats.winRate
-                        ).toFixed(2)}% vs prev`
+                    ? `${stats.winners} wins`
+                    : `${
+                        stats.winRate - previousStats.winRate >= 0 ? "+" : ""
+                      }${(
+                        stats.winRate - previousStats.winRate
+                      ).toFixed(2)}% vs prev`
                 }
-                positive={
-                  stats.winRate >=
-                  previousStats.winRate
-                }
+                positive={stats.winRate >= previousStats.winRate}
               >
-                <WinRateRing
-                  value={stats.winRate}
-                />
+                <WinRateRing value={stats.winRate} />
               </MetricCard>
 
               <MetricCard
@@ -1172,94 +1047,65 @@ export default function DashboardPage({
                 value={
                   loading
                     ? "—"
-                    : stats.profitFactor.toFixed(
-                        2
-                      )
+                    : stats.profitFactor.toFixed(2)
                 }
                 change={
                   loading
                     ? "Loading..."
                     : range === "All Time"
-                      ? `${stats.winners}W / ${stats.losers}L`
-                      : `${
-                          stats.profitFactor -
-                            previousStats.profitFactor >=
-                          0
-                            ? "+"
-                            : ""
-                        }${(
-                          stats.profitFactor -
-                          previousStats.profitFactor
-                        ).toFixed(2)} vs prev`
+                    ? `${stats.winners}W / ${stats.losers}L`
+                    : `${
+                        stats.profitFactor - previousStats.profitFactor >= 0
+                          ? "+"
+                          : ""
+                      }${(
+                        stats.profitFactor - previousStats.profitFactor
+                      ).toFixed(2)} vs prev`
                 }
-                positive={
-                  stats.profitFactor >=
-                  previousStats.profitFactor
-                }
+                positive={stats.profitFactor >= previousStats.profitFactor}
               >
-                <MiniLineChart
-                  data={pnlChartData}
-                  purple
-                />
+                <MiniLineChart data={pnlChartData} purple />
               </MetricCard>
 
               <MetricCard
                 title="Trades"
                 value={
-                  loading
-                    ? "—"
-                    : stats.tradeCount.toString()
+                  loading ? "—" : stats.tradeCount.toString()
                 }
                 change={
                   loading
                     ? "Loading..."
                     : range === "All Time"
-                      ? "Total trades"
-                      : numberChange(
-                          stats.tradeCount,
-                          previousStats.trades
-                        )
+                    ? "Total trades"
+                    : numberChange(
+                        stats.tradeCount,
+                        previousStats.trades
+                      )
                 }
-                positive={
-                  stats.tradeCount >=
-                  previousStats.trades
-                }
+                positive={stats.tradeCount >= previousStats.trades}
               >
-                <TradeBars
-                  trades={filteredTrades}
-                />
+                <TradeBars trades={filteredTrades} />
               </MetricCard>
-
             </div>
 
             {/* MAIN ANALYTICS */}
-
-            <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(360px,0.9fr)]">
-
+            <div className="mt-4 grid min-w-0 grid-cols-1 gap-3 sm:mt-5 sm:gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(360px,0.9fr)]">
               {/* P&L PERFORMANCE */}
-
-              <section className="h-[330px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
-
-                <div className="flex items-center justify-between px-6 pt-5">
-
+              <section className="h-[300px] min-w-0 overflow-hidden rounded-2xl border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] shadow-[0_12px_30px_rgba(0,0,0,0.2)] sm:h-[440px]">
+                <div className="flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
                   <div>
                     <h2 className="text-[16px] font-semibold tracking-[-0.025em] text-white/90">
                       P&L Performance
                     </h2>
-
                     <p className="mt-1 text-[9px] text-white/25">
                       {rangeLabel}
                     </p>
                   </div>
-
                   <div className="flex h-8 items-center rounded-lg border border-white/[0.07] bg-white/[0.025] px-3 text-[10px] font-medium text-white/55">
                     Cumulative P&L
                   </div>
-
                 </div>
-
-                <div className="relative mt-4 h-[235px] px-3 sm:mt-5 sm:h-[330px] sm:px-6">
-
+                <div className="relative mt-4 h-[170px] px-2 sm:mt-5 sm:h-[330px] sm:px-6">
                   <div className="absolute left-0 top-0 flex h-full flex-col justify-between py-2 text-[10px] text-white/25">
                     <span>$12K</span>
                     <span>$8K</span>
@@ -1268,154 +1114,176 @@ export default function DashboardPage({
                     <span>-$4K</span>
                   </div>
 
-                  <div className="ml-8 h-[190px] sm:ml-12 sm:h-[275px]">
-                    <EquityChart
-                      trades={filteredTrades}
-                    />
+                  <div className="ml-6 h-[120px] sm:ml-12 sm:h-[275px]">
+                    <EquityChart trades={filteredTrades} />
                   </div>
 
-                  <div className="ml-8 mt-[-2px] flex justify-between text-[10px] text-white/25 sm:ml-12">
+                  <div className="ml-6 mt-[-2px] flex justify-between text-[10px] text-white/25 sm:ml-12">
                     <span>
                       {filteredTrades.length > 0
                         ? filteredTrades.at(-1)?.trade_date
                         : "—"}
                     </span>
-
                     <span>
                       {range === "Today"
                         ? "Today"
                         : range}
                     </span>
-
                     <span>
                       {filteredTrades.length > 0
                         ? filteredTrades[0]?.trade_date
                         : "—"}
                     </span>
                   </div>
-
                 </div>
-
               </section>
 
               {/* RECENT TRADES */}
-
-              <section className="h-[400px] sm:h-[440px] overflow-hidden rounded-[20px] border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.035)]">
-
+              <section className="h-[350px] min-w-0 overflow-hidden rounded-2xl border border-white/[0.085] bg-gradient-to-br from-[#171717] via-[#111111] to-[#0a0a0a] p-3 shadow-[0_12px_30px_rgba(0,0,0,0.2)] sm:h-[440px] sm:p-5">
                 <div className="flex items-center justify-between">
-
                   <h2 className="text-[16px] font-semibold tracking-[-0.025em] text-white/90">
                     Recent Trades
                   </h2>
-
                   <a
                     href="/dashboard/trades"
                     className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-3 py-1.5 text-[10px] text-white/55 transition hover:bg-white/[0.05] hover:text-white"
                   >
                     View all
                   </a>
-
                 </div>
 
-                <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.055]">
+                {/* Mobile recent trades list */}
+                <div className="sm:hidden">
+                  {loading ? (
+                    <div className="flex h-40 items-center justify-center text-xs text-white/35">
+                      Loading trades...
+                    </div>
+                  ) : recentTrades.length === 0 ? (
+                    <div className="flex h-40 flex-col items-center justify-center text-center">
+                      <p className="text-sm font-medium text-white/55">
+                        No trades yet
+                      </p>
+                      <p className="mt-1 max-w-[230px] text-xs leading-5 text-white/30">
+                        Add your first trade to start building your performance history.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-white/[0.06]">
+                      {recentTrades.map((trade) => (
+                        <a
+                          key={trade.id}
+                          href="/dashboard/trades"
+                          className="flex min-w-0 items-center justify-between gap-3 py-3.5"
+                        >
+                          <div className="flex min-w-0 items-center gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.035]">
+                              {trade.direction === "Long" ? (
+                                <ArrowUpRight className="h-4 w-4 text-white/75" />
+                              ) : (
+                                <ArrowDownRight className="h-4 w-4 text-white/45" />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-white/85">
+                                {trade.symbol}
+                              </p>
+                              <p className="mt-1 truncate text-[11px] text-white/40">
+                                {trade.direction} · {trade.trade_date}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p
+                              className={`text-sm font-semibold ${
+                                Number(trade.pnl) > 0
+                                  ? "text-emerald-400"
+                                  : Number(trade.pnl) < 0
+                                  ? "text-red-400"
+                                  : "text-white/55"
+                              }`}
+                            >
+                              {formatMoney(Number(trade.pnl))}
+                            </p>
+                            <p className="mt-1 text-[10px] text-white/30">
+                              {trade.r_multiple !== null
+                                ? `${Number(trade.r_multiple).toFixed(2)}R`
+                                : "—"}
+                            </p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
+                {/* Desktop recent trades table */}
+                <div className="hidden sm:block mt-4 overflow-hidden rounded-xl border border-white/[0.055]">
                   <div className="grid grid-cols-[0.8fr_1fr_1fr_0.8fr_0.8fr] bg-white/[0.025] px-3 py-2.5 text-[9px] text-white/30">
-
                     <span>Symbol</span>
                     <span>Direction</span>
                     <span>P&L</span>
                     <span>R:R</span>
-                    <span className="text-right">
-                      Time
-                    </span>
-
+                    <span className="text-right">Time</span>
                   </div>
-
                   {loading ? (
                     <div className="flex h-[250px] items-center justify-center text-[10px] text-white/25">
                       Loading trades...
                     </div>
                   ) : recentTrades.length === 0 ? (
                     <div className="flex h-[250px] flex-col items-center justify-center text-center">
-
                       <p className="text-[11px] font-medium text-white/40">
                         No trades yet
                       </p>
-
                       <p className="mt-1 max-w-[220px] text-[9px] leading-4 text-white/20">
                         Add your first trade to start building your performance history.
                       </p>
-
                     </div>
                   ) : (
-                    recentTrades.map(
-                      (trade) => (
-                        <div
-                          key={trade.id}
-                          className="grid grid-cols-[0.8fr_1fr_1fr_0.8fr_0.8fr] items-center border-t border-white/[0.045] px-3 py-3 text-[10px] transition hover:bg-white/[0.025]"
+                    recentTrades.map((trade) => (
+                      <div
+                        key={trade.id}
+                        className="grid grid-cols-[0.8fr_1fr_1fr_0.8fr_0.8fr] items-center border-t border-white/[0.045] px-3 py-3 text-[10px] transition hover:bg-white/[0.025]"
+                      >
+                        <span className="font-semibold text-white/75">
+                          {trade.symbol}
+                        </span>
+                        <span
+                          className={
+                            trade.direction === "Long"
+                              ? "flex items-center gap-1 text-white/75"
+                              : "flex items-center gap-1 text-white/45"
+                          }
                         >
-
-                          <span className="font-semibold text-white/75">
-                            {trade.symbol}
-                          </span>
-
-                          <span
-                            className={
-                              trade.direction ===
-                              "Long"
-                                ? "flex items-center gap-1 text-white/75"
-                                : "flex items-center gap-1 text-white/45"
-                            }
-                          >
-                            {trade.direction ===
-                            "Long" ? (
-                              <ArrowUpRight className="h-3 w-3" />
-                            ) : (
-                              <ArrowDownRight className="h-3 w-3" />
-                            )}
-
-                            {trade.direction}
-                          </span>
-
-                          {/* Fixed P&L color logic for trade list */}
-                          <span
-                            className={`font-medium ${
-                              Number(trade.pnl) > 0
-                                ? "text-emerald-400"
-                                : Number(trade.pnl) < 0
-                                  ? "text-red-400"
-                                  : "text-white/50"
-                            }`}
-                          >
-                            {formatMoney(
-                              Number(
-                                trade.pnl
-                              )
-                            )}
-                          </span>
-
-                          <span className="text-white/50">
-                            {trade.r_multiple !==
-                            null
-                              ? `${Number(
-                                  trade.r_multiple
-                                ).toFixed(
-                                  2
-                                )}R`
-                              : "—"}
-                          </span>
-
-                          <span className="text-right text-white/30">
-                            {formatRelativeTime(
-                              trade.created_at
-                            )}
-                          </span>
-
-                        </div>
-                      )
-                    )
+                          {trade.direction === "Long" ? (
+                            <ArrowUpRight className="h-3 w-3" />
+                          ) : (
+                            <ArrowDownRight className="h-3 w-3" />
+                          )}
+                          {trade.direction}
+                        </span>
+                        {/* Fixed P&L color logic for trade list */}
+                        <span
+                          className={`font-medium ${
+                            Number(trade.pnl) > 0
+                              ? "text-emerald-400"
+                              : Number(trade.pnl) < 0
+                              ? "text-red-400"
+                              : "text-white/50"
+                          }`}
+                        >
+                          {formatMoney(Number(trade.pnl))}
+                        </span>
+                        <span className="text-white/50">
+                          {trade.r_multiple !== null
+                            ? `${Number(trade.r_multiple).toFixed(2)}R`
+                            : "—"}
+                        </span>
+                        <span className="text-right text-white/30">
+                          {formatRelativeTime(trade.created_at)}
+                        </span>
+                      </div>
+                    ))
                   )}
-
                 </div>
 
                 <a
@@ -1424,15 +1292,10 @@ export default function DashboardPage({
                 >
                   Go to Trades
                 </a>
-
               </section>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
 
       {/* SEARCH OVERLAY */}
@@ -1575,8 +1438,8 @@ export default function DashboardPage({
                               Number(trade.pnl) > 0
                                 ? "text-emerald-400"
                                 : Number(trade.pnl) < 0
-                                  ? "text-red-400"
-                                  : "text-white/50"
+                                ? "text-red-400"
+                                : "text-white/50"
                             }`}
                           >
                             {formatMoney(Number(trade.pnl))}
@@ -1719,9 +1582,7 @@ export default function DashboardPage({
                     }
                   }}
                   className={`flex w-full gap-3 border-b border-white/[0.045] px-4 py-3.5 text-left transition hover:bg-white/[0.025] ${
-                    !notification.read
-                      ? "bg-white/[0.025]"
-                      : ""
+                    !notification.read ? "bg-white/[0.025]" : ""
                   }`}
                 >
                   <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.05]">
@@ -1746,9 +1607,7 @@ export default function DashboardPage({
                     )}
 
                     <p className="mt-1.5 text-[8px] text-white/20">
-                      {formatRelativeTime(
-                        notification.created_at
-                      )}
+                      {formatRelativeTime(notification.created_at)}
                     </p>
                   </div>
                 </button>
@@ -1763,7 +1622,6 @@ export default function DashboardPage({
           {error}
         </div>
       )}
-
     </div>
   );
 }
