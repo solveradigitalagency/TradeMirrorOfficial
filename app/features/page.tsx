@@ -61,6 +61,7 @@ const featureCards = [
   },
 ];
 
+// JournalPreview with chart and badge color edits
 function JournalPreview() {
   return (
     <div className="mt-8 overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#07111c] shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10">
@@ -105,7 +106,7 @@ function JournalPreview() {
 
       <div className="mx-3 rounded-xl border border-white/[0.06] bg-[#030910] p-3 sm:mx-4 sm:p-4">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <span className="rounded-lg border border-blue-400/20 bg-blue-500/[0.06] px-2 py-1 text-[8px] text-blue-300/70">
+          <span className="rounded-lg border border-white/15 bg-white/[0.02] px-2 py-1 text-[8px] text-white/50">
             NQ · 5m · CME
           </span>
 
@@ -123,7 +124,7 @@ function JournalPreview() {
             <path
               d="M0 142 L45 130 L82 137 L120 104 L158 119 L195 85 L235 98 L275 66 L315 82 L352 48 L390 63 L428 38 L468 55 L510 27 L550 43 L600 15"
               fill="none"
-              stroke="#2387ff"
+              stroke="#d4d4d8"
               strokeWidth="3"
             />
           </svg>
@@ -156,6 +157,7 @@ function JournalPreview() {
   );
 }
 
+// AnalyticsPreview color edits
 function AnalyticsPreview() {
   return (
     <div className="mt-8 overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#07111c] p-4 shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10 sm:p-5">
@@ -185,13 +187,13 @@ function AnalyticsPreview() {
         >
           <path
             d="M0 190 L70 178 L135 155 L195 160 L255 126 L315 135 L375 91 L435 106 L495 63 L555 78 L620 42 L700 18 L700 220 L0 220 Z"
-            fill="rgba(35,135,255,0.13)"
+            fill="rgba(255,255,255,0.08)"
           />
 
           <path
             d="M0 190 L70 178 L135 155 L195 160 L255 126 L315 135 L375 91 L435 106 L495 63 L555 78 L620 42 L700 18"
             fill="none"
-            stroke="#2387ff"
+            stroke="#d4d4d8"
             strokeWidth="3"
           />
         </svg>
@@ -218,6 +220,7 @@ function AnalyticsPreview() {
   );
 }
 
+// ProfilesPreview: initials and Follow button neutral colors
 function ProfilesPreview() {
   return (
     <div className="mt-8 rounded-[20px] border border-white/[0.08] bg-[#07111c] p-4 shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10 sm:p-5">
@@ -240,7 +243,7 @@ function ProfilesPreview() {
             className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.018] px-3 py-3 sm:px-4"
           >
             <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-[10px] font-semibold text-blue-300">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-[10px] font-semibold text-white/80">
                 {initials}
               </div>
 
@@ -255,7 +258,7 @@ function ProfilesPreview() {
               </div>
             </div>
 
-            <button className="shrink-0 rounded-lg border border-blue-400/20 bg-blue-500/[0.04] px-3 py-2 text-[9px] font-medium text-blue-300 sm:px-4">
+            <button className="shrink-0 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-[9px] font-medium text-white/70 sm:px-4">
               Follow
             </button>
           </div>
@@ -286,6 +289,7 @@ function PrivacyPreview() {
   );
 }
 
+// ExecutionPreview: bars are white monochrome
 function ExecutionPreview() {
   return (
     <div className="mt-8 rounded-[20px] border border-white/[0.08] bg-[#07111c] p-4 shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10 sm:p-6">
@@ -312,7 +316,7 @@ function ExecutionPreview() {
 
               <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-400"
+                  className="h-full rounded-full bg-white/70"
                   style={{ width: value }}
                 />
               </div>
@@ -389,11 +393,11 @@ export default function FeaturesPage() {
       >
         {/* Ambient lighting */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-[5%] top-[10%] h-[450px] w-[450px] rounded-full bg-blue-500/[0.035] blur-[140px] sm:h-[600px] sm:w-[600px] sm:blur-[170px]" />
+          <div className="absolute left-[5%] top-[10%] h-[450px] w-[450px] rounded-full bg-white/[0.025] blur-[140px] sm:h-[600px] sm:w-[600px] sm:blur-[170px]" />
 
-          <div className="absolute right-[5%] top-[35%] h-[500px] w-[500px] rounded-full bg-blue-500/[0.03] blur-[150px] sm:h-[700px] sm:w-[700px] sm:blur-[180px]" />
+          <div className="absolute right-[5%] top-[35%] h-[500px] w-[500px] rounded-full bg-white/[0.02] blur-[150px] sm:h-[700px] sm:w-[700px] sm:blur-[180px]" />
 
-          <div className="absolute bottom-[5%] left-[30%] h-[500px] w-[550px] rounded-full bg-blue-600/[0.025] blur-[150px] sm:h-[600px] sm:w-[700px] sm:blur-[180px]" />
+          <div className="absolute bottom-[5%] left-[30%] h-[500px] w-[550px] rounded-full bg-white/[0.015] blur-[150px] sm:h-[600px] sm:w-[700px] sm:blur-[180px]" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-7 lg:px-12 xl:px-16">
@@ -401,7 +405,7 @@ export default function FeaturesPage() {
           <div className="mx-auto max-w-[760px] text-center">
             <h2 className="text-[39px] font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-[48px] md:text-[64px] lg:text-[76px]">
               Everything you need to{" "}
-              <span className="text-[#2387ff]">understand</span> your trading.
+              <span className="text-white">understand</span> your trading.
             </h2>
           </div>
 
@@ -416,12 +420,12 @@ export default function FeaturesPage() {
                   className="group relative overflow-hidden rounded-[24px] border border-white/[0.09] bg-[#07111c]/90 p-5 shadow-[0_25px_80px_rgba(0,0,0,0.22)] transition duration-500 hover:border-white/[0.14] hover:bg-[#091522] sm:rounded-[30px] sm:p-7"
                 >
                   {/* Top shine */}
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300/20 to-transparent" />
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
                   {/* Icon */}
-                  <div className="flex h-12 w-12 items-center justify-center rounded-[15px] border border-blue-300/20 bg-blue-500/[0.055] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition group-hover:border-blue-300/30 group-hover:bg-blue-500/[0.08] sm:h-14 sm:w-14 sm:rounded-[17px]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-[15px] border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition group-hover:border-white/20 group-hover:bg-white/[0.06] sm:h-14 sm:w-14 sm:rounded-[17px]">
                     <Icon
-                      className="h-5 w-5 text-blue-300 sm:h-6 sm:w-6"
+                      className="h-5 w-5 text-white/80 sm:h-6 sm:w-6"
                       strokeWidth={1.7}
                     />
                   </div>
@@ -446,16 +450,16 @@ export default function FeaturesPage() {
 
           {/* Bottom CTA */}
           <div className="relative mt-14 overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#07111c]/80 px-5 py-12 text-center shadow-[0_30px_100px_rgba(0,0,0,0.25)] sm:mt-20 sm:rounded-[30px] sm:px-8 sm:py-16 md:px-12">
-            <div className="pointer-events-none absolute left-1/2 top-[-160px] h-[320px] w-[500px] -translate-x-1/2 rounded-full bg-blue-500/[0.06] blur-[100px] sm:top-[-200px] sm:h-[400px] sm:w-[700px] sm:blur-[120px]" />
+            <div className="pointer-events-none absolute left-1/2 top-[-160px] h-[320px] w-[500px] -translate-x-1/2 rounded-full bg-white/[0.025] blur-[100px] sm:top-[-200px] sm:h-[400px] sm:w-[700px] sm:blur-[120px]" />
 
             <div className="relative">
-              <p className="text-[8px] font-semibold tracking-[0.18em] text-blue-300/60 sm:text-[9px]">
+              <p className="text-[8px] font-semibold tracking-[0.18em] text-white/50 sm:text-[9px]">
                 YOUR TRADING. YOUR DATA. YOUR EDGE.
               </p>
 
               <h3 className="mx-auto mt-4 max-w-[700px] text-[34px] font-semibold leading-[1] tracking-[-0.05em] text-white sm:mt-5 sm:text-[40px] md:text-[52px]">
                 Stop guessing.{" "}
-                <span className="text-[#2387ff]">Start learning.</span>
+                <span className="text-white">Start learning.</span>
               </h3>
 
               <p className="mx-auto mt-4 max-w-[520px] text-[13px] leading-6 text-white/35 sm:mt-5 sm:text-[14px] sm:leading-7">
@@ -465,7 +469,7 @@ export default function FeaturesPage() {
 
               <a
                 href="/signup"
-                className="mt-7 inline-flex h-[50px] items-center rounded-[10px] bg-[#1677f3] px-5 text-[11px] font-semibold text-white shadow-[0_12px_35px_rgba(35,133,245,0.22),inset_0_1px_0_rgba(255,255,255,0.2)] transition hover:bg-[#2785f6] sm:mt-8 sm:h-[52px] sm:px-6"
+                className="mt-7 inline-flex h-[50px] items-center rounded-[10px] border border-white/20 bg-white px-5 text-[11px] font-semibold text-black transition hover:bg-white/90 sm:mt-8 sm:h-[52px] sm:px-6"
               >
                 Start Journaling Free
               </a>

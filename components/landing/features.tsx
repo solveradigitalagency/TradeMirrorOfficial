@@ -57,9 +57,9 @@ export default function Features() {
                 }`}
               >
                 {/* Icon */}
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl border border-blue-400/20 bg-blue-500/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition group-hover:border-blue-400/35 group-hover:bg-blue-500/[0.07]">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition group-hover:border-white/20 group-hover:bg-white/[0.06]">
                   <Icon
-                    className="h-7 w-7 text-blue-500"
+                    className="h-7 w-7 text-white/80 transition group-hover:text-white"
                     strokeWidth={1.8}
                   />
                 </div>

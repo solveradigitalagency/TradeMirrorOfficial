@@ -8,14 +8,14 @@ export default function PricingPage() {
       <Navbar />
 
       <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute left-1/2 top-[-150px] h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-blue-500/[0.055] blur-[150px] sm:top-[-200px] sm:h-[650px] sm:w-[650px] sm:blur-[180px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[-150px] h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-white/[0.025] blur-[150px] sm:top-[-200px] sm:h-[650px] sm:w-[650px] sm:blur-[180px]" />
 
         <div className="relative mx-auto max-w-[1600px] px-4 py-20 text-center sm:px-6 sm:py-24 lg:px-8 lg:py-28">
           {/* Heading */}
           <h1 className="mx-auto max-w-[950px] text-[39px] font-semibold leading-[0.98] tracking-[-0.05em] sm:text-5xl md:text-6xl">
             <span className="text-white">Start free</span>
             <span className="text-white">.</span>
-            <span className="text-[#2385f5]">
+            <span className="text-white">
               {" "}
               Upgrade when you’re ready.
             </span>
@@ -50,7 +50,7 @@ export default function PricingPage() {
 
               <Link
                 href="/signup"
-                className="mt-6 flex h-12 w-full items-center justify-center rounded-xl border border-[#2385f5]/80 bg-[#2385f5] text-sm font-medium text-white/95 shadow-[0_1px_9px_0_rgba(35,133,245,0.18)] transition hover:bg-[#3696ff] sm:mt-7"
+                className="mt-6 flex h-12 w-full items-center justify-center rounded-xl border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90 sm:mt-7"
               >
                 Start journaling free
               </Link>
@@ -73,12 +73,12 @@ export default function PricingPage() {
             </div>
 
             {/* PRO */}
-            <div className="relative flex min-w-0 max-w-full flex-col rounded-2xl border border-blue-400/30 bg-blue-500/[0.045] px-5 py-8 text-left shadow-[0_0_60px_rgba(35,133,245,0.08)] sm:px-8 sm:py-9 md:px-10 lg:px-14 lg:py-10">
-              <div className="absolute right-4 top-4 rounded-full border border-blue-400/20 bg-blue-500/10 px-2.5 py-1 text-[8px] font-semibold uppercase tracking-wider text-blue-400 sm:right-6 sm:top-6 sm:px-3 sm:text-[9px]">
+            <div className="relative flex min-w-0 max-w-full flex-col rounded-2xl border border-white/[0.12] bg-white/[0.035] px-5 py-8 text-left shadow-[0_0_60px_rgba(255,255,255,0.025)] sm:px-8 sm:py-9 md:px-10 lg:px-14 lg:py-10">
+              <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-white/[0.06] px-2.5 py-1 text-[8px] font-semibold uppercase tracking-wider text-white/60 sm:right-6 sm:top-6 sm:px-3 sm:text-[9px]">
                 Coming Later
               </div>
 
-              <p className="pr-24 text-xs font-medium uppercase tracking-widest text-blue-400 sm:pr-28">
+              <p className="pr-24 text-xs font-medium uppercase tracking-widest text-white/60 sm:pr-28">
                 For Connected Traders
               </p>
 
@@ -108,7 +108,7 @@ export default function PricingPage() {
               </button>
 
               <div className="mt-7">
-                <p className="mb-3 text-xs font-medium uppercase tracking-widest text-blue-400/80">
+                <p className="mb-3 text-xs font-medium uppercase tracking-widest text-white/50">
                   Planned for Pro
                 </p>
 
@@ -131,9 +131,9 @@ export default function PricingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3">
               {/* Info 1 */}
               <div className="flex items-center gap-3 px-4 py-3.5 sm:px-5">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/[0.06]">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.035]">
                   <svg
-                    className="h-3.5 w-3.5 text-blue-400"
+                    className="h-3.5 w-3.5 text-white/70"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -151,9 +151,9 @@ export default function PricingPage() {
 
               {/* Info 2 */}
               <div className="flex items-center gap-3 border-t border-white/[0.06] px-4 py-3.5 sm:px-5 md:border-l md:border-t-0">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/[0.06]">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.035]">
                   <svg
-                    className="h-3.5 w-3.5 text-blue-400"
+                    className="h-3.5 w-3.5 text-white/70"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -171,9 +171,9 @@ export default function PricingPage() {
 
               {/* Info 3 */}
               <div className="flex items-center gap-3 border-t border-white/[0.06] px-4 py-3.5 sm:px-5 md:border-l md:border-t-0">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/[0.06]">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.035]">
                   <svg
-                    className="h-3.5 w-3.5 text-blue-400"
+                    className="h-3.5 w-3.5 text-white/70"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"

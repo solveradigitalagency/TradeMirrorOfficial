@@ -87,7 +87,7 @@ function RoutinePreview({
 
         <div className="mt-5 flex items-center gap-3">
           <Camera
-            className="h-4 w-4 shrink-0 text-blue-400"
+            className="h-4 w-4 shrink-0 text-white/60"
             strokeWidth={1.8}
           />
 
@@ -128,7 +128,7 @@ export default function ProductPage() {
 
       {/* HERO */}
       <section className="relative">
-        <div className="pointer-events-none absolute left-1/2 top-[-180px] h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-blue-500/[0.07] blur-[150px] sm:top-[-220px] sm:h-[650px] sm:w-[650px] sm:blur-[180px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[-180px] h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-white/[0.025] blur-[150px] sm:top-[-220px] sm:h-[650px] sm:w-[650px] sm:blur-[180px]" />
 
         <div className="relative mx-auto max-w-[1450px] px-4 pb-12 pt-16 sm:px-6 sm:pb-16 sm:pt-20 md:pt-24 lg:px-10 lg:pb-16 lg:pt-32">
           <div className="mx-auto max-w-4xl text-center">
@@ -136,15 +136,15 @@ export default function ProductPage() {
               One place to understand
               <br />
               <span>
-                <span className="text-blue-400">every trade</span>
-                <span className="text-blue-400">.</span>
+                <span className="text-white">every trade</span>
+                <span className="text-white">.</span>
               </span>
             </h1>
           </div>
 
           {/* DASHBOARD */}
           <div className="relative mx-auto mt-12 w-full max-w-[1250px] sm:mt-16 lg:mt-20">
-            <div className="pointer-events-none absolute -inset-6 rounded-[35px] bg-blue-500/[0.045] blur-[60px] sm:-inset-10 sm:rounded-[40px] sm:blur-[70px]" />
+            <div className="pointer-events-none absolute -inset-6 rounded-[35px] bg-white/[0.025] blur-[60px] sm:-inset-10 sm:rounded-[40px] sm:blur-[70px]" />
 
             <div className="relative overflow-hidden rounded-[20px] border border-white/[0.10] bg-[#08111a]/90 p-1.5 shadow-[0_30px_90px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.05)] sm:rounded-[24px] sm:p-2 lg:rounded-[28px]">
               <div className="overflow-hidden rounded-[16px] sm:rounded-[19px] lg:rounded-[22px]">
@@ -157,7 +157,7 @@ export default function ProductPage() {
 
       {/* ROUTINE */}
       <section className="relative border-t border-white/[0.045]">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[400px] w-[500px] -translate-x-1/2 bg-blue-500/[0.025] blur-[140px] sm:h-[500px] sm:w-[700px] sm:blur-[160px]" />
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[400px] w-[500px] -translate-x-1/2 bg-white/[0.015] blur-[140px] sm:h-[500px] sm:w-[700px] sm:blur-[160px]" />
 
         <div className="relative mx-auto max-w-[1450px] px-4 py-20 sm:px-6 sm:py-24 lg:px-10 lg:py-36">
           <div className="mx-auto max-w-3xl text-center">
@@ -176,21 +176,21 @@ export default function ProductPage() {
               return (
                 <div
                   key={card.number}
-                  className="group relative overflow-hidden rounded-[22px] border border-white/[0.085] bg-[#0a141e]/90 p-5 transition-all duration-500 ease-out hover:-translate-y-2 hover:border-blue-400/30 hover:bg-[#0c1823] hover:shadow-[0_25px_70px_rgba(0,0,0,0.35),0_0_50px_rgba(35,133,245,0.07)] sm:rounded-[26px] sm:p-6"
+                  className="group relative overflow-hidden rounded-[22px] border border-white/[0.085] bg-[#0a141e]/90 p-5 transition-all duration-500 ease-out hover:-translate-y-2 hover:border-white/20 hover:bg-[#0c1823] hover:shadow-[0_25px_70px_rgba(0,0,0,0.35)] sm:rounded-[26px] sm:p-6"
                 >
                   {/* Hover glow */}
-                  <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-blue-500/[0.08] blur-[70px] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-white/[0.04] blur-[70px] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                   {/* Top row */}
                   <div className="relative flex items-start justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-[15px] border border-blue-400/20 bg-blue-500/[0.045] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-500 group-hover:border-blue-400/40 group-hover:bg-blue-500/[0.09] group-hover:shadow-[0_0_25px_rgba(35,133,245,0.10)] sm:h-14 sm:w-14 sm:rounded-[17px]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-[15px] border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-500 group-hover:border-white/20 group-hover:bg-white/[0.06] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.04)] sm:h-14 sm:w-14 sm:rounded-[17px]">
                       <Icon
-                        className="h-5 w-5 text-blue-400 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-110 sm:h-6 sm:w-6"
+                        className="h-5 w-5 text-white/80 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-110 sm:h-6 sm:w-6"
                         strokeWidth={1.7}
                       />
                     </div>
 
-                    <span className="font-mono text-xs text-white/20 transition-colors duration-500 group-hover:text-blue-400/40">
+                    <span className="font-mono text-xs text-white/20 transition-colors duration-500 group-hover:text-white/50">
                       {card.number}
                     </span>
                   </div>
@@ -212,7 +212,7 @@ export default function ProductPage() {
                   </div>
 
                   {/* Bottom highlight */}
-                  <div className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/0 to-transparent transition-all duration-500 group-hover:via-blue-400/30" />
+                  <div className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-white/0 to-transparent transition-all duration-500 group-hover:via-white/20" />
                 </div>
               );
             })}
