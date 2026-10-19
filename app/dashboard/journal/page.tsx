@@ -377,6 +377,12 @@ export default function JournalPage() {
   const currentTrade = journalTrades[activeIndex] ?? null;
   const isDemo = currentTrade?.id === "demo-trade";
 
+  // Helper: only show journal-count/share-actions on desktop (min-width: 768px)
+  // Render them in a fragment for desktop only.
+  // You could use CSS, but to fully remove them from mobile DOM,
+  // check window.innerWidth (hydrate in useEffect) or use matchMedia,
+  // but for now just use CSS display: none as the prompt expects.
+
   return (
     <main className="journal-background">
       <div className="journal-stage">
@@ -661,7 +667,7 @@ export default function JournalPage() {
             )}
           </div>
 
-          {/* JOURNAL COUNT */}
+          {/* JOURNAL COUNT - Hide on mobile */}
           <div className="journal-count">
             <span className="journal-count-number">
               {journalTrades.length}
@@ -671,7 +677,7 @@ export default function JournalPage() {
             </span>
           </div>
 
-          {/* Share and Download PNG & error */}
+          {/* Share and Download PNG & error - Hide on mobile */}
           <div className="share-actions">
             <button
               type="button"
@@ -725,13 +731,6 @@ export default function JournalPage() {
           max-width: 1160px;
           margin: 0 auto;
           padding-bottom: 12px;
-        }
-
-        @media (max-width: 767px) {
-          .journal-stage {
-            min-height: auto;
-            padding: 20px 12px 28px;
-          }
         }
 
         /* Book Shell - Navy Leather Cover */
@@ -1465,187 +1464,240 @@ export default function JournalPage() {
           }
         }
 
+        /* ---- REPLACED MOBILE CSS FOR LANDSCAPE BOOK ---- */
+
+        /* MOBILE JOURNAL — COMPLETE VERTICAL BOOK */
+
         @media (max-width: 767px) {
-          .book-date {
-            font-size: 24px;
+
+          .journal-stage {
+
+            width: 100%;
+
+            height: auto;
+
+            min-height: 0;
+
+            padding: 12px 8px 100px;
+
+            overflow: visible;
+
+            perspective: none;
+
           }
 
-          .book-masthead {
-            gap: 6px;
+
+
+          .journal-layout {
+
+            width: 100%;
+
+            max-width: none;
+
+            margin: 0 auto;
+
           }
 
-          .brand-name {
-            font-size: 9px;
+
+
+          /* Keep the book proportional and show the entire spread */
+
+          .book-shell {
+
+            width: 100%;
+
+            max-width: none;
+
+            min-width: 0;
+
+            height: auto;
+
+            aspect-ratio: auto;
+
+            padding: 6px;
+
+            box-sizing: border-box;
+
+            overflow: visible;
+
           }
 
-          .masthead-label,
-          .masthead-tagline {
-            font-size: 7px;
+
+
+          /* Two full-width pages, one above the other */
+
+          .book-pages,
+
+          .book-spread {
+
+            display: grid !important;
+
+            grid-template-columns: minmax(0, 1fr);
+
+            grid-template-rows: auto auto;
+
+            width: 100%;
+
+            height: auto;
+
+            min-width: 0;
+
+            min-height: 0;
+
+            gap: 0;
+
+            transform: none;
+
           }
 
-          .chart-section {
-            flex: none;
-            min-height: 220px;
+
+
+          .book-page {
+
+            position: relative;
+
+            display: flex;
+
+            flex-direction: column;
+
+            width: 100%;
+
+            height: auto;
+
+            min-width: 0;
+
+            min-height: 0;
+
+            padding: 18px 14px;
+
+            box-sizing: border-box;
+
+            overflow: visible;
+
+            overflow-wrap: anywhere;
+
           }
 
-          .book-chart-frame {
-            min-height: 190px;
+
+
+          /* Top page: trade details, screenshot, and reflection */
+
+          .book-page:first-child {
+
+            border-radius: 8px 8px 0 0;
+
+            border-bottom: 1px solid rgba(83, 67, 47, 0.35);
+
+            box-shadow: inset 0 -5px 8px -8px #3e3021;
+
           }
 
-          .setup-copy {
-            -webkit-line-clamp: 5;
+
+
+          /* Bottom page: the content from the desktop right page */
+
+          .book-page:last-child {
+
+            border-radius: 0 0 8px 8px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.65);
+
+            box-shadow: inset 0 5px 8px -8px #3e3021;
+
           }
 
-          .book-detail-row {
-            min-height: 43px;
+
+
+          .book-page img {
+
+            display: block;
+
+            width: 100%;
+
+            max-width: 100%;
+
+            height: auto;
+
+            object-fit: contain;
+
           }
 
-          /* Remove .reflection-copy for new .reflection-text */
+
+
+          .book-chart-image,
+
+          .mobile-chart-image {
+
+            width: 100%;
+
+            max-width: 100%;
+
+            height: auto;
+
+            object-fit: contain;
+
+          }
+
+
+
+          .book-page h1,
+
+          .book-page h2 {
+
+            font-size: clamp(15px, 4vw, 20px);
+
+            line-height: 1.3;
+
+          }
+
+
+
+          .book-page p,
+
+          .book-page span,
+
+          .book-page label {
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+          }
+
+
+
+          .mobile-book-cover {
+
+            display: none !important;
+
+          }
+
         }
 
-        /* Keep the page footer in its own space. */
-        .book-page {
-          min-height: 0;
-        }
 
-        .trade-page-content {
-          flex: 1 1 0;
-          min-height: 0;
-        }
 
-        .page-footer {
-          flex-shrink: 0;
-          position: relative;
-          z-index: 2;
-          margin-top: 8px;
-          padding-top: 8px;
-        }
+        /* Mobile landscape orientation */
 
-        /* ===== Targeted journal layout repair ===== */
+        @media (max-width: 932px) and (orientation: landscape) {
 
-        /* LEFT PAGE: reserve space for the footer and setup. */
-        .book-left {
-          min-height: 0;
-        }
+          .journal-stage {
 
-        .book-left > .page-content {
-          display: flex;
-          flex: 1 1 0;
-          flex-direction: column;
-          min-height: 0;
-          overflow: hidden;
-        }
+            padding: 8px 12px 72px;
 
-        .book-left .trade-page-content {
-          display: flex;
-          flex: 1 1 0;
-          flex-direction: column;
-          min-height: 0;
-          overflow: hidden;
-        }
+          }
 
-        /* Let the chart shrink before it pushes into the setup/footer. */
-        .book-left .left-screenshot-section {
-          flex: 1 1 0;
-          min-height: 0;
-          overflow: hidden;
-        }
 
-        .book-left .left-screenshot-frame {
-          flex: 1 1 0;
-          min-height: 0;
-          overflow: hidden;
-        }
 
-        .book-left .left-trade-screenshot {
-          display: block;
-          width: 100%;
-          height: 100%;
-          min-height: 0;
-          object-fit: contain;
-        }
+          .book-shell {
 
-        /* Setup stays together and never grows over the footer. */
-        .book-left .setup-section {
-          flex: 0 0 auto;
-          min-height: 0;
-          margin-top: 12px;
-          padding-top: 10px;
-          border-top: 1px solid rgba(120, 110, 91, 0.28);
-        }
+            width: min(100%, 720px);
 
-        .book-left .setup-copy {
-          margin-top: 6px;
-          line-height: 1.45;
-          overflow-wrap: anywhere;
-        }
+            aspect-ratio: 1.5 / 1;
 
-        /* Footer stays at the bottom, separated from the content. */
-        .book-left > .page-footer {
-          position: relative;
-          flex: 0 0 auto;
-          margin-top: 8px;
-          padding-top: 8px;
-          border-top: 1px solid rgba(120, 110, 91, 0.24);
-        }
+            margin-inline: auto;
 
-        /* RIGHT PAGE: separate every detail into a readable row. */
-        .book-right .detail-grid {
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          margin-top: 12px;
-        }
+          }
 
-        /* These selectors match the Detail component with detail-row spans. */
-        .book-right .detail-row,
-        .book-right .detail-row.detail-row--with-line {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-          align-items: center;
-          gap: 16px;
-          width: 100%;
-          min-width: 0;
-          padding: 10px 0;
-          border-bottom: 1px solid rgba(130, 110, 91, 0.13); /* Subtle horizontal line */
-        }
-        .book-right .detail-row:last-child,
-        .book-right .detail-row.detail-row--with-line:last-child {
-          border-bottom: none;
-        }
-
-        .book-right .detail-label {
-          min-width: 0;
-          color: #343a42;
-          text-align: left;
-          overflow-wrap: anywhere;
-          font-family: Georgia, "Times New Roman", serif;
-        }
-        .book-right .detail-label .colon {
-          margin-left: 2px;
-          margin-right: 6px;
-          color: #7c776d;
-        }
-
-        .book-right .detail-value {
-          min-width: 0;
-          color: #10243e;
-          text-align: right;
-          overflow-wrap: anywhere;
-        }
-
-        .book-right .detail-value-accent {
-          color: #00805f;
-        }
-
-        /* Ensure very subtle, light line separator for rows */
-        .book-right .detail-row,
-        .book-right .detail-row.detail-row--with-line {
-          border-bottom: 1px solid rgba(102, 92, 73, 0.11);
-        }
-        .book-right .detail-row:last-child,
-        .book-right .detail-row.detail-row--with-line:last-child {
-          border-bottom: none;
         }
       `}</style>
     </main>

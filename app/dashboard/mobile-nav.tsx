@@ -1,11 +1,12 @@
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
+  BookOpen,
   CalendarDays,
-  Compass,
   LayoutDashboard,
   Menu,
 } from "lucide-react";
@@ -27,9 +28,9 @@ const items = [
     icon: CalendarDays,
   },
   {
-    label: "Discover",
-    href: "/dashboard/discover",
-    icon: Compass,
+    label: "Journal",
+    href: "/dashboard/journal",
+    icon: BookOpen,
   },
   {
     label: "More",
