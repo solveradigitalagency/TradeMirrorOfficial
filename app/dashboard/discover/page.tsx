@@ -1369,53 +1369,9 @@ export default function DiscoverPage() {
                     </section>
                   )}
 
-                  {/* LOWER PROFILE SECTIONS */}
-                  <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
-                    {/* TRADING APPROACH */}
-                    <section className={PANEL + " p-4 sm:p-5"}>
-                      <div className="flex items-center gap-2.5">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035]">
-                          <Filter className="h-4 w-4 text-white/65" />
-                        </div>
-                        <div>
-                          <h3 className="text-[12px] font-semibold text-white/85">
-                            Trading approach
-                          </h3>
-                          <p className="mt-0.5 text-[10px] text-white/35">
-                            Public profile details
-                          </p>
-                        </div>
-                      </div>
-
-                      <p className="mt-4 whitespace-pre-wrap text-[12px] leading-6 text-white/50">
-                        {selectedTrader.profile.bio ||
-                          "This trader hasn't added a public bio yet."}
-                      </p>
-
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {selectedTrader.profile.trading_style && (
-                          <span className="rounded-full border border-white/[0.10] bg-white/[0.035] px-3 py-1.5 text-[10px] text-white/65">
-                            {selectedTrader.profile.trading_style}
-                          </span>
-                        )}
-                        {selectedTrader.profile.experience_level && (
-                          <span className="rounded-full border border-white/[0.10] bg-white/[0.035] px-3 py-1.5 text-[10px] text-white/55">
-                            {selectedTrader.profile.experience_level}
-                          </span>
-                        )}
-                        {topSetups.map((setup) => (
-                          <span
-                            key={setup}
-                            className="max-w-full truncate rounded-full border border-blue-300/[0.15] bg-blue-300/[0.055] px-3 py-1.5 text-[10px] text-blue-100/75"
-                          >
-                            {setup}
-                          </span>
-                        ))}
-                      </div>
-                    </section>
-
-                    {/* RECENT PUBLIC TRADES */}
-                    <section className={PANEL + " w-full min-w-0 max-w-full overflow-hidden"}>
+                  {/* RECENT PUBLIC TRADES */}
+                  <div className="w-full min-w-0">
+                    <section className={PANEL + " w-full min-w-0 overflow-hidden"}>
                       <div className="flex items-center justify-between gap-3 border-b border-white/[0.07] px-4 py-4 sm:px-5">
                         <div>
                           <h3 className="text-[12px] font-semibold text-white/85">
@@ -1456,9 +1412,9 @@ export default function DiscoverPage() {
                           </p>
                         </div>
                       ) : (
-                        <div className="w-full min-w-0 max-w-full overflow-x-auto rounded-2xl border border-white/[0.10] bg-[#0b0c0e]">
+                        <div className="w-full min-w-0 overflow-x-auto rounded-b-2xl bg-[#0b0c0e]">
                           {/* Table header */}
-                          <div className="grid grid-cols-[minmax(115px,1.15fr)_minmax(90px,0.8fr)_minmax(105px,0.9fr)_minmax(90px,0.8fr)] gap-3 border-b border-white/[0.08] px-4 py-4 sm:px-5 min-w-[430px]">
+                          <div className="grid min-w-[520px] grid-cols-[1.15fr_0.8fr_0.9fr_1fr] items-center gap-3 border-b border-white/[0.08] px-4 py-4 sm:px-5">
                             <span className="text-xs font-medium uppercase tracking-wider text-white/40">
                               Date
                             </span>
@@ -1493,9 +1449,7 @@ export default function DiscoverPage() {
                               return (
                                 <div
                                   key={trade.id}
-                                  className={
-                                    "grid grid-cols-[minmax(115px,1.15fr)_minmax(90px,0.8fr)_minmax(105px,0.9fr)_minmax(90px,0.8fr)] items-center gap-3 border-b border-white/[0.06] px-4 py-4 last:border-b-0 sm:px-5 min-w-[430px] transition hover:bg-white/[0.02]"
-                                  }
+                                  className="grid min-w-[520px] grid-cols-[1.15fr_0.8fr_0.9fr_1fr] items-center gap-3 border-b border-white/[0.06] px-4 py-4 last:border-b-0 sm:px-5 transition hover:bg-white/[0.02]"
                                 >
                                   {/* Date */}
                                   <span className="min-w-0 truncate text-sm text-white/65">
