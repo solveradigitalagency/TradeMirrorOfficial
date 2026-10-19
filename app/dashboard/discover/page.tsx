@@ -1415,7 +1415,7 @@ export default function DiscoverPage() {
                     </section>
 
                     {/* RECENT PUBLIC TRADES */}
-                    <section className={PANEL + " min-w-0 overflow-hidden"}>
+                    <section className={PANEL + " w-full min-w-0 max-w-full overflow-hidden"}>
                       <div className="flex items-center justify-between gap-3 border-b border-white/[0.07] px-4 py-4 sm:px-5">
                         <div>
                           <h3 className="text-[12px] font-semibold text-white/85">
@@ -1456,92 +1456,91 @@ export default function DiscoverPage() {
                           </p>
                         </div>
                       ) : (
-                        <div className="overflow-x-auto">
-                          <table className="w-full min-w-[440px] text-left">
-                            <thead>
-                              <tr className="border-b border-white/[0.055] text-[9px] uppercase tracking-[0.08em] text-white/35">
-                                <th className="px-4 py-3 font-medium sm:px-5">
-                                  Date
-                                </th>
-                                <th className="px-3 py-3 font-medium">
-                                  Side
-                                </th>
-                                <th className="px-3 py-3 font-medium">
-                                  Result
-                                </th>
-                                <th className="px-4 py-3 text-right font-medium sm:px-5">
-                                  P&amp;L
-                                </th>
-                              </tr>
-                            </thead>
+                        <div className="w-full min-w-0 max-w-full overflow-x-auto rounded-2xl border border-white/[0.10] bg-[#0b0c0e]">
+                          {/* Table header */}
+                          <div className="grid grid-cols-[minmax(115px,1.15fr)_minmax(90px,0.8fr)_minmax(105px,0.9fr)_minmax(90px,0.8fr)] gap-3 border-b border-white/[0.08] px-4 py-4 sm:px-5 min-w-[430px]">
+                            <span className="text-xs font-medium uppercase tracking-wider text-white/40">
+                              Date
+                            </span>
+                            <span className="text-xs font-medium uppercase tracking-wider text-white/40">
+                              Side
+                            </span>
+                            <span className="text-xs font-medium uppercase tracking-wider text-white/40">
+                              Result
+                            </span>
+                            <span className="text-right text-xs font-medium uppercase tracking-wider text-white/40">
+                              P&L
+                            </span>
+                          </div>
+                          {/* Trade rows */}
+                          {[...selectedTrades]
+                            .sort(
+                              (a, b) =>
+                                new Date(b.trade_date).getTime() -
+                                new Date(a.trade_date).getTime()
+                            )
+                            .slice(0, 5)
+                            .map((trade, i, arr) => {
+                              const pnl = Number(trade.pnl || 0);
+                              const result =
+                                pnl > 0
+                                  ? "Win"
+                                  : pnl < 0
+                                    ? "Loss"
+                                    : "Breakeven";
+                              const formattedDate = formatDate(trade.trade_date);
 
-                            <tbody>
-                              {[...selectedTrades]
-                                .sort(
-                                  (a, b) =>
-                                    new Date(b.trade_date).getTime() -
-                                    new Date(a.trade_date).getTime()
-                                )
-                                .slice(0, 5)
-                                .map((trade) => {
-                                  const pnl = Number(trade.pnl || 0);
-                                  const result =
-                                    pnl > 0
-                                      ? "Win"
-                                      : pnl < 0
-                                        ? "Loss"
-                                        : "Breakeven";
-
-                                  return (
-                                    <tr
-                                      key={trade.id}
-                                      className="border-b border-white/[0.045] last:border-0 transition hover:bg-white/[0.02]"
+                              return (
+                                <div
+                                  key={trade.id}
+                                  className={
+                                    "grid grid-cols-[minmax(115px,1.15fr)_minmax(90px,0.8fr)_minmax(105px,0.9fr)_minmax(90px,0.8fr)] items-center gap-3 border-b border-white/[0.06] px-4 py-4 last:border-b-0 sm:px-5 min-w-[430px] transition hover:bg-white/[0.02]"
+                                  }
+                                >
+                                  {/* Date */}
+                                  <span className="min-w-0 truncate text-sm text-white/65">
+                                    {formattedDate}
+                                  </span>
+                                  {/* Side */}
+                                  <div className="flex min-w-0 items-center gap-2">
+                                    {trade.direction === "Long" ? (
+                                      <TrendingUp className="h-4 w-4 text-emerald-400" />
+                                    ) : (
+                                      <TrendingDown className="h-4 w-4 text-red-400" />
+                                    )}
+                                    <span className="truncate text-sm text-white/65">
+                                      {trade.direction}
+                                    </span>
+                                  </div>
+                                  {/* Result */}
+                                  <div className="min-w-0">
+                                    <span
+                                      className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                                        result === "Win"
+                                          ? "bg-emerald-400/[0.12] text-emerald-300"
+                                          : result === "Loss"
+                                            ? "bg-red-400/[0.12] text-red-300"
+                                            : "bg-white/[0.08] text-white/55"
+                                      }`}
                                     >
-                                      <td className="whitespace-nowrap px-4 py-3 text-[10px] text-white/60 sm:px-5">
-                                        {formatDate(trade.trade_date)}
-                                      </td>
-
-                                      <td className="px-3 py-3">
-                                        <span className="inline-flex items-center gap-1.5 text-[10px] text-white/65">
-                                          {trade.direction === "Long" ? (
-                                            <TrendingUp className="h-3 w-3 text-emerald-400" />
-                                          ) : (
-                                            <TrendingDown className="h-3 w-3 text-red-400" />
-                                          )}
-                                          {trade.direction}
-                                        </span>
-                                      </td>
-
-                                      <td className="px-3 py-3">
-                                        <span
-                                          className={`inline-flex rounded-full px-2 py-1 text-[9px] font-medium ${
-                                            result === "Win"
-                                              ? "bg-emerald-400/[0.12] text-emerald-300"
-                                              : result === "Loss"
-                                                ? "bg-red-400/[0.12] text-red-300"
-                                                : "bg-white/[0.08] text-white/55"
-                                          }`}
-                                        >
-                                          {result}
-                                        </span>
-                                      </td>
-
-                                      <td
-                                        className={`whitespace-nowrap px-4 py-3 text-right text-[10px] font-medium tabular-nums sm:px-5 ${
-                                          pnl > 0
-                                            ? "text-emerald-400"
-                                            : pnl < 0
-                                              ? "text-red-400"
-                                              : "text-white/50"
-                                        }`}
-                                      >
-                                        {formatMoney(pnl)}
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
-                            </tbody>
-                          </table>
+                                      {result}
+                                    </span>
+                                  </div>
+                                  {/* P&L */}
+                                  <span
+                                    className={`min-w-0 whitespace-nowrap text-right text-sm font-medium tabular-nums ${
+                                      pnl > 0
+                                        ? "text-emerald-400"
+                                        : pnl < 0
+                                          ? "text-red-400"
+                                          : "text-white/45"
+                                    }`}
+                                  >
+                                    {formatMoney(pnl)}
+                                  </span>
+                                </div>
+                              );
+                            })}
                         </div>
                       )}
                     </section>
