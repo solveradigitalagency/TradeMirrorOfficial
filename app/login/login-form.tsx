@@ -25,7 +25,7 @@ export default function LoginForm() {
   };
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#080b12] px-4 py-8 sm:px-6 sm:py-10">
+    <main className="min-h-screen overflow-x-hidden bg-[#020202] px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col justify-center">
 
         {/* Logo */}
@@ -41,19 +41,19 @@ export default function LoginForm() {
             />
           </Link>
 
-          <p className="mt-2 text-xs text-zinc-400 sm:mt-3 sm:text-sm">
+          <p className="mt-2 text-xs text-white/50 sm:mt-3 sm:text-sm">
             Reflect on your trades. Find your edge.
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-8">
+        <div className="rounded-2xl border border-white/[0.10] bg-white/[0.025] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
           <div className="mb-6 sm:mb-7">
             <h1 className="text-xl font-semibold text-white sm:text-2xl">
               Welcome back
             </h1>
 
-            <p className="mt-1.5 text-xs text-zinc-400 sm:mt-2 sm:text-sm">
+            <p className="mt-1.5 text-xs text-white/50 sm:mt-2 sm:text-sm">
               Sign in to continue to TradeMirror.
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function LoginForm() {
                 placeholder="you@example.com"
                 required
                 autoComplete="email"
-                className="h-12 w-full rounded-xl border border-white/10 bg-black/20 px-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/10"
+                className="h-12 w-full rounded-xl border border-white/10 bg-black/20 px-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-white/40 focus:ring-2 focus:ring-white/[0.06]"
               />
             </div>
 
@@ -99,7 +99,7 @@ export default function LoginForm() {
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="h-12 w-full rounded-xl border border-white/10 bg-black/20 px-4 pr-12 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/10"
+                  className="h-12 w-full rounded-xl border border-white/10 bg-black/20 px-4 pr-12 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-white/40 focus:ring-2 focus:ring-white/[0.06]"
                 />
 
                 <button
@@ -128,7 +128,7 @@ export default function LoginForm() {
             {/* Sign In */}
             <button
               type="submit"
-              className="h-12 w-full rounded-xl bg-blue-500 font-medium text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400 active:scale-[0.99]"
+              className="h-12 w-full rounded-xl bg-white font-semibold text-black transition duration-200 hover:bg-white/90 active:scale-[0.99]"
             >
               Sign In
             </button>
@@ -137,7 +137,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="h-12 w-full rounded-xl border border-white/10 bg-white/[0.04] font-medium text-white transition hover:bg-white/[0.08] active:scale-[0.99]"
+              className="h-12 w-full rounded-xl border border-white/[0.12] bg-white/[0.025] font-medium text-white transition duration-200 hover:border-white/20 hover:bg-white/[0.06] active:scale-[0.99]"
             >
               <span className="flex items-center justify-center gap-3">
                 <svg
@@ -188,7 +188,7 @@ export default function LoginForm() {
 
             <Link
               href="/signup"
-              className="font-medium text-blue-400 hover:text-blue-300"
+              className="font-medium text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline"
             >
               Create one
             </Link>
