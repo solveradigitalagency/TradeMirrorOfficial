@@ -1,365 +1,525 @@
+
 import Navbar from "@/components/layout/navbar";
 
 import {
+  Activity,
+  ArrowDownRight,
+  ArrowRight,
+  ArrowUpRight,
   BarChart3,
   BookOpen,
   Camera,
   Check,
+  ChevronRight,
+  Eye,
   Lock,
   Search,
+  ShieldCheck,
+  SlidersHorizontal,
+  Target,
+  TrendingUp,
   Users,
 } from "lucide-react";
 
 const featureCards = [
   {
-    eyebrow: "TRADING JOURNAL",
-    title: "Turn every trade into something you can learn from.",
+    number: "01",
+    eyebrow: "THE JOURNAL",
+    title: "Every trade has a story.",
     description:
-      "Capture the decisions behind every trade with notes, setups, emotions, execution, screenshots, and results.",
+      "Record the thinking behind each decision. Capture your setup, emotions, execution, chart screenshots, and the lessons worth carrying forward.",
     icon: BookOpen,
     type: "journal",
+    size: "large",
   },
   {
-    eyebrow: "ANALYTICS",
-    title: "See the patterns behind your results.",
+    number: "02",
+    eyebrow: "PERFORMANCE ANALYTICS",
+    title: "Find your edge in the data.",
     description:
-      "Understand what's actually working across setups, instruments, sessions, direction, and time.",
+      "See how your performance changes across setups, sessions, direction, and time. Replace assumptions with evidence.",
     icon: BarChart3,
     type: "analytics",
+    size: "large",
   },
   {
-    eyebrow: "TRADER PROFILES",
-    title: "Learn from other traders.",
+    number: "03",
+    eyebrow: "TRADER DISCOVERY",
+    title: "Learn beyond your own screen.",
     description:
-      "Search public profiles and view the results and journal entries traders choose to share.",
+      "Explore public trader profiles, compare approaches, and learn from the trade history people choose to share.",
     icon: Users,
     type: "profiles",
+    size: "standard",
   },
   {
-    eyebrow: "PRIVACY",
-    title: "You decide what people see.",
+    number: "04",
+    eyebrow: "BUILT AROUND PRIVACY",
+    title: "Your data. Your decision.",
     description:
-      "Keep everything private, share selected entries, or show percentages without revealing exact dollar amounts.",
-    icon: Lock,
+      "Choose what stays private and what becomes public. Share your process without having to reveal every detail.",
+    icon: ShieldCheck,
     type: "privacy",
+    size: "standard",
   },
   {
-    eyebrow: "EXECUTION",
-    title: "Separate results from discipline.",
+    number: "05",
+    eyebrow: "EXECUTION & DISCIPLINE",
+    title: "A result isn't the whole story.",
     description:
-      "A winning trade can still be poorly executed. Track whether you actually followed your plan.",
-    icon: BarChart3,
+      "A winning trade can break your rules. A losing trade can follow them perfectly. Track the quality of your decisions, not just the outcome.",
+    icon: Target,
     type: "execution",
+    size: "standard",
   },
   {
-    eyebrow: "SCREENSHOTS",
-    title: "Save what you saw.",
+    number: "06",
+    eyebrow: "CHART CONTEXT",
+    title: "Remember what you saw.",
     description:
-      "Attach your chart to a trading day so you can review the exact setup later.",
+      "Keep chart screenshots alongside your notes so you can revisit the setup, understand the context, and learn from the moment.",
     icon: Camera,
     type: "screenshots",
+    size: "standard",
   },
 ];
 
-// JournalPreview with chart and badge color edits
+const chartPoints =
+  "0,145 42,135 75,143 110,113 145,123 180,91 215,101 250,73 285,88 320,54 355,65 390,43 425,53 460,29 495,42 530,19 570,25 610,8";
+
+function SectionLabel({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+      {children}
+    </p>
+  );
+}
+
+function PreviewShell({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`relative mt-8 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#0b0c0e] shadow-[0_24px_70px_rgba(0,0,0,0.25)] sm:mt-10 sm:rounded-[22px] ${className}`}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-white/[0.13] to-transparent" />
+      {children}
+    </div>
+  );
+}
+
 function JournalPreview() {
   return (
-    <div className="mt-8 overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#07111c] shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10">
-      <div className="border-b border-white/[0.06] px-4 py-4 sm:px-5">
-        <div className="flex items-center justify-between gap-4">
+    <PreviewShell>
+      <div className="flex items-start justify-between gap-4 border-b border-white/[0.07] p-4 sm:p-5">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.04]">
+            <BookOpen className="h-[17px] w-[17px] text-white/75" />
+          </div>
           <div>
-            <p className="text-[9px] font-medium uppercase tracking-[0.16em] text-white/25">
-              Trade Journal
+            <p className="text-[12px] font-medium text-white/85">
+              Trading journal
             </p>
-            <p className="mt-1 text-[11px] text-white/35">
-              August 31, 2026
+            <p className="mt-1 text-[10px] text-white/35">
+              Monday, August 31
             </p>
           </div>
+        </div>
 
-          <div className="text-right">
-            <p className="text-[20px] font-semibold tracking-[-0.04em] text-emerald-400 sm:text-[22px]">
-              +$1,368
-            </p>
-            <p className="text-[9px] text-emerald-400/60">+2.58R</p>
-          </div>
+        <div className="text-right">
+          <p className="text-[21px] font-semibold tracking-[-0.05em] text-emerald-400 sm:text-[25px]">
+            +$1,368
+          </p>
+          <p className="mt-0.5 text-[10px] text-white/35">
+            Net P&amp;L · +2.58R
+          </p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-4 sm:p-4">
         {[
-          ["Instrument", "NQ"],
-          ["Position", "Short"],
+          ["Instrument", "NQ · Nasdaq"],
+          ["Direction", "Short"],
           ["Entry", "29,471.50"],
           ["Exit", "29,413.00"],
         ].map(([label, value]) => (
           <div
             key={label}
-            className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-3"
+            className="rounded-xl border border-white/[0.07] bg-white/[0.018] p-3"
           >
-            <p className="text-[8px] text-white/25">{label}</p>
-            <p className="mt-1 text-[10px] font-medium text-white/65">
+            <p className="text-[10px] text-white/35">{label}</p>
+            <p className="mt-1.5 truncate text-[11px] font-medium text-white/80">
               {value}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="mx-3 rounded-xl border border-white/[0.06] bg-[#030910] p-3 sm:mx-4 sm:p-4">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <span className="rounded-lg border border-white/15 bg-white/[0.02] px-2 py-1 text-[8px] text-white/50">
-            NQ · 5m · CME
-          </span>
+      <div className="px-3 pb-3 sm:px-4 sm:pb-4">
+        <div className="rounded-xl border border-white/[0.07] bg-[#08090b] p-3 sm:p-4">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-medium text-white/75">
+                Chart screenshot
+              </p>
+              <p className="mt-1 text-[9px] text-white/30">
+                NQ · 5 minute
+              </p>
+            </div>
+            <span className="rounded-lg border border-white/[0.08] px-2.5 py-1.5 text-[9px] text-white/40">
+              Saved
+            </span>
+          </div>
 
-          <span className="text-[8px] text-white/20">TRADE CHART</span>
-        </div>
-
-        <div className="relative h-[130px] overflow-hidden rounded-lg sm:h-[150px]">
-          <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.06)_1px,transparent_1px)] [background-size:38px_38px]" />
-
-          <svg
-            viewBox="0 0 600 180"
-            className="absolute inset-0 h-full w-full"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0 142 L45 130 L82 137 L120 104 L158 119 L195 85 L235 98 L275 66 L315 82 L352 48 L390 63 L428 38 L468 55 L510 27 L550 43 L600 15"
-              fill="none"
-              stroke="#d4d4d8"
-              strokeWidth="3"
-            />
-          </svg>
-
-          <div className="absolute right-[20%] top-[30%] rounded-md border border-emerald-400/25 bg-emerald-500/[0.08] px-2 py-1 text-[8px] text-emerald-300">
-            ENTRY
+          <div className="relative h-[145px] overflow-hidden rounded-lg bg-[#080b0e] sm:h-[175px]">
+            <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(rgba(255,255,255,.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.045)_1px,transparent_1px)] [background-size:32px_32px]" />
+            <svg
+              viewBox="0 0 610 170"
+              preserveAspectRatio="none"
+              className="absolute inset-0 h-full w-full"
+            >
+              <defs>
+                <linearGradient id="journalArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity=".13" />
+                  <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <polygon
+                points={`0,170 ${chartPoints} 610,170`}
+                fill="url(#journalArea)"
+              />
+              <polyline
+                points={chartPoints}
+                fill="none"
+                stroke="#d4d4d8"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <line
+                x1="320"
+                y1="0"
+                x2="320"
+                y2="170"
+                stroke="#34d399"
+                strokeOpacity=".6"
+                strokeDasharray="4 5"
+              />
+              <line
+                x1="0"
+                y1="87"
+                x2="610"
+                y2="87"
+                stroke="#34d399"
+                strokeOpacity=".35"
+                strokeDasharray="4 5"
+              />
+            </svg>
+            <span className="absolute left-[49%] top-[37%] rounded-md border border-emerald-400/20 bg-[#071b15]/90 px-2 py-1 text-[8px] font-medium tracking-wide text-emerald-300">
+              ENTRY
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-2 p-3 sm:grid-cols-2 sm:p-4">
+      <div className="grid grid-cols-2 gap-2 border-t border-white/[0.06] p-3 sm:p-4">
         {[
-          ["Setup", "Liquidity Sweep into 5M RB + IFVG"],
-          ["Emotion", "Confident"],
-          ["Execution", "Great execution"],
-          ["Plan", "Followed"],
+          ["SETUP", "Liquidity sweep · IFVG"],
+          ["EMOTION", "Confident"],
+          ["EXECUTION", "Great execution"],
+          ["PLAN", "Followed"],
         ].map(([label, value]) => (
           <div
             key={label}
-            className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3"
+            className="rounded-xl bg-white/[0.025] p-3"
           >
-            <p className="text-[8px] uppercase tracking-[0.12em] text-white/20">
+            <p className="text-[9px] font-medium uppercase tracking-[0.13em] text-white/30">
               {label}
             </p>
-            <p className="mt-1.5 text-[10px] text-white/55">{value}</p>
+            <p className="mt-1.5 truncate text-[11px] text-white/70">
+              {value}
+            </p>
           </div>
         ))}
       </div>
-    </div>
+    </PreviewShell>
   );
 }
 
-// AnalyticsPreview color edits
 function AnalyticsPreview() {
   return (
-    <div className="mt-8 overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#07111c] p-4 shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10 sm:p-5">
-      <div className="flex items-end justify-between gap-4">
+    <PreviewShell className="p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.15em] text-white/25">
-            Equity Curve
-          </p>
-
-          <p className="mt-1 text-[23px] font-semibold tracking-[-0.04em] text-white sm:text-[26px]">
+          <SectionLabel>Net performance</SectionLabel>
+          <p className="mt-2 text-[28px] font-semibold tracking-[-0.06em] text-white sm:text-[34px]">
             +$12,420
           </p>
+          <p className="mt-1 flex items-center gap-1.5 text-[10px] text-emerald-400">
+            <ArrowUpRight className="h-3.5 w-3.5" />
+            Positive cumulative P&amp;L
+          </p>
         </div>
-
-        <span className="shrink-0 rounded-lg border border-white/[0.06] bg-white/[0.025] px-2.5 py-2 text-[8px] text-white/35 sm:px-3">
-          Last 30 Days
-        </span>
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] px-3 py-2 text-[10px] text-white/55">
+          Last 30 days
+        </div>
       </div>
 
-      <div className="relative mt-5 h-[155px] overflow-hidden rounded-xl border border-white/[0.06] bg-[#030910] sm:h-[190px]">
-        <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:48px_48px]" />
-
+      <div className="relative mt-5 h-[170px] overflow-hidden rounded-xl border border-white/[0.06] bg-[#08090b] sm:h-[205px]">
+        <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(rgba(255,255,255,.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.045)_1px,transparent_1px)] [background-size:40px_40px]" />
         <svg
           viewBox="0 0 700 220"
-          className="absolute inset-0 h-full w-full"
           preserveAspectRatio="none"
+          className="absolute inset-0 h-full w-full"
         >
-          <path
-            d="M0 190 L70 178 L135 155 L195 160 L255 126 L315 135 L375 91 L435 106 L495 63 L555 78 L620 42 L700 18 L700 220 L0 220 Z"
-            fill="rgba(255,255,255,0.08)"
+          <defs>
+            <linearGradient id="equityFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity=".16" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <polygon
+            points="0,190 70,178 135,155 195,160 255,126 315,135 375,91 435,106 495,63 555,78 620,42 700,18 700,220 0,220"
+            fill="url(#equityFill)"
           />
-
-          <path
-            d="M0 190 L70 178 L135 155 L195 160 L255 126 L315 135 L375 91 L435 106 L495 63 L555 78 L620 42 L700 18"
+          <polyline
+            points="0,190 70,178 135,155 195,160 255,126 315,135 375,91 435,106 495,63 555,78 620,42 700,18"
             fill="none"
-            stroke="#d4d4d8"
+            stroke="#e4e4e7"
             strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
+          <circle cx="700" cy="18" r="5" fill="#34d399" />
         </svg>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-2">
+      <div className="mt-3 grid grid-cols-3 gap-2">
         {[
-          ["Win Rate", "75.0%"],
-          ["Profit Factor", "2.84"],
-          ["Avg. R", "+1.42R"],
+          ["Win rate", "75.0%"],
+          ["Profit factor", "2.84"],
+          ["Average R", "+1.42R"],
         ].map(([label, value]) => (
           <div
             key={label}
-            className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 sm:p-3"
+            className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-3"
           >
-            <p className="text-[8px] text-white/25">{label}</p>
-            <p className="mt-1 text-[12px] font-semibold text-white/75 sm:text-[13px]">
+            <p className="text-[9px] text-white/40">{label}</p>
+            <p className="mt-1.5 text-[13px] font-semibold text-white/85">
               {value}
             </p>
           </div>
         ))}
       </div>
-    </div>
+    </PreviewShell>
   );
 }
 
-// ProfilesPreview: initials and Follow button neutral colors
 function ProfilesPreview() {
   return (
-    <div className="mt-8 rounded-[20px] border border-white/[0.08] bg-[#07111c] p-4 shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10 sm:p-5">
+    <PreviewShell className="p-3 sm:p-4">
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/25" />
-
-        <div className="rounded-xl border border-white/[0.07] bg-[#030910] py-3 pl-11 pr-4 text-[10px] text-white/25">
-          Search traders by name or @username
+        <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+        <div className="flex h-11 items-center rounded-xl border border-white/[0.08] bg-[#08090b] pl-10 pr-3 text-[11px] text-white/35">
+          Search traders or strategies
         </div>
       </div>
 
       <div className="mt-3 space-y-2">
         {[
-          ["JM", "Jordan Markets", "@jordantrades · NQ & ES"],
-          ["AT", "Alex Trades", "@alextrades · Futures"],
-          ["CM", "Chris Markets", "@chrismarkets · NQ"],
-        ].map(([initials, name, handle]) => (
+          ["JM", "Jordan Markets", "@jordantrades", "NQ · ES"],
+          ["AT", "Alex Trades", "@alextrades", "Futures"],
+          ["CM", "Chris Markets", "@chrismarkets", "Nasdaq"],
+        ].map(([initials, name, handle, market], index) => (
           <div
             key={name}
-            className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.018] px-3 py-3 sm:px-4"
+            className="flex items-center gap-3 rounded-xl border border-white/[0.065] bg-white/[0.018] p-3"
           >
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-[10px] font-semibold text-white/80">
-                {initials}
-              </div>
-
-              <div className="min-w-0">
-                <p className="truncate text-[10px] font-semibold text-white/75">
-                  {name}
-                </p>
-
-                <p className="mt-0.5 truncate text-[8px] text-white/30">
-                  {handle}
-                </p>
-              </div>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.09] bg-white/[0.06] text-[11px] font-semibold text-white/75">
+              {initials}
             </div>
-
-            <button className="shrink-0 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-[9px] font-medium text-white/70 sm:px-4">
-              Follow
-            </button>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[11px] font-medium text-white/80">
+                {name}
+              </p>
+              <p className="mt-1 truncate text-[9px] text-white/35">
+                {handle} · {market}
+              </p>
+            </div>
+            <span
+              className={`shrink-0 rounded-lg px-3 py-2 text-[9px] font-medium ${
+                index === 0
+                  ? "bg-white text-black"
+                  : "border border-white/[0.10] bg-white/[0.025] text-white/65"
+              }`}
+            >
+              {index === 0 ? "Following" : "View profile"}
+            </span>
           </div>
         ))}
       </div>
-    </div>
+    </PreviewShell>
   );
 }
 
 function PrivacyPreview() {
+  const settings = [
+    {
+      icon: Users,
+      title: "Public profile",
+      detail: "Let other traders discover you",
+      enabled: true,
+    },
+    {
+      icon: Eye,
+      title: "Display performance",
+      detail: "Choose what your profile reveals",
+      enabled: true,
+    },
+    {
+      icon: Lock,
+      title: "Private journal entries",
+      detail: "Keep personal notes to yourself",
+      enabled: true,
+    },
+  ];
+
   return (
     <div className="mt-8 space-y-2 sm:mt-10">
-      {["Public profile", "Hide dollar amounts", "Approve followers"].map(
-        (item) => (
-          <div
-            key={item}
-            className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-3.5 sm:gap-4 sm:px-5 sm:py-4"
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-400/[0.08]">
-              <Check className="h-4 w-4 text-emerald-400" />
-            </div>
-
-            <span className="text-[11px] text-white/55">{item}</span>
+      {settings.map(({ icon: Icon, title, detail, enabled }) => (
+        <div
+          key={title}
+          className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#0b0c0e] p-3.5 sm:gap-4 sm:p-4"
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.035]">
+            <Icon className="h-4 w-4 text-white/65" />
           </div>
-        ),
-      )}
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-medium text-white/80">{title}</p>
+            <p className="mt-1 text-[10px] text-white/35">{detail}</p>
+          </div>
+          <span className="flex h-6 w-10 shrink-0 items-center rounded-full border border-white/[0.12] bg-white/[0.08] p-[3px]">
+            <span
+              className={`h-[16px] w-[16px] rounded-full ${
+                enabled ? "ml-auto bg-white" : "bg-white/40"
+              }`}
+            />
+          </span>
+        </div>
+      ))}
     </div>
   );
 }
 
-// ExecutionPreview: bars are white monochrome
 function ExecutionPreview() {
+  const metrics = [
+    ["Risk management", 92],
+    ["Entry patience", 84],
+    ["Trade management", 89],
+  ];
+
   return (
-    <div className="mt-8 rounded-[20px] border border-white/[0.08] bg-[#07111c] p-4 shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10 sm:p-6">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-        <div className="border-b border-white/[0.07] pb-5 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-7">
-          <p className="text-[40px] font-semibold tracking-[-0.06em] text-emerald-400 sm:text-[46px]">
+    <PreviewShell className="p-4 sm:p-5">
+      <div className="flex items-center gap-5 border-b border-white/[0.07] pb-5">
+        <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-white/[0.09] bg-white/[0.025]">
+          <span className="text-[25px] font-semibold tracking-[-0.06em] text-white">
             84%
-          </p>
-
-          <p className="mt-1 text-[10px] text-white/35">Plan followed</p>
+          </span>
+          <span className="text-[8px] text-white/35">Plan followed</span>
         </div>
-
-        <div className="flex-1 space-y-5">
-          {[
-            ["Risk management", "92%"],
-            ["Entry patience", "84%"],
-            ["Trade management", "89%"],
-          ].map(([label, value]) => (
-            <div key={label}>
-              <div className="mb-2 flex justify-between">
-                <span className="text-[9px] text-white/40">{label}</span>
-                <span className="text-[9px] text-white/25">{value}</span>
-              </div>
-
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-                <div
-                  className="h-full rounded-full bg-white/70"
-                  style={{ width: value }}
-                />
-              </div>
-            </div>
-          ))}
+        <div>
+          <p className="text-[12px] font-medium text-white/80">
+            Consistency score
+          </p>
+          <p className="mt-1.5 text-[10px] leading-5 text-white/40">
+            Measure the decisions behind your results, not just the P&amp;L.
+          </p>
         </div>
       </div>
-    </div>
+
+      <div className="mt-5 space-y-5">
+        {metrics.map(([label, value]) => (
+          <div key={label}>
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <span className="text-[10px] text-white/55">{label}</span>
+              <span className="text-[10px] tabular-nums text-white/45">
+                {value}%
+              </span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.07]">
+              <div
+                className="h-full rounded-full bg-white/75"
+                style={{ width: `${value}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </PreviewShell>
   );
 }
 
 function ScreenshotPreview() {
   return (
-    <div className="mt-8 overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#07111c] p-3 shadow-[0_25px_70px_rgba(0,0,0,0.3)] sm:mt-10 sm:p-4">
-      <div className="relative h-[170px] overflow-hidden rounded-xl border border-white/[0.07] bg-[#030910] sm:h-[210px]">
-        <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.06)_1px,transparent_1px)] [background-size:45px_45px]" />
-
+    <PreviewShell className="p-3 sm:p-4">
+      <div className="relative h-[180px] overflow-hidden rounded-xl border border-white/[0.07] bg-[#08090b] sm:h-[220px]">
+        <div className="absolute inset-0 opacity-75 [background-image:linear-gradient(rgba(255,255,255,.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.045)_1px,transparent_1px)] [background-size:35px_35px]" />
         <svg
           viewBox="0 0 700 240"
-          className="absolute inset-0 h-full w-full"
           preserveAspectRatio="none"
+          className="absolute inset-0 h-full w-full"
         >
-          <path
-            d="M0 190 L60 175 L120 184 L180 142 L240 150 L300 105 L360 116 L420 70 L480 83 L540 46 L600 67 L700 20"
+          <polyline
+            points="0,190 60,175 120,184 180,142 240,150 300,105 360,116 420,70 480,83 540,46 600,67 700,20"
             fill="none"
-            stroke="#8fb6ed"
+            stroke="#d4d4d8"
             strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <line
+            x1="470"
+            y1="0"
+            x2="470"
+            y2="240"
+            stroke="#34d399"
+            strokeOpacity=".65"
+            strokeDasharray="5 5"
+          />
+          <line
+            x1="0"
+            y1="83"
+            x2="700"
+            y2="83"
+            stroke="#34d399"
+            strokeOpacity=".45"
+            strokeDasharray="5 5"
           />
         </svg>
 
-        <div className="absolute left-[68%] top-[27%] rounded-lg border border-emerald-400/25 bg-emerald-500/[0.08] px-2.5 py-1.5 text-[9px] text-emerald-300 sm:px-3 sm:py-2">
-          Entry
+        <div className="absolute left-3 top-3 rounded-lg border border-white/[0.10] bg-black/70 px-2.5 py-2 backdrop-blur">
+          <p className="text-[9px] font-medium text-white/75">NQ · 5m</p>
+          <p className="mt-0.5 text-[8px] text-white/35">Chart attachment</p>
+        </div>
+
+        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-lg border border-emerald-400/20 bg-[#071b15]/90 px-2.5 py-2 text-[9px] text-emerald-300">
+          <Check className="h-3 w-3" />
+          Saved to journal
         </div>
       </div>
-
-      <div className="mt-3 flex items-center justify-between gap-3">
-        <span className="text-[9px] text-white/25">NQ · 5m · CME</span>
-
-        <span className="text-right text-[9px] text-white/20">
-          Saved to Journal
-        </span>
+      <div className="flex items-center justify-between gap-3 px-1 pb-1 pt-3">
+        <span className="text-[10px] text-white/50">October 14, 2026</span>
+        <span className="text-[9px] text-white/30">Trade screenshot</span>
       </div>
-    </div>
+    </PreviewShell>
   );
 }
 
@@ -384,99 +544,209 @@ function FeaturePreview({ type }: { type: string }) {
 
 export default function FeaturesPage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#02060b] text-white">
+    <main className="min-h-screen overflow-x-hidden bg-[#070707] text-white">
       <Navbar />
 
-      <section
-        id="features"
-        className="relative overflow-hidden bg-[#02060b] py-20 sm:py-24 lg:py-28"
-      >
-        {/* Ambient lighting */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-[5%] top-[10%] h-[450px] w-[450px] rounded-full bg-white/[0.025] blur-[140px] sm:h-[600px] sm:w-[600px] sm:blur-[170px]" />
-
-          <div className="absolute right-[5%] top-[35%] h-[500px] w-[500px] rounded-full bg-white/[0.02] blur-[150px] sm:h-[700px] sm:w-[700px] sm:blur-[180px]" />
-
-          <div className="absolute bottom-[5%] left-[30%] h-[500px] w-[550px] rounded-full bg-white/[0.015] blur-[150px] sm:h-[600px] sm:w-[700px] sm:blur-[180px]" />
+      {/* HERO */}
+      <section className="relative isolate overflow-hidden border-b border-white/[0.06]">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute left-1/2 top-[-220px] h-[440px] w-[700px] -translate-x-1/2 rounded-full bg-white/[0.055] blur-[130px] sm:h-[600px] sm:w-[900px] sm:blur-[170px]" />
+          <div className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] [background-size:70px_70px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-7 lg:px-12 xl:px-16">
-          {/* Section intro */}
-          <div className="mx-auto max-w-[760px] text-center">
-            <h2 className="text-[39px] font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-[48px] md:text-[64px] lg:text-[76px]">
-              Everything you need to{" "}
-              <span className="text-white">understand</span> your trading.
-            </h2>
+        <div className="mx-auto max-w-[1240px] px-5 pb-20 pt-20 sm:px-8 sm:pb-24 sm:pt-28 lg:px-12 lg:pb-32 lg:pt-36">
+          <div className="mx-auto max-w-[920px] text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.035] px-3.5 py-2">
+              <Activity className="h-3.5 w-3.5 text-emerald-400" />
+              <span className="text-[9px] font-semibold uppercase tracking-[0.17em] text-white/65 sm:text-[10px]">
+                A better way to review your trading
+              </span>
+            </div>
+
+            <h1 className="mt-7 text-[43px] font-semibold leading-[0.99] tracking-[-0.07em] text-white sm:mt-8 sm:text-[60px] md:text-[76px] lg:text-[88px]">
+              Trade with intention.
+              <span className="mt-2 block text-white/45">
+                Learn with evidence.
+              </span>
+            </h1>
+
+            {/* Removed the paragraph with the text about TradeMirror combining features */}
+
+            {/* Removed "Start journaling free" and "Explore features" buttons */}
+
+            {/* Removed the "Built for futures traders", "Privacy you control", "Process over guesswork" bullet section */}
           </div>
 
-          {/* Feature showcase */}
-          <div className="mt-14 grid gap-4 sm:mt-16 sm:gap-5 lg:mt-24 md:grid-cols-2">
-            {featureCards.map((feature) => {
-              const Icon = feature.icon;
+          {/* PRODUCT PREVIEW */}
+          <div className="mx-auto mt-14 max-w-[1000px] sm:mt-20 lg:mt-24">
+            <div className="rounded-[24px] border border-white/[0.12] bg-[#0c0c0d] p-2 shadow-[0_40px_120px_rgba(0,0,0,0.55)] sm:rounded-[30px] sm:p-3">
+              <div className="overflow-hidden rounded-[17px] border border-white/[0.07] bg-[#08090a] sm:rounded-[22px]">
+                <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3 sm:px-5">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-white/20" />
+                    <span className="h-2 w-2 rounded-full bg-white/20" />
+                    <span className="h-2 w-2 rounded-full bg-white/20" />
+                  </div>
+                  <span className="text-[9px] tracking-[0.12em] text-white/30">
+                    TRADEMIRROR / JOURNAL
+                  </span>
+                  <div className="h-5 w-8" />
+                </div>
 
-              return (
-                <article
-                  key={feature.title}
-                  className="group relative overflow-hidden rounded-[24px] border border-white/[0.09] bg-[#07111c]/90 p-5 shadow-[0_25px_80px_rgba(0,0,0,0.22)] transition duration-500 hover:border-white/[0.14] hover:bg-[#091522] sm:rounded-[30px] sm:p-7"
-                >
-                  {/* Top shine */}
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                <div className="grid gap-0 md:grid-cols-[0.8fr_1.2fr]">
+                  <div className="flex flex-col justify-between border-b border-white/[0.07] p-5 sm:p-7 md:border-b-0 md:border-r md:p-8">
+                    <div>
+                      <SectionLabel>YOUR TRADING JOURNAL</SectionLabel>
+                      <h2 className="mt-4 max-w-[360px] text-[27px] font-medium leading-[1.08] tracking-[-0.055em] text-white sm:text-[36px]">
+                        A clearer picture of every decision.
+                      </h2>
+                      <p className="mt-4 max-w-[360px] text-[12px] leading-6 text-white/45 sm:text-[13px]">
+                        Review your trade, remember your reasoning, and build
+                        a process you can repeat.
+                      </p>
+                    </div>
 
-                  {/* Icon */}
-                  <div className="flex h-12 w-12 items-center justify-center rounded-[15px] border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition group-hover:border-white/20 group-hover:bg-white/[0.06] sm:h-14 sm:w-14 sm:rounded-[17px]">
-                    <Icon
-                      className="h-5 w-5 text-white/80 sm:h-6 sm:w-6"
-                      strokeWidth={1.7}
-                    />
+                    <div className="mt-8 grid grid-cols-2 gap-2.5">
+                      <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3.5">
+                        <p className="text-[9px] text-white/35">Instrument</p>
+                        <p className="mt-2 text-[15px] font-semibold text-white/85">
+                          NQ
+                        </p>
+                        <p className="mt-1 text-[9px] text-white/30">Nasdaq futures</p>
+                      </div>
+                      <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3.5">
+                        <p className="text-[9px] text-white/35">Execution</p>
+                        <p className="mt-2 text-[15px] font-semibold text-white/85">
+                          A
+                        </p>
+                        <p className="mt-1 text-[9px] text-white/30">Followed plan</p>
+                      </div>
+                    </div>
                   </div>
 
-                  <p className="mt-8 text-[9px] font-semibold tracking-[0.17em] text-white/30 sm:mt-10 sm:text-[10px]">
-                    {feature.eyebrow}
-                  </p>
-
-                  <h3 className="mt-3 max-w-[600px] text-[27px] font-medium leading-[1.05] tracking-[-0.045em] text-white sm:mt-4 sm:text-[30px] md:text-[34px] lg:text-[38px]">
-                    {feature.title}
-                  </h3>
-
-                  <p className="mt-4 max-w-[610px] text-[13px] leading-[1.7] text-white/38 sm:mt-5 sm:text-[14px]">
-                    {feature.description}
-                  </p>
-
-                  <FeaturePreview type={feature.type} />
-                </article>
-              );
-            })}
-          </div>
-
-          {/* Bottom CTA */}
-          <div className="relative mt-14 overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#07111c]/80 px-5 py-12 text-center shadow-[0_30px_100px_rgba(0,0,0,0.25)] sm:mt-20 sm:rounded-[30px] sm:px-8 sm:py-16 md:px-12">
-            <div className="pointer-events-none absolute left-1/2 top-[-160px] h-[320px] w-[500px] -translate-x-1/2 rounded-full bg-white/[0.025] blur-[100px] sm:top-[-200px] sm:h-[400px] sm:w-[700px] sm:blur-[120px]" />
-
-            <div className="relative">
-              <p className="text-[8px] font-semibold tracking-[0.18em] text-white/50 sm:text-[9px]">
-                YOUR TRADING. YOUR DATA. YOUR EDGE.
-              </p>
-
-              <h3 className="mx-auto mt-4 max-w-[700px] text-[34px] font-semibold leading-[1] tracking-[-0.05em] text-white sm:mt-5 sm:text-[40px] md:text-[52px]">
-                Stop guessing.{" "}
-                <span className="text-white">Start learning.</span>
-              </h3>
-
-              <p className="mx-auto mt-4 max-w-[520px] text-[13px] leading-6 text-white/35 sm:mt-5 sm:text-[14px] sm:leading-7">
-                Build a journal around your actual trading and turn your
-                history into an edge.
-              </p>
-
-              <a
-                href="/signup"
-                className="mt-7 inline-flex h-[50px] items-center rounded-[10px] border border-white/20 bg-white px-5 text-[11px] font-semibold text-black transition hover:bg-white/90 sm:mt-8 sm:h-[52px] sm:px-6"
-              >
-                Start Journaling Free
-              </a>
+                  <div className="p-3 sm:p-5 md:p-6">
+                    <JournalPreview />
+                  </div>
+                </div>
+              </div>
             </div>
+            <p className="mt-4 text-center text-[9px] text-white/25 sm:text-[10px]">
+              Product preview · Illustrative sample data
+            </p>
           </div>
         </div>
       </section>
+
+      {/* FEATURE OVERVIEW */}
+      <section
+        id="features"
+        className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-32"
+      >
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-[650px]">
+            <SectionLabel>THE TRADEMIRROR TOOLKIT</SectionLabel>
+            <h2 className="mt-4 text-[35px] font-semibold leading-[1.02] tracking-[-0.06em] text-white sm:text-[47px] md:text-[58px]">
+              Everything has a place.
+              <span className="block text-white/40">Every detail matters.</span>
+            </h2>
+          </div>
+          <p className="max-w-[370px] text-[12px] leading-6 text-white/40 sm:text-[13px] sm:leading-7">
+            The tools to document your trades, understand your performance,
+            and reflect on the habits shaping your results.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-4 sm:mt-16 sm:gap-5 md:grid-cols-2">
+          {featureCards.map((feature) => {
+            const Icon = feature.icon;
+
+            return (
+              <article
+                key={feature.number}
+                className={`group relative min-w-0 overflow-hidden rounded-[22px] border border-white/[0.09] bg-[#0b0b0c] p-5 transition duration-300 hover:border-white/[0.16] hover:bg-[#0e0e0f] sm:rounded-[28px] sm:p-7 lg:p-8 ${
+                  feature.size === "large" ? "md:col-span-1" : ""
+                }`}
+              >
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent" />
+
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-[14px] border border-white/[0.10] bg-white/[0.035] transition group-hover:bg-white/[0.06] sm:h-12 sm:w-12">
+                    <Icon className="h-[19px] w-[19px] text-white/75" strokeWidth={1.7} />
+                  </div>
+                  <span className="pt-1 text-[10px] tabular-nums tracking-[0.14em] text-white/25">
+                    {feature.number}
+                  </span>
+                </div>
+
+                <p className="mt-7 text-[9px] font-semibold tracking-[0.18em] text-white/35 sm:mt-8 sm:text-[10px]">
+                  {feature.eyebrow}
+                </p>
+                <h3 className="mt-3 max-w-[500px] text-[26px] font-medium leading-[1.08] tracking-[-0.05em] text-white sm:text-[31px]">
+                  {feature.title}
+                </h3>
+                <p className="mt-3 max-w-[530px] text-[12px] leading-6 text-white/45 sm:mt-4 sm:text-[13px] sm:leading-7">
+                  {feature.description}
+                </p>
+
+                <FeaturePreview type={feature.type} />
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* CLOSING STATEMENT */}
+      <section className="px-5 pb-20 sm:px-8 sm:pb-28 lg:px-12 lg:pb-32">
+        <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[26px] border border-white/[0.10] bg-[#0c0c0d] px-5 py-14 text-center sm:rounded-[32px] sm:px-10 sm:py-20 md:py-24">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,255,255,0.065),transparent_65%)]" />
+
+          <div className="relative mx-auto max-w-[760px]">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.10] bg-white/[0.04]">
+              <Activity className="h-5 w-5 text-white/80" />
+            </div>
+
+            <p className="mt-6 text-[9px] font-semibold tracking-[0.2em] text-white/40 sm:text-[10px]">
+              YOUR TRADING. YOUR DATA. YOUR EDGE.
+            </p>
+            <h2 className="mt-4 text-[37px] font-semibold leading-[1] tracking-[-0.065em] text-white sm:text-[49px] md:text-[62px]">
+              Make every trade
+              <span className="block mt-2 text-white/45">
+                worth learning from.
+              </span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-[510px] text-[12px] leading-6 text-white/45 sm:text-[14px] sm:leading-7">
+              Build a record of your decisions, recognize your patterns, and
+              keep refining your approach one session at a time.
+            </p>
+
+            <a
+              href="/signup"
+              className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-[12px] font-semibold text-black transition hover:bg-white/90 sm:mt-9"
+            >
+              Start journaling free
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <p className="mt-4 text-[9px] text-white/25">
+              Your next session is another opportunity to improve.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-white/[0.06] px-5 py-6 sm:px-8 lg:px-12">
+        <div className="mx-auto flex max-w-[1240px] flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+          <p className="text-[10px] text-white/30">
+            TradeMirror · A journal for intentional traders.
+          </p>
+          <a
+            href="/signup"
+            className="inline-flex items-center gap-1.5 text-[10px] text-white/50 transition hover:text-white"
+          >
+            Get started
+            <ArrowDownRight className="h-3 w-3" />
+          </a>
+        </div>
+      </footer>
     </main>
   );
 }
