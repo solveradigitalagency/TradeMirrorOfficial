@@ -9,18 +9,19 @@ const productLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/[0.06] bg-[#010409]">
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute left-1/2 top-0 h-[180px] w-[500px] -translate-x-1/2 rounded-full bg-blue-500/[0.04] blur-[80px]" />
+    <footer className="relative overflow-hidden border-t border-white/[0.08] bg-[#020202]">
+      {/* Subtle monochrome ambient highlight */}
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[160px] w-[420px] -translate-x-1/2 rounded-full bg-white/[0.025] blur-[90px]" />
 
       <div className="relative mx-auto max-w-[1300px] px-5 sm:px-6">
         {/* Main footer */}
-        <div className="grid gap-8 border-b border-white/[0.06] py-7 sm:py-8 md:grid-cols-[2fr_1fr]">
+        <div className="grid gap-10 border-b border-white/[0.07] py-9 sm:py-10 md:grid-cols-[2fr_1fr]">
           {/* Brand */}
-          <div className="max-w-[300px]">
+          <div className="max-w-[320px]">
             <Link
               href="/"
-              className="inline-block transition-opacity hover:opacity-80"
+              aria-label="TradeMirror home"
+              className="inline-flex transition-opacity duration-200 hover:opacity-75"
             >
               <Image
                 src="/logo/trade-mirror-logo.png"
@@ -31,26 +32,27 @@ export default function Footer() {
               />
             </Link>
 
-            <p className="mt-3 text-xs leading-5 text-white/35">
-              The all-in-one trading journal built to help you see your
-              performance, analyze your edge, and trade with more consistency.
+            <p className="mt-4 text-xs leading-6 text-white/45">
+              The all-in-one trading journal built to help you understand your
+              performance, analyze your edge, and trade with greater
+              consistency.
             </p>
           </div>
 
-          {/* Product */}
+          {/* Product links */}
           <div className="flex md:justify-end">
-            <FooterColumn title="Product" links={productLinks} />
+            <FooterColumn title="Explore" links={productLinks} />
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-white/25">
+        {/* Bottom row */}
+        <div className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[11px] text-white/35">
             © {new Date().getFullYear()} TradeMirror. All rights reserved.
           </p>
 
-          <span className="flex items-center gap-2 text-[10px] text-white/25">
-            <span className="h-1 w-1 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]" />
+          <span className="inline-flex items-center gap-2 text-[11px] text-white/40">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
             All systems operational
           </span>
         </div>
@@ -68,16 +70,16 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-white/70">
+      <h3 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">
         {title}
       </h3>
 
-      <ul className="mt-3 space-y-2">
+      <ul className="mt-4 space-y-3">
         {links.map((link) => (
           <li key={link.label}>
             <Link
               href={link.href}
-              className="text-xs text-white/35 transition-colors hover:text-white/75"
+              className="inline-flex text-xs text-white/55 transition-colors duration-200 hover:text-white"
             >
               {link.label}
             </Link>

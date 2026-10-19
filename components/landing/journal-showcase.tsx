@@ -19,8 +19,10 @@ export default function JournalShowcase() {
     <section className="relative overflow-hidden bg-[#02060b] py-20 sm:py-24 lg:py-32">
       <div className="mx-auto grid max-w-[1400px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         {/* Screenshot */}
-        <div className="relative">
-          <div className="mx-auto w-[94%] overflow-hidden rounded-[24px] border border-white/[0.10] bg-[#07101a] shadow-[0_30px_100px_rgba(0,0,0,0.35)] sm:w-[85%]">
+        <div className="relative mx-auto w-[94%] sm:w-[90%]">
+          <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[32px] bg-white/[0.025] blur-3xl" />
+
+          <div className="overflow-hidden rounded-[24px] border border-white/[0.12] bg-[#080a0d] shadow-[0_30px_100px_rgba(0,0,0,0.45)]">
             <img
               src="/trademirror-shareable.png"
               alt="TradeMirror journal entry"
@@ -31,7 +33,7 @@ export default function JournalShowcase() {
 
         {/* Text */}
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.16em] text-blue-400">
+          <div className="mb-5 inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.16em] text-white/65">
             <TrendingUp className="h-4 w-4" />
             YOUR JOURNAL
           </div>
@@ -41,7 +43,7 @@ export default function JournalShowcase() {
             <br />
             Your Mirror.
             <br />
-            <span className="text-blue-500">Your Edge.</span>
+            <span className="text-white">Your Edge.</span>
           </h2>
 
           <p className="mt-6 text-[15px] leading-7 text-white/40 sm:mt-7 sm:text-[16px]">
@@ -56,8 +58,8 @@ export default function JournalShowcase() {
                 key={benefit}
                 className="flex items-start gap-3 text-sm text-white/55"
               >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/10">
-                  <Check className="h-3 w-3 text-blue-400" />
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
+                  <Check className="h-3 w-3 text-white/80" />
                 </span>
 
                 <span>{benefit}</span>
@@ -67,7 +69,7 @@ export default function JournalShowcase() {
 
           <Link
             href="/signup"
-            className="group mt-8 inline-flex items-center gap-2 rounded-xl bg-blue-500 px-5 py-3.5 text-sm font-semibold text-white shadow-[0_10px_35px_rgba(37,99,235,0.2)] transition hover:bg-blue-400 sm:mt-9"
+            className="group mt-8 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white px-5 py-3.5 text-sm font-semibold text-black transition duration-200 hover:bg-white/90 sm:mt-9"
           >
             Start Journaling Free
             <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />

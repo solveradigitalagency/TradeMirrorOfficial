@@ -11,7 +11,7 @@ export default function Navbar() {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 h-[76px] border-b border-white/[0.045] bg-[#02060b]/90 backdrop-blur">
+    <header className="sticky top-0 z-50 h-[76px] border-b border-white/[0.08] bg-[#020202]/90 backdrop-blur-xl">
       <div className="mx-auto flex h-full max-w-[1500px] items-center justify-between px-4 sm:px-6 lg:px-8 xl:px-10">
         {/* LOGO */}
         <Link
@@ -25,7 +25,7 @@ export default function Navbar() {
             width={220}
             height={64}
             priority
-            className="h-auto w-[145px] sm:w-[175px] lg:w-[210px]"
+            className="h-auto w-[140px] sm:w-[165px] lg:w-[185px]"
           />
         </Link>
 
@@ -33,21 +33,21 @@ export default function Navbar() {
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 md:flex">
           <Link
             href="/product"
-            className="text-[15px] font-medium text-white/55 transition-colors hover:text-white"
+            className="text-[15px] font-medium text-white/60 transition-colors duration-200 hover:text-white"
           >
             Product
           </Link>
 
           <Link
             href="/features"
-            className="text-[15px] font-medium text-white/55 transition-colors hover:text-white"
+            className="text-[15px] font-medium text-white/60 transition-colors duration-200 hover:text-white"
           >
             Features
           </Link>
 
           <Link
             href="/pricing"
-            className="text-[15px] font-medium text-white/55 transition-colors hover:text-white"
+            className="text-[15px] font-medium text-white/60 transition-colors duration-200 hover:text-white"
           >
             Pricing
           </Link>
@@ -66,7 +66,7 @@ export default function Navbar() {
           {/* Start for free — desktop/mobile */}
           <Link
             href="/signup"
-            className="flex h-9 items-center rounded-lg bg-[#2385f5] px-3.5 text-[11px] font-semibold text-white shadow-[0_8px_25px_rgba(35,133,245,0.18)] transition-all duration-200 hover:bg-[#318ff7] hover:shadow-[0_10px_30px_rgba(35,133,245,0.28)] sm:h-10 sm:px-5 sm:text-[14px]"
+            className="flex h-9 items-center rounded-lg border border-white/15 bg-white px-3.5 text-[11px] font-semibold text-black transition-all duration-200 hover:bg-white/90 sm:h-10 sm:px-5 sm:text-[14px]"
           >
             Start for free
           </Link>
@@ -90,8 +90,8 @@ export default function Navbar() {
 
       {/* MOBILE MENU */}
       {mobileMenuOpen && (
-        <div className="absolute left-0 right-0 top-[76px] border-b border-white/[0.06] bg-[#02060b]/95 px-4 pb-4 pt-3 shadow-[0_20px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl md:hidden">
-          <nav className="rounded-2xl border border-white/[0.07] bg-[#07101a]/80 p-2">
+        <div className="absolute left-0 right-0 top-[76px] border-b border-white/[0.08] bg-[#050505]/95 px-4 pb-4 pt-3 shadow-[0_20px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl md:hidden">
+          <nav className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-2">
             <Link
               href="/product"
               onClick={closeMenu}
