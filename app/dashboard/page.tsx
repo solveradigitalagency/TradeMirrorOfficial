@@ -308,16 +308,15 @@ function TradeBars({ trades }: { trades: Trade[] }) {
   return (
     <div className="flex h-[30px] w-[64px] items-end justify-end gap-[3px] sm:h-[58px] sm:w-[120px] sm:gap-[5px]">
       {values.map((value, index) => {
+        // Updated height calculation (removes window.innerWidth logic)
         const height = Math.max(
           6,
-          (Math.abs(value) / max) * (window.innerWidth >= 640 ? 54 : 24)
+          (Math.abs(value) / max) * 24
         );
         return (
           <div
             key={index}
-            className={`w-[4px] rounded-t-[2px] sm:w-[7px] sm:rounded-t-[3px] ${
-              value >= 0 ? "bg-white/65" : "bg-white/25"
-            }`}
+            className={`w-[4px] rounded-t-[2px] sm:w-[7px] sm:rounded-t-[3px] ${value >= 0 ? "bg-white/65" : "bg-white/25"}`}
             style={{
               height: `${height}px`,
             }}
