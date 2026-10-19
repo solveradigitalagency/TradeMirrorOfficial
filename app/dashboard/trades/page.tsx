@@ -47,6 +47,8 @@ type TradeRow = {
 
 type Filter = "All" | "Wins" | "Losses" | "Breakeven" | "Long" | "Short";
 
+// ---------
+// A. Add session to FormState
 type FormState = {
   trade_date: string;
   pnl: string;
@@ -61,7 +63,9 @@ type FormState = {
   visibility: "Private" | "Followers" | "Public";
   notes: string;
   screenshot_url: string;
+  session: "" | "Asia" | "London" | "New York";
 };
+// ---------
 
 // Add a modal mode: 'add' (default) or { mode: 'edit', id: string }
 type ModalState =
@@ -69,6 +73,8 @@ type ModalState =
   | { mode: "edit"; id: string }
   | null;
 
+// ---------
+// B. Add it to emptyForm
 const emptyForm: FormState = {
   trade_date: new Date().toISOString().split("T")[0],
   pnl: "",
@@ -83,7 +89,9 @@ const emptyForm: FormState = {
   visibility: "Private",
   notes: "",
   screenshot_url: "",
+  session: "",
 };
+// ---------
 
 function formatMoney(value: number | null) {
   if (value === null || Number.isNaN(Number(value))) {
@@ -348,6 +356,44 @@ function AddTradeModal({
               className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[11px] text-white/70 outline-none transition focus:border-white/25 [color-scheme:dark]"
             />
           </label>
+
+          {/* C. Add the session selector to the Log Trade popup */}
+          {/* TRADING SESSION */}
+          <div className="mt-5">
+            <span className="mb-2 block text-[10px] font-medium text-white/40">
+              Trading session
+            </span>
+
+            <div className="grid grid-cols-3 gap-2">
+              {(["Asia", "London", "New York"] as const).map(
+                (session) => (
+                  <button
+                    key={session}
+                    type="button"
+                    onClick={() =>
+                      update(
+                        "session",
+                        form.session === session ? "" : session
+                      )
+                    }
+                    aria-pressed={form.session === session}
+                    className={`h-10 rounded-[9px] border text-[10px] font-medium transition ${
+                      form.session === session
+                        ? "border-white/[0.18] bg-white/[0.10] text-white"
+                        : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
+                    }`}
+                  >
+                    {session}
+                  </button>
+                )
+              )}
+            </div>
+
+            <p className="mt-1.5 text-[9px] text-white/25">
+              Select the session in which you traded. Leave blank if unknown.
+            </p>
+          </div>
+          {/* END TRADING SESSION */}
 
           {/* RESULT */}
           <div className="mt-5">
@@ -895,6 +941,7 @@ export default function TradesPage() {
       const tradeId = modalState.id;
 
       // Build the update object
+      // D. Save the session when editing a trade
       const updatePayload: any = {
         trade_date: form.trade_date,
         symbol: form.symbol.trim().toUpperCase(),
@@ -910,6 +957,7 @@ export default function TradesPage() {
         execution_rating: form.execution_rating || null,
         visibility: form.visibility,
         notes: form.notes.trim() || null,
+        session: form.session || null,
       };
 
       if (screenshotWasUpdated) {
@@ -947,6 +995,7 @@ export default function TradesPage() {
       setSaving(false);
     } else {
       // Add new trade
+      // E. Save the session when creating a trade
       const { data, error } = await supabase
         .from("trades")
         .insert({
@@ -966,6 +1015,7 @@ export default function TradesPage() {
           visibility: form.visibility,
           notes: form.notes.trim() || null,
           screenshot_url: screenshotUrl,
+          session: form.session || null,
         })
         .select()
         .single();
@@ -1393,6 +1443,13 @@ export default function TradesPage() {
                         visibility:
                           (selected.visibility as any) ||
                           "Private",
+                        // F. Load the saved session when editing a trade
+                        session:
+                          selected.session === "Asia" ||
+                          selected.session === "London" ||
+                          selected.session === "New York"
+                            ? selected.session
+                            : "",
                       });
                       setModalState({ mode: "edit", id: selected.id });
                     }}
