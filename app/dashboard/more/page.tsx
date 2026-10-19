@@ -47,7 +47,7 @@ function Avatar({
 }) {
   return (
     <div
-      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.10] bg-gradient-to-br from-[#344353] via-[#171f29] to-[#080d13] text-white/65 ${
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.12] bg-gradient-to-br from-[#333333] via-[#171717] to-[#080808] text-white/75 ${
         large ? "h-14 w-14" : "h-10 w-10"
       }`}
     >
@@ -70,7 +70,7 @@ function Avatar({
         </span>
       )}
 
-      <div className="pointer-events-none absolute inset-0 rounded-full bg-blue-400/[0.035]" />
+      <div className="pointer-events-none absolute inset-0 rounded-full bg-white/[0.025]" />
     </div>
   );
 }
@@ -91,9 +91,9 @@ function MenuItem({
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3.5 rounded-[14px] border border-white/[0.065] bg-white/[0.018] p-3.5 transition-all duration-200 hover:border-white/[0.10] hover:bg-white/[0.035] active:scale-[0.99]"
+      className="group flex items-center gap-3.5 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-4 transition-all duration-200 hover:border-white/[0.15] hover:bg-white/[0.045] active:scale-[0.99]"
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] border border-white/[0.06] bg-[#0d1823] text-white/50 transition group-hover:border-blue-400/[0.12] group-hover:text-blue-300/80">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-white/65 transition group-hover:border-white/[0.16] group-hover:text-white">
         {icon}
       </div>
 
@@ -104,7 +104,7 @@ function MenuItem({
           </p>
 
           {pro && (
-            <span className="rounded-full border border-blue-400/[0.14] bg-blue-500/[0.07] px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.08em] text-blue-300/70">
+            <span className="rounded-full border border-white/[0.15] bg-white/[0.06] px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.08em] text-white/70">
               Pro
             </span>
           )}
@@ -174,7 +174,7 @@ export default function MorePage() {
   const isPro = profile?.plan === "pro";
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#03070d] px-3 py-3 pb-24 text-white sm:px-4 sm:py-4">
+    <main className="min-h-screen overflow-x-hidden bg-[#050505] px-4 py-5 pb-28 text-white sm:px-6 sm:py-6">
       <div className="mx-auto max-w-[900px]">
         {/* HEADER */}
         <div className="px-1 pb-4">
@@ -194,9 +194,9 @@ export default function MorePage() {
         {/* PROFILE CARD */}
         <Link
           href="/dashboard/settings"
-          className="group relative block overflow-hidden rounded-[17px] border border-white/[0.09] bg-[#0b151f]/95 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_20px_50px_rgba(0,0,0,0.22)] transition hover:border-white/[0.12] hover:bg-[#0d1823]"
+          className="group relative block overflow-hidden rounded-[20px] border border-white/[0.10] bg-[#0b0b0b] p-4 shadow-[0_16px_45px_rgba(0,0,0,0.20)] transition hover:border-white/[0.16] hover:bg-[#101010]"
         >
-          <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-500/[0.055] blur-3xl" />
+          <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/[0.025] blur-3xl" />
 
           <div className="relative flex items-center gap-3.5">
             {profile ? (
@@ -226,7 +226,7 @@ export default function MorePage() {
                     </p>
 
                     {isPro && (
-                      <span className="rounded-full border border-blue-400/[0.15] bg-blue-500/[0.07] px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.08em] text-blue-300/75">
+                      <span className="rounded-full border border-white/[0.15] bg-white/[0.06] px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.08em] text-white/70">
                         Pro
                       </span>
                     )}
@@ -246,7 +246,7 @@ export default function MorePage() {
               )}
             </div>
 
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.018] text-white/25 transition group-hover:border-blue-400/[0.12] group-hover:text-blue-300/70">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.025] text-white/35 transition group-hover:border-white/[0.16] group-hover:text-white/80">
               <ChevronRight
                 className="h-4 w-4"
                 strokeWidth={1.7}
@@ -296,7 +296,7 @@ export default function MorePage() {
         <section className="mt-6">
           <div className="mb-2.5 flex items-center gap-2 px-1">
             <Sparkles
-              className="h-3 w-3 text-blue-300/60"
+              className="h-3 w-3 text-white/55"
               strokeWidth={1.7}
             />
 
@@ -353,14 +353,14 @@ export default function MorePage() {
         {!isPro && (
           <Link
             href="/pricing"
-            className="group relative mt-6 block overflow-hidden rounded-[17px] border border-blue-400/[0.12] bg-[#0b1622] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_15px_45px_rgba(0,0,0,0.20)]"
+            className="group relative mt-6 block overflow-hidden rounded-[20px] border border-white/[0.12] bg-gradient-to-br from-[#151515] to-[#090909] p-5 shadow-[0_16px_45px_rgba(0,0,0,0.20)] transition hover:border-white/[0.20]"
           >
-            <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-500/[0.08] blur-3xl" />
+            <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/[0.04] blur-3xl" />
 
             <div className="relative flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] border border-blue-400/[0.12] bg-blue-500/[0.07]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] border border-white/[0.10] bg-white/[0.05]">
                 <Sparkles
-                  className="h-[18px] w-[18px] text-blue-300"
+                  className="h-[18px] w-[18px] text-white/80"
                   strokeWidth={1.7}
                 />
               </div>
@@ -377,7 +377,7 @@ export default function MorePage() {
               </div>
 
               <ArrowRight
-                className="h-4 w-4 shrink-0 text-blue-300/55 transition group-hover:translate-x-0.5 group-hover:text-blue-300"
+                className="h-4 w-4 shrink-0 text-white/50 transition group-hover:translate-x-0.5 group-hover:text-white"
                 strokeWidth={1.7}
               />
             </div>
@@ -389,7 +389,7 @@ export default function MorePage() {
           type="button"
           onClick={handleLogout}
           disabled={loggingOut}
-          className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-[13px] border border-white/[0.06] bg-white/[0.018] text-[11px] font-medium text-white/35 transition hover:border-red-400/[0.10] hover:bg-red-500/[0.035] hover:text-red-300/70 active:scale-[0.99] disabled:opacity-50"
+          className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.025] text-[12px] font-medium text-white/50 transition hover:border-red-400/[0.15] hover:bg-red-500/[0.04] hover:text-red-300/80 active:scale-[0.99] disabled:opacity-50"
         >
           {loggingOut ? (
             <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
