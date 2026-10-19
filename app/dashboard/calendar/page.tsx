@@ -614,9 +614,9 @@ export default function CalendarPage() {
             </div>
 
             {/* CALENDAR GRID */}
-            <div className="min-h-0 flex-1 p-2 sm:p-4">
+            <div className="min-h-0 flex-1 p-1.5 sm:p-4">
               <div
-                className="grid h-full overflow-hidden rounded-[11px] border border-white/[0.055] sm:rounded-[13px] xl:grid-cols-[repeat(7,minmax(0,1fr))_120px]"
+                className="grid h-full grid-cols-7 overflow-hidden rounded-[11px] border border-white/[0.055] sm:rounded-[13px] xl:grid-cols-[repeat(7,minmax(0,1fr))_120px]"
                 style={{
                   /*
                    * IMPORTANT:
@@ -692,22 +692,34 @@ export default function CalendarPage() {
                                       : "border-white/[0.065] bg-white/[0.015] hover:border-white/[0.11] hover:bg-white/[0.035]"
                               }`}
                             >
-                              <div className="relative flex h-full min-h-[58px] items-start justify-start p-0 sm:min-h-[70px]">
+                              <div className="relative flex h-full min-h-[46px] flex-col items-start justify-start p-1 sm:min-h-[70px] sm:p-0">
                                 <span
-                                  className={`pt-1.5 pl-1.5 text-[9px] font-medium sm:pt-2 sm:pl-2 sm:text-[11px] ${
+                                  className={`text-[11px] font-medium sm:pt-2 sm:pl-2 sm:text-[11px] ${
                                     isSelected
                                       ? "text-white"
-                                      : "text-white/40"
+                                      : "text-white/55"
                                   }`}
                                 >
                                   {day}
                                 </span>
+                                {/* Mobile-only colored dot after date number */}
+                                {hasTrades && (
+                                  <span
+                                    className={`mt-auto mb-0.5 h-1.5 w-1.5 rounded-full sm:hidden ${
+                                      dayPnl > 0
+                                        ? "bg-emerald-400"
+                                        : dayPnl < 0
+                                          ? "bg-red-400"
+                                          : "bg-white/50"
+                                    }`}
+                                  />
+                                )}
 
                                 {hasTrades && (
                                   <>
                                     {/* MODIFIED P&L AMOUNT CLASSNAME (Prompt #3) */}
                                     <span
-                                      className={`absolute bottom-2 left-1.5 text-[9px] font-semibold sm:bottom-3 sm:left-3 sm:text-[12px] ${
+                                      className={`absolute bottom-1 left-1 hidden text-[9px] font-semibold sm:block sm:bottom-3 sm:left-3 sm:text-[12px] ${
                                         dayPnl > 0
                                           ? "text-emerald-300"
                                           : dayPnl < 0
