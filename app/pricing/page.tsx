@@ -5,22 +5,14 @@ import Navbar from "@/components/layout/navbar";
 const freeFeatures = [
   "Manual P&L calendar",
   "Daily trading journal",
-  "Chart screenshot uploads",
-  "Emotion and discipline tracking",
-  "Performance analytics",
-  "Public or private trader profile",
+  "performance analytics",
   "Trader discovery and following",
 ];
 
 const proFeatures = [
-  "Automatic trade imports",
-  "AI-powered trade capture",
-  "Weekly AI performance reviews",
-  "Advanced analytics and insights",
-  "Multiple trading accounts",
-  "Payout and expense tracking",
-  "Tax-ready exports",
-  "Expanded screenshot storage",
+  "Everything from Free",
+  "Advanced analytics",
+  "Tax Center",
 ];
 
 function CheckIcon({ muted = false }: { muted?: boolean }) {
@@ -52,11 +44,11 @@ function FeatureList({
   muted?: boolean;
 }) {
   return (
-    <ul className="space-y-3.5">
+    <ul className="space-y-4">
       {features.map((feature) => (
         <li
           key={feature}
-          className={`flex items-center gap-3 text-[13px] leading-5 ${
+          className={`flex items-center justify-center gap-3.5 text-center text-[13px] leading-5 ${
             muted ? "text-white/45" : "text-white/70"
           }`}
         >
@@ -118,119 +110,89 @@ export default function PricingPage() {
           </div>
 
           {/* Pricing plans */}
-          <div className="mx-auto mt-14 grid max-w-[940px] grid-cols-1 items-stretch gap-4 md:mt-16 md:grid-cols-2 md:gap-5">
+          <div className="mx-auto mt-10 grid max-w-[940px] grid-cols-1 items-stretch gap-4 md:mt-12 md:grid-cols-2 md:gap-5">
             {/* Free plan */}
-            <article className="flex flex-col rounded-[24px] border border-white/[0.13] bg-[#0b0b0b] p-6 sm:p-8 lg:p-9">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-white/85">
-                    TradeMirror Free
-                  </p>
-                  <p className="mt-2 text-xs text-white/40">
-                    Everything you need to get started.
-                  </p>
-                </div>
+            <article className="relative flex flex-col rounded-[20px] border border-white/[0.12] bg-[#0a0a0a] p-6 sm:p-7 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-white/[0.24] hover:bg-[#0d0d0d] hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)] motion-reduce:transition-none">
+              {/* Free plan heading */}
+              <div className="relative text-center">
+                <p className="text-sm font-medium text-white/60">
+                  Free
+                </p>
 
-                <span className="shrink-0 rounded-full border border-white/[0.12] bg-white/[0.04] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.13em] text-white/55">
-                  Available now
-                </span>
+                <h2 className="mt-4 text-xl font-semibold tracking-[-0.035em] text-white">
+                  Free for every trader
+                </h2>
+
+                <p className="mt-2 text-sm text-white/40">
+                  $0 forever. No credit card required.
+                </p>
               </div>
-
-              <div className="mt-9 flex items-baseline gap-2">
-                <span className="text-[56px] font-medium leading-none tracking-[-0.07em]">
-                  $0
-                </span>
-                <span className="text-sm text-white/35">forever</span>
-              </div>
-
-              <p className="mt-3 text-xs text-white/40">
-                No credit card. No commitment.
-              </p>
-
-              <Link
-                href="/signup"
-                className="group mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0b]"
-              >
-                Start for free
-                <ArrowIcon />
-              </Link>
 
               <div className="my-8 h-px bg-white/[0.09]" />
 
-              <div className="mb-5">
-                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/40">
-                  Included in Free
+              <div className="px-1">
+                <p className="mb-5 text-center text-xs text-white/45">
+                  Everything you need to get started
                 </p>
+                <FeatureList features={freeFeatures} />
               </div>
 
-              <FeatureList features={freeFeatures} />
-
-              <div className="mt-auto pt-9">
-                <p className="text-[11px] leading-5 text-white/30">
-                  A complete foundation for building a consistent review
-                  process.
-                </p>
+              <div className="mt-8">
+                <Link
+                  href="/signup"
+                  className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0b]"
+                >
+                  Start for free
+                  <ArrowIcon />
+                </Link>
               </div>
             </article>
 
             {/* Pro plan */}
-            <article className="relative flex flex-col overflow-hidden rounded-[24px] border border-white/[0.09] bg-[#090909] p-6 sm:p-8 lg:p-9">
+            <article className="relative flex flex-col overflow-hidden rounded-[20px] border border-white/[0.12] bg-[#090909] p-6 sm:p-7 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-white/[0.24] hover:bg-[#0d0d0d] hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)] motion-reduce:transition-none">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute right-0 top-0 h-48 w-48 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.055),transparent_70%)]"
               />
 
-              <div className="relative flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-white/85">
-                    TradeMirror Pro
-                  </p>
-                  <p className="mt-2 text-xs text-white/40">
-                    For traders ready to go deeper.
-                  </p>
-                </div>
+              {/* Pro plan heading */}
+              <div className="relative text-center">
+                <p className="text-sm font-medium text-white/60">
+                  Pro
+                </p>
 
-                <span className="shrink-0 rounded-full border border-white/[0.12] bg-white/[0.035] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.13em] text-white/45">
+                <h2 className="mt-4 text-xl font-semibold tracking-[-0.035em] text-white">
+                  More insight. Less manual work.
+                </h2>
+
+                <p className="mt-2 text-sm text-white/40">
                   Coming soon
-                </span>
-              </div>
-
-              <div className="mt-9">
-                <p className="text-[27px] font-medium leading-tight tracking-[-0.04em] text-white/85">
-                  More insight.
-                  <br />
-                  Less manual work.
                 </p>
               </div>
 
-              <p className="mt-4 min-h-[40px] max-w-sm text-xs leading-6 text-white/40">
-                Spend less time organizing trades and more time understanding
-                your performance.
-              </p>
+              <div className="my-8 h-px bg-white/[0.09]" />
 
-              <button
-                type="button"
-                disabled
-                aria-disabled="true"
-                className="mt-8 flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.035] px-4 text-sm font-medium text-white/30"
-              >
-                Coming soon
-              </button>
-
-              <div className="my-8 h-px bg-white/[0.08]" />
-
-              <div className="mb-5">
-                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/35">
-                  Planned for Pro
+              <div className="px-1">
+                <p className="mb-5 text-center text-xs text-white/45">
+                  Everything in Free, plus...
                 </p>
+                <FeatureList
+                  features={proFeatures.filter(
+                    (feature) => feature !== "Everything from Free"
+                  )}
+                  muted
+                />
               </div>
 
-              <FeatureList features={proFeatures} muted />
-
-              <div className="mt-auto pt-9">
-                <p className="text-[11px] leading-5 text-white/25">
-                  Pro features and pricing will be announced before launch.
-                </p>
+              <div className="mt-8">
+                <button
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.035] px-4 text-sm font-medium text-white/30"
+                >
+                  Coming soon
+                </button>
               </div>
             </article>
           </div>
