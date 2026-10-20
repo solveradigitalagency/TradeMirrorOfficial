@@ -1725,6 +1725,86 @@ export default function JournalPage() {
           }
 
         }
+
+        /* Fix left-page setup/footer overlap */
+        .book-left .trade-page-content {
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 0;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        .book-left .trade-heading {
+          flex: 0 0 auto;
+        }
+
+        .book-left .chart-section {
+          display: flex;
+          flex: 1 1 0;
+          flex-direction: column;
+          min-height: 0;
+          margin-top: 12px;
+          overflow: hidden;
+        }
+
+        .book-left .book-chart-frame {
+          display: flex;
+          flex: 1 1 0;
+          min-height: 0;
+          overflow: hidden;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .book-left .book-chart-image {
+          display: block;
+          width: 100%;
+          height: 100%;
+          min-height: 0;
+          object-fit: contain;
+        }
+
+        .book-left .book-chart-placeholder {
+          display: flex;
+          width: 100%;
+          height: 100%;
+          min-height: 0;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .book-left .setup-section {
+          flex: 0 0 auto;
+          min-height: 0;
+          margin-top: 12px;
+          padding-top: 10px;
+          border-top: 1px solid rgba(120, 110, 91, 0.28);
+        }
+
+        .book-left .setup-section .book-section-title {
+          margin: 0;
+          line-height: 1.2;
+        }
+
+        .book-left .setup-section .section-accent {
+          margin-top: 8px;
+        }
+
+        .book-left .setup-copy {
+          margin-top: 8px;
+          line-height: 1.35;
+          overflow-wrap: anywhere;
+        }
+
+        .book-left > .book-page-footer {
+          flex: 0 0 auto;
+          position: relative;
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: 1px solid rgba(120, 110, 91, 0.24);
+        }
       `}</style>
     </main>
   );
