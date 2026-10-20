@@ -1805,6 +1805,37 @@ export default function JournalPage() {
           padding-top: 8px;
           border-top: 1px solid rgba(120, 110, 91, 0.24);
         }
+
+        /* RIGHT PAGE ONLY — keep long reflections inside the page */
+        .book-right .journal-right-page-content {
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 0;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        .book-right .reflection-section {
+          display: flex;
+          flex: 1 1 0;
+          flex-direction: column;
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        .book-right .reflection-text {
+          min-height: 0;
+          overflow: hidden;
+          overflow-wrap: anywhere;
+          line-height: 1.45;
+        }
+
+        /* Keep the page number and bottom decoration visible */
+        .book-right .book-page-footer {
+          flex: 0 0 auto;
+          position: relative;
+          z-index: 2;
+        }
       `}</style>
     </main>
   );
