@@ -94,13 +94,7 @@ export default function PricingPage() {
         <div className="mx-auto max-w-[1200px] px-5 pb-20 pt-20 sm:px-8 sm:pb-28 sm:pt-28 lg:px-10">
           {/* Page introduction */}
           <div className="mx-auto max-w-2xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.035] px-3.5 py-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/60">
-                Simple, transparent pricing
-              </span>
-            </div>
-
+            {/* Removed simple, transparent pricing tag */}
             <h1 className="text-4xl font-medium leading-[1.08] tracking-[-0.055em] sm:text-5xl md:text-[64px]">
               Start with the essentials.
               <span className="mt-1 block text-white/40">
