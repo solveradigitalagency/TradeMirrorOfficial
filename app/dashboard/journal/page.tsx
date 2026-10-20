@@ -950,35 +950,45 @@ export default function JournalPage() {
           margin-top: 13px;
         }
 
-        /* -------- UPDATED REFLECTION SECTION CSS --------- */
-        .reflection-section {
+
+        /* ----------- REPLACED RIGHT-PAGE REFLECTION CSS ----------- */
+
+        /* RIGHT PAGE ONLY — fit the entire reflection without scrolling */
+        .book-right .reflection-section {
           display: flex;
+          flex: 1 1 0;
           flex-direction: column;
           min-height: 0;
-          flex: 1 1 auto;
-          margin-top: 20px;
+          margin-top: 14px;
           overflow: hidden;
         }
-        .reflection-section h2 {
-          flex: 0 0 auto;
-          margin-bottom: 12px;
-        }
-        .reflection-text {
-          min-height: 0;
-          flex: 1 1 auto;
-          overflow: hidden;
-          overflow-wrap: anywhere;
-          white-space: pre-wrap;
-          line-height: 1.5;
-          font-size: clamp(10px, 1vw, 16px);
-          color: #3f3a33;
-          margin-top: 0; /* Remove extra default top margin */
-        }
-        /* ---------------------------------------------- */
 
-        .reflection-section .section-accent {
-          margin-top: 13px;
+        /* Remove the blue line beneath REFLECTION */
+        .book-right .reflection-section .section-accent {
+          display: none;
         }
+
+        /* Use the available space for the full reflection */
+        .book-right .reflection-section .reflection-text {
+          flex: 1 1 auto;
+          min-height: 0;
+          margin-top: 6px;
+          padding: 0;
+          overflow: hidden;
+          overflow-wrap: break-word;
+          font-size: 0.92em;
+          line-height: 1.25;
+        }
+
+        /* Keep the page number visible */
+        .book-right .book-page-footer {
+          flex: 0 0 auto;
+          position: relative;
+          z-index: 2;
+        }
+
+        /* ---------------------------------------------------------- */
+
 
         /* Remove legacy margin-top for .reflection-section and .notes-copy */
         .notes-copy {
@@ -1099,9 +1109,6 @@ export default function JournalPage() {
           }
           .detail-row {
             padding: 9px 0;
-          }
-          .reflection-section {
-            margin-top: 24px;
           }
         }
 
@@ -1389,10 +1396,6 @@ export default function JournalPage() {
             padding: 8px 0;
           }
 
-          .reflection-section {
-            margin-top: 18px;
-          }
-
           /* notes-copy no longer used */
           .page-footer {
             margin-top: 6px;
@@ -1483,10 +1486,6 @@ export default function JournalPage() {
 
           .book-detail-row {
             min-height: 43px;
-          }
-
-          .reflection-section {
-            margin-top: 31px;
           }
         }
 
@@ -1804,71 +1803,6 @@ export default function JournalPage() {
           margin-top: 8px;
           padding-top: 8px;
           border-top: 1px solid rgba(120, 110, 91, 0.24);
-        }
-
-        /* RIGHT PAGE ONLY — keep long reflections inside the page */
-        .book-right .journal-right-page-content {
-          display: flex;
-          flex-direction: column;
-          flex: 1 1 0;
-          min-height: 0;
-          overflow: hidden;
-        }
-
-        .book-right .reflection-section {
-          display: flex;
-          flex: 1 1 0;
-          flex-direction: column;
-          min-height: 0;
-          overflow: hidden;
-        }
-
-        .book-right .reflection-text {
-          min-height: 0;
-          overflow: hidden;
-          overflow-wrap: anywhere;
-          line-height: 1.45;
-        }
-
-        /* Keep the page number and bottom decoration visible */
-        .book-right .book-page-footer {
-          flex: 0 0 auto;
-          position: relative;
-          z-index: 2;
-        }
-
-        /* === ADDED FOR: RIGHT PAGE ONLY — reflection layout === */
-        .book-right .reflection-section {
-          display: flex;
-          flex: 1 1 0;
-          flex-direction: column;
-          min-height: 0;
-          margin-top: 18px;
-          overflow: hidden;
-        }
-
-        /* Remove the blue accent line beneath REFLECTION */
-        .book-right .reflection-section .section-accent {
-          display: none;
-        }
-
-        /* Move reflection text higher and give it the available space */
-        .book-right .reflection-section .reflection-text {
-          flex: 1 1 auto;
-          min-height: 0;
-          margin-top: 8px;
-          padding-bottom: 4px;
-          overflow-y: auto;
-          overflow-x: hidden;
-          overflow-wrap: anywhere;
-          line-height: 1.35;
-        }
-
-        /* Keep the page number and bottom decoration visible */
-        .book-right .book-page-footer {
-          flex: 0 0 auto;
-          position: relative;
-          z-index: 2;
         }
       `}</style>
     </main>
