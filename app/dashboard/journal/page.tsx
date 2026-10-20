@@ -599,7 +599,7 @@ export default function JournalPage() {
                             <h2 className="text-xl font-bold tracking-[0.12em] text-[#142943]">
                               REFLECTION
                             </h2>
-                            <div className="mt-2 h-[2px] w-10 bg-blue-600" />
+                            <div className="mt-2 h-[2px] w-10 bg-blue-600 section-accent" />
                             <p
                               className="reflection-text"
                               style={{
@@ -1828,6 +1828,40 @@ export default function JournalPage() {
           overflow: hidden;
           overflow-wrap: anywhere;
           line-height: 1.45;
+        }
+
+        /* Keep the page number and bottom decoration visible */
+        .book-right .book-page-footer {
+          flex: 0 0 auto;
+          position: relative;
+          z-index: 2;
+        }
+
+        /* === ADDED FOR: RIGHT PAGE ONLY — reflection layout === */
+        .book-right .reflection-section {
+          display: flex;
+          flex: 1 1 0;
+          flex-direction: column;
+          min-height: 0;
+          margin-top: 18px;
+          overflow: hidden;
+        }
+
+        /* Remove the blue accent line beneath REFLECTION */
+        .book-right .reflection-section .section-accent {
+          display: none;
+        }
+
+        /* Move reflection text higher and give it the available space */
+        .book-right .reflection-section .reflection-text {
+          flex: 1 1 auto;
+          min-height: 0;
+          margin-top: 8px;
+          padding-bottom: 4px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          overflow-wrap: anywhere;
+          line-height: 1.35;
         }
 
         /* Keep the page number and bottom decoration visible */
