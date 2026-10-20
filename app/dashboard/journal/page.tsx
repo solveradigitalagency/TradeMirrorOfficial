@@ -880,6 +880,32 @@ export default function JournalPage() {
           flex: 1;
           flex-direction: column;
           min-height: 0;
+          padding-bottom: 12px;
+        }
+
+        .setup-section {
+          flex: 0 0 auto;
+          min-height: 0;
+          margin-top: 18px;
+          padding-bottom: 8px;
+        }
+
+        .setup-section .book-section-title {
+          margin: 0;
+          line-height: 1.2;
+        }
+
+        .setup-section .setup-copy {
+          margin-top: 8px;
+          line-height: 1.35;
+          overflow-wrap: anywhere;
+        }
+
+        .book-left .book-page-footer {
+          position: relative;
+          z-index: 2;
+          flex-shrink: 0;
+          margin-top: 8px;
         }
 
         .right-masthead {
