@@ -12,6 +12,7 @@ const freeFeatures = [
 const proFeatures = [
   "Everything from Free",
   "Advanced analytics",
+  "Advanced trade journaling",
   "Tax Center",
 ];
 
