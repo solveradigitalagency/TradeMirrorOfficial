@@ -10,6 +10,7 @@ import {
   Loader2,
   FileImage,
   Pencil, // <-- Add Pencil
+  Lock, // <-- Added Lock icon
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -227,6 +228,8 @@ function AddTradeModal({
   saving,
   error,
   mode,
+  isPro,
+  onUpgrade,
 }: {
   form: FormState;
   setForm: React.Dispatch<React.SetStateAction<FormState>>;
@@ -235,6 +238,8 @@ function AddTradeModal({
   saving: boolean;
   error: string;
   mode: "add" | "edit";
+  isPro: boolean;
+  onUpgrade: () => void;
 }) {
   const update = <K extends keyof FormState>(
     key: K,
@@ -357,12 +362,24 @@ function AddTradeModal({
             />
           </label>
 
-          {/* C. Add the session selector to the Log Trade popup */}
           {/* TRADING SESSION */}
           <div className="mt-5">
-            <span className="mb-2 block text-[10px] font-medium text-white/40">
-              Trading session
-            </span>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[10px] font-medium text-white/40">
+                Trading session
+              </span>
+
+              {!isPro && (
+                <button
+                  type="button"
+                  onClick={onUpgrade}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[9px] font-semibold text-white/55 transition hover:bg-white/[0.08]"
+                >
+                  <Lock className="h-3 w-3" />
+                  PRO
+                </button>
+              )}
+            </div>
 
             <div className="grid grid-cols-3 gap-2">
               {(["Asia", "London", "New York"] as const).map(
@@ -370,19 +387,29 @@ function AddTradeModal({
                   <button
                     key={session}
                     type="button"
-                    onClick={() =>
+                    onClick={() => {
+                      if (!isPro) {
+                        onUpgrade();
+                        return;
+                      }
+
                       update(
                         "session",
                         form.session === session ? "" : session
-                      )
-                    }
+                      );
+                    }}
                     aria-pressed={form.session === session}
-                    className={`h-10 rounded-[9px] border text-[10px] font-medium transition ${
-                      form.session === session
+                    className={`relative h-10 rounded-[9px] border text-[10px] font-medium transition ${
+                      !isPro
+                        ? "cursor-pointer border-white/[0.06] bg-white/[0.018] text-white/25"
+                        : form.session === session
                         ? "border-white/[0.18] bg-white/[0.10] text-white"
                         : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
                     }`}
                   >
+                    {!isPro && (
+                      <Lock className="mr-1 inline h-3 w-3" />
+                    )}
                     {session}
                   </button>
                 )
@@ -390,7 +417,9 @@ function AddTradeModal({
             </div>
 
             <p className="mt-1.5 text-[9px] text-white/25">
-              Select the session in which you traded. Leave blank if unknown.
+              {isPro
+                ? "Select the session in which you traded."
+                : "Upgrade to Pro to track your trading sessions."}
             </p>
           </div>
           {/* END TRADING SESSION */}
@@ -460,21 +489,42 @@ function AddTradeModal({
           {/* INSTRUMENT + DIRECTION */}
           <div className="mt-5 grid grid-cols-2 gap-4">
             <label className="block">
-              <span className="mb-2 block text-[10px] font-medium text-white/40">
-                Instrument
-              </span>
-
+              <div className="mb-2 flex items-center justify-between gap-1">
+                <span className="text-[10px] font-medium text-white/40">
+                  Instrument
+                </span>
+                {!isPro && (
+                  <button
+                    type="button"
+                    onClick={onUpgrade}
+                    className="inline-flex shrink-0 items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 py-1 text-[8px] font-semibold text-white/55"
+                  >
+                    <Lock className="h-2.5 w-2.5" />
+                    PRO
+                  </button>
+                )}
+              </div>
               <input
                 type="text"
                 value={form.symbol}
-                onChange={(event) =>
-                  update(
-                    "symbol",
-                    event.target.value.toUpperCase()
-                  )
-                }
-                placeholder="NQ"
-                className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[12px] text-white/75 outline-none placeholder:text-white/20 transition focus:border-white/25"
+                onChange={(event) => {
+                  if (!isPro) {
+                    onUpgrade();
+                    return;
+                  }
+
+                  update("symbol", event.target.value.toUpperCase());
+                }}
+                onFocus={() => {
+                  if (!isPro) onUpgrade();
+                }}
+                readOnly={!isPro}
+                placeholder={isPro ? "NQ, ES, MNQ..." : "Unlock with Pro"}
+                className={`h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[12px] outline-none placeholder:text-white/20 transition ${
+                  isPro
+                    ? "text-white/75 focus:border-white/25"
+                    : "cursor-pointer text-white/30"
+                }`}
               />
             </label>
 
@@ -510,29 +560,59 @@ function AddTradeModal({
 
           {/* EMOTION */}
           <div className="mt-5">
-            <span className="mb-2 block text-[10px] font-medium text-white/40">
-              Emotion
-            </span>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[10px] font-medium text-white/40">
+                Emotion
+              </span>
+
+              {!isPro && (
+                <button
+                  type="button"
+                  onClick={onUpgrade}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[9px] font-semibold text-white/55 transition hover:bg-white/[0.08]"
+                >
+                  <Lock className="h-3 w-3" />
+                  PRO
+                </button>
+              )}
+            </div>
 
             <div className="flex flex-wrap gap-2">
               {emotions.map((emotion) => (
                 <button
                   key={emotion}
                   type="button"
-                  onClick={() =>
-                    update("emotion", emotion)
-                  }
+                  onClick={() => {
+                    if (!isPro) {
+                      onUpgrade();
+                      return;
+                    }
+
+                    update("emotion", emotion);
+                  }}
                   className={`rounded-lg border px-3 py-2 text-[10px] transition ${
-                    form.emotion === emotion
+                    !isPro
+                      ? "cursor-pointer border-white/[0.06] bg-white/[0.018] text-white/25"
+                      : form.emotion === emotion
                       ? "border-white/[0.15] bg-white/[0.07] text-white"
                       : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
                   }`}
                 >
+                  {!isPro && (
+                    <Lock className="mr-1 inline h-3 w-3" />
+                  )}
                   {emotion}
                 </button>
               ))}
             </div>
+
+            <p className="mt-1.5 text-[9px] text-white/25">
+              {isPro
+                ? "Record how you felt during the trade."
+                : "Upgrade to Pro to track your emotions."}
+            </p>
           </div>
+          {/* END EMOTION */}
 
           {/* PLAN */}
           <div className="mt-5">
@@ -778,6 +858,10 @@ export default function TradesPage() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
 
+  const [isPro, setIsPro] = useState(false);
+  const [planLoaded, setPlanLoaded] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+
   const [symbolFilter, setSymbolFilter] =
     useState("All Symbols");
 
@@ -800,6 +884,23 @@ export default function TradesPage() {
       setLoading(false);
       return;
     }
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("plan")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profileError || !profile) {
+      console.error("PROFILE PLAN LOAD ERROR:", profileError);
+      setPageError("We couldn't verify your subscription. Please refresh and try again.");
+      setPlanLoaded(false);
+      setLoading(false);
+      return;
+    }
+
+    setIsPro(profile.plan === "pro");
+    setPlanLoaded(true);
 
     const { data, error } = await supabase
       .from("trades")
@@ -855,11 +956,6 @@ export default function TradesPage() {
       return;
     }
 
-    if (!form.symbol.trim()) {
-      setFormError("Please enter an instrument.");
-      return;
-    }
-
     const pnl = form.result === "Breakeven" ? 0 : Number(form.pnl);
 
     if (Number.isNaN(pnl)) {
@@ -889,6 +985,30 @@ export default function TradesPage() {
       );
       setSaving(false);
       return;
+    }
+
+    // Fetch current plan at submission time
+    const { data: currentProfile, error: currentProfileError } =
+      await supabase
+        .from("profiles")
+        .select("plan")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (currentProfileError || !currentProfile) {
+      setFormError("We couldn't verify your subscription. Please try again.");
+      setSaving(false);
+      return;
+    }
+
+    const currentIsPro = currentProfile.plan === "pro";
+
+    if (!currentIsPro) {
+      setForm((current) => ({
+        ...current,
+        session: "",
+        emotion: "",
+      }));
     }
 
     let screenshotUrl: string | null = null;
@@ -941,10 +1061,9 @@ export default function TradesPage() {
       const tradeId = modalState.id;
 
       // Build the update object
-      // D. Save the session when editing a trade
       const updatePayload: any = {
         trade_date: form.trade_date,
-        symbol: form.symbol.trim().toUpperCase(),
+        symbol: currentIsPro ? form.symbol.trim().toUpperCase() : "NQ",
         market: "Futures",
         direction: form.direction,
         quantity: Number(form.quantity) || 1,
@@ -953,11 +1072,11 @@ export default function TradesPage() {
         followed_plan: form.followed_plan,
         setup: form.setup.trim() || null,
         grade: form.execution_rating || null,
-        emotion: form.emotion || null,
+        emotion: currentIsPro ? form.emotion || null : null,
         execution_rating: form.execution_rating || null,
         visibility: form.visibility,
         notes: form.notes.trim() || null,
-        session: form.session || null,
+        session: currentIsPro ? form.session || null : null,
       };
 
       if (screenshotWasUpdated) {
@@ -995,13 +1114,12 @@ export default function TradesPage() {
       setSaving(false);
     } else {
       // Add new trade
-      // E. Save the session when creating a trade
       const { data, error } = await supabase
         .from("trades")
         .insert({
           user_id: user.id,
           trade_date: form.trade_date,
-          symbol: form.symbol.trim().toUpperCase(),
+          symbol: currentIsPro ? form.symbol.trim().toUpperCase() : "NQ",
           market: "Futures",
           direction: form.direction,
           quantity: Number(form.quantity) || 1,
@@ -1010,12 +1128,12 @@ export default function TradesPage() {
           followed_plan: form.followed_plan,
           setup: form.setup.trim() || null,
           grade: form.execution_rating || null,
-          emotion: form.emotion || null,
+          emotion: currentIsPro ? form.emotion || null : null,
           execution_rating: form.execution_rating || null,
           visibility: form.visibility,
           notes: form.notes.trim() || null,
           screenshot_url: screenshotUrl,
-          session: form.session || null,
+          session: currentIsPro ? form.session || null : null,
         })
         .select()
         .single();
@@ -1122,11 +1240,13 @@ export default function TradesPage() {
           <button
             type="button"
             onClick={() => {
+              if (!planLoaded) return;
               setForm(emptyForm);
               setFormError("");
               setModalState({ mode: "add" });
             }}
             className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-white px-3 text-[10px] font-semibold text-black transition hover:bg-white/85 sm:gap-2 sm:px-4 sm:text-[11px]"
+            disabled={!planLoaded}
           >
             <Plus
               className="h-3.5 w-3.5"
@@ -1681,7 +1801,61 @@ export default function TradesPage() {
           saving={saving}
           error={formError}
           mode={modalState.mode}
+          isPro={isPro}
+          onUpgrade={() => setShowUpgradePrompt(true)}
         />
+      )}
+
+      {showUpgradePrompt && (
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
+          onClick={() => setShowUpgradePrompt(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pro-upgrade-title"
+            className="w-full max-w-[360px] rounded-2xl border border-white/[0.10] bg-card p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.05]">
+              <Lock className="h-5 w-5 text-white/80" />
+            </div>
+
+            <h2
+              id="pro-upgrade-title"
+              className="text-lg font-semibold tracking-tight text-white"
+            >
+              Unlock TradeMirror Pro
+            </h2>
+
+            <p className="mt-2 text-sm leading-6 text-white/50">
+              Track your instrument, trading session, and emotions
+              to get deeper insight into your trading performance.
+            </p>
+
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowUpgradePrompt(false)}
+                className="h-10 flex-1 rounded-lg border border-white/[0.08] text-sm text-white/60 transition hover:bg-white/[0.04]"
+              >
+                Maybe later
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowUpgradePrompt(false);
+                  window.location.href = "/dashboard/settings";
+                }}
+                className="h-10 flex-1 rounded-lg bg-white text-sm font-semibold text-black transition hover:bg-white/85"
+              >
+                View Pro
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </main>
   );
