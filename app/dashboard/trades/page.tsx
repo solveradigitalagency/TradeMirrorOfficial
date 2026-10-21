@@ -363,66 +363,48 @@ function AddTradeModal({
           </label>
 
           {/* TRADING SESSION */}
-          <div className="mt-5">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-[10px] font-medium text-white/40">
-                Trading session
-              </span>
+          {isPro && (
+            <>
+              {/* TRADING SESSION */}
+              <div className="mt-5">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[10px] font-medium text-white/40">
+                    Trading session
+                  </span>
+                </div>
 
-              {!isPro && (
-                <button
-                  type="button"
-                  onClick={onUpgrade}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[9px] font-semibold text-white/55 transition hover:bg-white/[0.08]"
-                >
-                  <Lock className="h-3 w-3" />
-                  PRO
-                </button>
-              )}
-            </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {(["Asia", "London", "New York"] as const).map(
+                    (session) => (
+                      <button
+                        key={session}
+                        type="button"
+                        onClick={() =>
+                          update(
+                            "session",
+                            form.session === session ? "" : session
+                          )
+                        }
+                        aria-pressed={form.session === session}
+                        className={`relative h-10 rounded-[9px] border text-[10px] font-medium transition ${
+                          form.session === session
+                            ? "border-white/[0.18] bg-white/[0.10] text-white"
+                            : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
+                        }`}
+                      >
+                        {session}
+                      </button>
+                    )
+                  )}
+                </div>
 
-            <div className="grid grid-cols-3 gap-2">
-              {(["Asia", "London", "New York"] as const).map(
-                (session) => (
-                  <button
-                    key={session}
-                    type="button"
-                    onClick={() => {
-                      if (!isPro) {
-                        onUpgrade();
-                        return;
-                      }
-
-                      update(
-                        "session",
-                        form.session === session ? "" : session
-                      );
-                    }}
-                    aria-pressed={form.session === session}
-                    className={`relative h-10 rounded-[9px] border text-[10px] font-medium transition ${
-                      !isPro
-                        ? "cursor-pointer border-white/[0.06] bg-white/[0.018] text-white/25"
-                        : form.session === session
-                        ? "border-white/[0.18] bg-white/[0.10] text-white"
-                        : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
-                    }`}
-                  >
-                    {!isPro && (
-                      <Lock className="mr-1 inline h-3 w-3" />
-                    )}
-                    {session}
-                  </button>
-                )
-              )}
-            </div>
-
-            <p className="mt-1.5 text-[9px] text-white/25">
-              {isPro
-                ? "Select the session in which you traded."
-                : "Upgrade to Pro to track your trading sessions."}
-            </p>
-          </div>
-          {/* END TRADING SESSION */}
+                <p className="mt-1.5 text-[9px] text-white/25">
+                  Select the session in which you traded.
+                </p>
+              </div>
+              {/* END TRADING SESSION */}
+            </>
+          )}
 
           {/* RESULT */}
           <div className="mt-5">
@@ -487,46 +469,28 @@ function AddTradeModal({
           </label>
 
           {/* INSTRUMENT + DIRECTION */}
-          <div className="mt-5 grid grid-cols-2 gap-4">
-            <label className="block">
-              <div className="mb-2 flex items-center justify-between gap-1">
-                <span className="text-[10px] font-medium text-white/40">
+          <div
+            className={`mt-5 grid gap-4 ${
+              isPro ? "grid-cols-2" : "grid-cols-1"
+            }`}
+          >
+            {isPro && (
+              <label className="block">
+                <span className="mb-2 block text-[10px] font-medium text-white/40">
                   Instrument
                 </span>
-                {!isPro && (
-                  <button
-                    type="button"
-                    onClick={onUpgrade}
-                    className="inline-flex shrink-0 items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 py-1 text-[8px] font-semibold text-white/55"
-                  >
-                    <Lock className="h-2.5 w-2.5" />
-                    PRO
-                  </button>
-                )}
-              </div>
-              <input
-                type="text"
-                value={form.symbol}
-                onChange={(event) => {
-                  if (!isPro) {
-                    onUpgrade();
-                    return;
-                  }
 
-                  update("symbol", event.target.value.toUpperCase());
-                }}
-                onFocus={() => {
-                  if (!isPro) onUpgrade();
-                }}
-                readOnly={!isPro}
-                placeholder={isPro ? "NQ, ES, MNQ..." : "Unlock with Pro"}
-                className={`h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[12px] outline-none placeholder:text-white/20 transition ${
-                  isPro
-                    ? "text-white/75 focus:border-white/25"
-                    : "cursor-pointer text-white/30"
-                }`}
-              />
-            </label>
+                <input
+                  type="text"
+                  value={form.symbol}
+                  onChange={(event) =>
+                    update("symbol", event.target.value.toUpperCase())
+                  }
+                  placeholder="NQ, ES, MNQ..."
+                  className="h-11 w-full rounded-[10px] border border-white/[0.07] bg-secondary px-3 text-[12px] text-white/75 outline-none placeholder:text-white/20 transition focus:border-white/25"
+                />
+              </label>
+            )}
 
             <div>
               <span className="mb-2 block text-[10px] font-medium text-white/40">
@@ -559,60 +523,65 @@ function AddTradeModal({
           </div>
 
           {/* EMOTION */}
-          <div className="mt-5">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-[10px] font-medium text-white/40">
-                Emotion
-              </span>
+          {isPro && (
+            <>
+              {/* EMOTION */}
+              <div className="mt-5">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[10px] font-medium text-white/40">
+                    Emotion
+                  </span>
 
-              {!isPro && (
-                <button
-                  type="button"
-                  onClick={onUpgrade}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[9px] font-semibold text-white/55 transition hover:bg-white/[0.08]"
-                >
-                  <Lock className="h-3 w-3" />
-                  PRO
-                </button>
-              )}
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {emotions.map((emotion) => (
-                <button
-                  key={emotion}
-                  type="button"
-                  onClick={() => {
-                    if (!isPro) {
-                      onUpgrade();
-                      return;
-                    }
-
-                    update("emotion", emotion);
-                  }}
-                  className={`rounded-lg border px-3 py-2 text-[10px] transition ${
-                    !isPro
-                      ? "cursor-pointer border-white/[0.06] bg-white/[0.018] text-white/25"
-                      : form.emotion === emotion
-                      ? "border-white/[0.15] bg-white/[0.07] text-white"
-                      : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
-                  }`}
-                >
                   {!isPro && (
-                    <Lock className="mr-1 inline h-3 w-3" />
+                    <button
+                      type="button"
+                      onClick={onUpgrade}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[9px] font-semibold text-white/55 transition hover:bg-white/[0.08]"
+                    >
+                      <Lock className="h-3 w-3" />
+                      PRO
+                    </button>
                   )}
-                  {emotion}
-                </button>
-              ))}
-            </div>
+                </div>
 
-            <p className="mt-1.5 text-[9px] text-white/25">
-              {isPro
-                ? "Record how you felt during the trade."
-                : "Upgrade to Pro to track your emotions."}
-            </p>
-          </div>
-          {/* END EMOTION */}
+                <div className="flex flex-wrap gap-2">
+                  {emotions.map((emotion) => (
+                    <button
+                      key={emotion}
+                      type="button"
+                      onClick={() => {
+                        if (!isPro) {
+                          onUpgrade();
+                          return;
+                        }
+
+                        update("emotion", emotion);
+                      }}
+                      className={`rounded-lg border px-3 py-2 text-[10px] transition ${
+                        !isPro
+                          ? "cursor-pointer border-white/[0.06] bg-white/[0.018] text-white/25"
+                          : form.emotion === emotion
+                          ? "border-white/[0.15] bg-white/[0.07] text-white"
+                          : "border-white/[0.06] bg-white/[0.018] text-white/35 hover:bg-white/[0.035] hover:text-white/60"
+                      }`}
+                    >
+                      {!isPro && (
+                        <Lock className="mr-1 inline h-3 w-3" />
+                      )}
+                      {emotion}
+                    </button>
+                  ))}
+                </div>
+
+                <p className="mt-1.5 text-[9px] text-white/25">
+                  {isPro
+                    ? "Record how you felt during the trade."
+                    : "Upgrade to Pro to track your emotions."}
+                </p>
+              </div>
+              {/* END EMOTION */}
+            </>
+          )}
 
           {/* PLAN */}
           <div className="mt-5">
