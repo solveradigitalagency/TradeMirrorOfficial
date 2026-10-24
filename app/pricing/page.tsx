@@ -1,6 +1,9 @@
 
+"use client";
+
 import Link from "next/link";
 import Navbar from "@/components/layout/navbar";
+import { useState } from "react";
 
 const freeFeatures = [
   "Manual P&L calendar",
@@ -81,6 +84,37 @@ function ArrowIcon() {
 }
 
 export default function PricingPage() {
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  async function handleProCheckout() {
+    setCheckoutLoading(true);
+    setCheckoutError("");
+
+    try {
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to start checkout.");
+      }
+
+      if (!data.url) {
+        throw new Error("Stripe checkout URL was not returned.");
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      setCheckoutError(
+        error instanceof Error ? error.message : "Something went wrong."
+      );
+      setCheckoutLoading(false);
+    }
+  }
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#050505] text-white">
       <Navbar />
@@ -111,7 +145,7 @@ export default function PricingPage() {
               {/* Free plan heading */}
               <div className="relative text-center">
                 <p className="text-sm font-medium text-white/60">
-                  Free
+                  Essential
                 </p>
 
                 <h2 className="mt-4 text-xl font-semibold tracking-[-0.035em] text-white">
@@ -161,7 +195,7 @@ export default function PricingPage() {
                 </h2>
 
                 <p className="mt-2 text-sm text-white/40">
-                  Coming soon
+                  $20/month
                 </p>
               </div>
 
@@ -182,12 +216,20 @@ export default function PricingPage() {
               <div className="mt-8">
                 <button
                   type="button"
-                  disabled
-                  aria-disabled="true"
-                  className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.035] px-4 text-sm font-medium text-white/30"
+                  onClick={handleProCheckout}
+                  disabled={checkoutLoading}
+                  className="flex h-12 w-full items-center justify-center rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-wait disabled:opacity-60"
                 >
-                  Coming soon
+                  {checkoutLoading
+                    ? "Redirecting to checkout..."
+                    : "Upgrade to Pro — $20/month"}
                 </button>
+
+                {checkoutError && (
+                  <p role="alert" className="mt-3 text-center text-sm text-red-400">
+                    {checkoutError}
+                  </p>
+                )}
               </div>
             </article>
           </div>
