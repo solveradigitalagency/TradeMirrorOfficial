@@ -35,6 +35,9 @@ export async function POST() {
     const stripe = new Stripe(secretKey);
 
     const session = await stripe.checkout.sessions.create({
+      managed_payments: {
+        enabled: false,
+      },
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       client_reference_id: user.id,
