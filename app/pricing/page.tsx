@@ -141,7 +141,7 @@ export default function PricingPage() {
           {/* Pricing plans */}
           <div className="mx-auto mt-10 grid max-w-[940px] grid-cols-1 items-stretch gap-4 md:mt-12 md:grid-cols-2 md:gap-5">
             {/* Free plan */}
-            <article className="relative flex flex-col rounded-[20px] border border-white/[0.12] bg-[#0a0a0a] p-6 sm:p-7 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-white/[0.24] hover:bg-[#0d0d0d] hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)] motion-reduce:transition-none">
+            <article className="relative flex flex-col rounded-[20px] border border-white/[0.12] bg-[#0a0a0a] p-6 sm:p-7 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-white/[0.24] hover:bg-[#0d0d0d] hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)] motion-reduce:transition-none flex flex-col">
               {/* Free plan heading */}
               <div className="relative text-center">
                 <p className="text-sm font-medium text-white/60">
@@ -166,7 +166,7 @@ export default function PricingPage() {
                 <FeatureList features={freeFeatures} />
               </div>
 
-              <div className="mt-8">
+              <div className="mt-auto pt-8">
                 <Link
                   href="/signup"
                   className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0b]"
@@ -178,7 +178,7 @@ export default function PricingPage() {
             </article>
 
             {/* Pro plan */}
-            <article className="relative flex flex-col overflow-hidden rounded-[20px] border border-white/[0.12] bg-[#090909] p-6 sm:p-7 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-white/[0.24] hover:bg-[#0d0d0d] hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)] motion-reduce:transition-none">
+            <article className="relative flex flex-col overflow-hidden rounded-[20px] border border-white/[0.12] bg-[#090909] p-6 sm:p-7 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-white/[0.24] hover:bg-[#0d0d0d] hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)] motion-reduce:transition-none flex flex-col">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute right-0 top-0 h-48 w-48 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.055),transparent_70%)]"
@@ -213,7 +213,7 @@ export default function PricingPage() {
                 />
               </div>
 
-              <div className="mt-8">
+              <div className="mt-auto pt-8">
                 <button
                   type="button"
                   onClick={handleProCheckout}
