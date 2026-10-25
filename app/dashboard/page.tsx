@@ -1,6 +1,7 @@
 "use client";
 
 import DashboardGreeting from "./dashboard-greeting";
+import PerformanceCertificate from "./PerformanceCertificate";
 
 import {
   ArrowDownRight,
@@ -9,6 +10,7 @@ import {
   ChevronDown,
   CircleHelp,
   Search,
+  Share2,
   X,
   UserRound,
   TrendingUp,
@@ -535,6 +537,7 @@ export default function DashboardPage({
   const [traders, setTraders] = useState<TraderProfile[]>([]);
   const [tradersLoading, setTradersLoading] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [performanceShareOpen, setPerformanceShareOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   // const [notificationsLoading, setNotificationsLoading] = useState(false);
 
@@ -966,6 +969,23 @@ export default function DashboardPage({
                       : unreadNotifications}
                   </span>
                 )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setPerformanceShareOpen(true);
+                  setSearchOpen(false);
+                  setNotificationsOpen(false);
+                }}
+                aria-label="Share monthly performance"
+                title="Share monthly performance"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-secondary text-white/60 transition hover:border-white/15 hover:bg-white/[0.045] hover:text-white sm:h-11 sm:w-11"
+              >
+                <Share2
+                  className="h-[18px] w-[18px]"
+                  strokeWidth={1.8}
+                />
               </button>
             </div>
           </header>
@@ -1620,6 +1640,15 @@ export default function DashboardPage({
         <div className="fixed bottom-5 right-5 rounded-xl border border-red-500/20 bg-[#0b1119]/95 px-4 py-3 text-[10px] text-red-400 shadow-2xl backdrop-blur-xl">
           {error}
         </div>
+      )}
+
+      {performanceShareOpen && (
+        <PerformanceCertificate
+          trades={allTrades}
+          displayName={displayName}
+          month={new Date()}
+          onClose={() => setPerformanceShareOpen(false)}
+        />
       )}
     </div>
   );

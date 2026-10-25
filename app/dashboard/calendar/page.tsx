@@ -779,11 +779,11 @@ export default function CalendarPage() {
                           <p
                             className={`text-[13px] font-semibold ${
                               weeklyPnl[weekIndex] > 0
-                                ? "text-white/80"
+                                ? "text-emerald-400"
                                 : weeklyPnl[
                                       weekIndex
                                     ] < 0
-                                  ? "text-white/45"
+                                  ? "text-red-400"
                                   : "text-white/25"
                             }`}
                           >
@@ -828,9 +828,9 @@ export default function CalendarPage() {
                         <p
                           className={`text-[10px] font-semibold ${
                             value > 0
-                              ? "text-white/80"
+                              ? "text-emerald-400"
                               : value < 0
-                                ? "text-white/45"
+                                ? "text-red-400"
                                 : "text-white/25"
                           }`}
                         >
@@ -936,9 +936,11 @@ export default function CalendarPage() {
 
                   <p
                     className={`mt-1.5 text-[23px] font-semibold tracking-[-0.04em] sm:mt-2 sm:text-[27px] ${
-                      selectedDayPnl >= 0
-                        ? "text-white/80"
-                        : "text-white/45"
+                      selectedDayPnl > 0
+                        ? "text-emerald-400"
+                        : selectedDayPnl < 0
+                          ? "text-red-400"
+                          : "text-white/25"
                     }`}
                   >
                     {formatPnlPrecise(
