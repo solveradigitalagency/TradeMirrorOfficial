@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Clock3,
   Crosshair,
+  Download,
   Gauge,
   Layers3,
   Shield,
@@ -24,8 +25,10 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { toPng } from "html-to-image";
 import { createClient } from "@/lib/supabase/client";
 import PnlValue from "@/components/dashboard/PnlValue";
 
@@ -273,9 +276,15 @@ function AnalysisBar({
 function EquityChart({
   trades,
   mode,
+  width = 1000,
+  height = 300,
+  labelOverrides,
 }: {
   trades: Trade[];
   mode: ChartMode;
+  width?: number;
+  height?: number;
+  labelOverrides?: { start: string; mid: string; end: string } | null;
 }) {
   const points = useMemo(() => {
     let equity = 0;
@@ -326,9 +335,6 @@ function EquityChart({
   min -= padding;
   max += padding;
 
-  const width = 1000;
-  const height = 300;
-
   const coordinates = values.map((value, index) => ({
     x: points.length === 1 ? width / 2 : (index / (points.length - 1)) * width,
     y: height - ((value - min) / (max - min)) * height,
@@ -352,8 +358,18 @@ function EquityChart({
       maximumFractionDigits: 0,
     })}`;
 
+  // For export: allow labels override
+  let labelStart = dateLabel(points[0].date);
+  let labelMid = dateLabel(points[Math.floor((points.length - 1) / 2)].date);
+  let labelEnd = dateLabel(points[points.length - 1].date);
+  if (labelOverrides) {
+    labelStart = labelOverrides.start;
+    labelMid = labelOverrides.mid;
+    labelEnd = labelOverrides.end;
+  }
+
   return (
-    <div className="flex h-full min-h-[260px] flex-col">
+    <div className="flex h-full min-h-[260px] flex-col" style={{ minHeight: height, width: "100%" }}>
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
           <p className={`text-xl font-semibold tracking-tight ${pnlColor(values[values.length - 1])}`}>
@@ -386,6 +402,7 @@ function EquityChart({
           className="absolute inset-0 h-full w-full overflow-visible"
           role="img"
           aria-label={`${mode} chart across ${points.length} trades`}
+          style={{ background: "none" }}
         >
           <defs>
             <linearGradient id="trade-analytics-fill" x1="0" y1="0" x2="0" y2="1">
@@ -419,10 +436,10 @@ function EquityChart({
         </svg>
       </div>
 
-      <div className="mt-3 flex justify-between text-[10px] text-white/35">
-        <span>{dateLabel(points[0].date)}</span>
-        <span>{dateLabel(points[Math.floor((points.length - 1) / 2)].date)}</span>
-        <span>{dateLabel(points[points.length - 1].date)}</span>
+      <div className="mt-3 flex justify-between text-[10px] text-white/35" style={{ fontFamily: "inherit" }}>
+        <span>{labelStart}</span>
+        <span>{labelMid}</span>
+        <span>{labelEnd}</span>
       </div>
     </div>
   );
@@ -437,6 +454,10 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
+
+  // --- Export analytics/report state and ref
+  const reportRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState(false);
 
   const loadTrades = useCallback(async () => {
     setLoading(true);
@@ -489,6 +510,33 @@ export default function AnalyticsPage() {
 
     return trades.filter((trade) => trade.trade_date >= startDate);
   }, [trades, range]);
+
+  // --- Export PNG function
+  const exportAnalytics = async () => {
+    if (!reportRef.current || loading || filteredTrades.length === 0) return;
+
+    setExporting(true);
+
+    try {
+      const dataUrl = await toPng(reportRef.current, {
+        cacheBust: true,
+        pixelRatio: 2.5,
+        backgroundColor: "#090909",
+      });
+
+      const link = document.createElement("a");
+      link.download = `trademirror-analytics-${range
+        .toLowerCase()
+        .replace(/\s+/g, "-")}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.error("Analytics PNG export failed:", error);
+      setError("Couldn't export your analytics. Please try again.");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const metrics = useMemo(() => {
     const winners = filteredTrades.filter((trade) => safeNumber(trade.pnl) > 0);
@@ -677,13 +725,18 @@ export default function AnalyticsPage() {
   }, [filteredTrades]);
 
   const dailyDistribution = useMemo(() => {
+    // Map of date -> P&L, sorted by date ascending
     const groups = new Map<string, number>();
 
     for (const trade of filteredTrades) {
       groups.set(trade.trade_date, (groups.get(trade.trade_date) ?? 0) + safeNumber(trade.pnl));
     }
 
-    return Array.from(groups.values()).sort((a, b) => a - b);
+    // Return as array of records: [{date, value}]
+    return Array.from(groups.entries()).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([date, value]) => ({
+      date,
+      value,
+    }));
   }, [filteredTrades]);
 
   const insight = useMemo(() => {
@@ -736,7 +789,970 @@ export default function AnalyticsPage() {
   return (
     <main className="min-h-screen bg-background px-4 py-5 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1600px] space-y-6">
+        {/* Export-only analytics report */}
+
+        <div
+
+          aria-hidden="true"
+
+          style={{
+
+            position: "fixed",
+
+            left: "-10000px",
+
+            top: 0,
+
+            width: "1400px",
+
+            zIndex: -1,
+
+            pointerEvents: "none",
+
+          }}
+
+        >
+
+          <div
+
+            ref={reportRef}
+
+            style={{
+
+              width: "1400px",
+
+              padding: "36px",
+
+              background: "#090909",
+
+              color: "#f5f5f5",
+
+              fontFamily: "Arial, Helvetica, sans-serif",
+
+              boxSizing: "border-box",
+
+            }}
+
+          >
+
+            {/* Header */}
+
+            <div
+
+              style={{
+
+                display: "flex",
+
+                justifyContent: "space-between",
+
+                alignItems: "center",
+
+                borderBottom: "1px solid #303030",
+
+                paddingBottom: "22px",
+
+                marginBottom: "24px",
+
+              }}
+
+            >
+
+              <div>
+
+                <div
+
+                  style={{
+
+                    color: "#34d399",
+
+                    fontSize: "11px",
+
+                    letterSpacing: "3px",
+
+                    fontWeight: 700,
+
+                    marginBottom: "9px",
+
+                  }}
+
+                >
+
+                  TRADEMIRROR PRO
+
+                </div>
+
+                <div
+
+                  style={{
+
+                    fontSize: "32px",
+
+                    fontWeight: 700,
+
+                    letterSpacing: "-1px",
+
+                  }}
+
+                >
+
+                  Trading Analytics
+
+                </div>
+
+                <div
+
+                  style={{
+
+                    marginTop: "8px",
+
+                    color: "#999999",
+
+                    fontSize: "13px",
+
+                  }}
+
+                >
+
+                  {range} · {filteredTrades.length} recorded trades
+
+                </div>
+
+              </div>
+
+
+
+              <div
+
+                style={{
+
+                  color: "#888888",
+
+                  fontSize: "12px",
+
+                  textAlign: "right",
+
+                  lineHeight: 1.8,
+
+                }}
+
+              >
+
+                <div>PERFORMANCE REPORT</div>
+
+                <div>
+
+                  {new Date().toLocaleDateString("en-US", {
+
+                    month: "short",
+
+                    day: "numeric",
+
+                    year: "numeric",
+
+                  })}
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+            {/* Net P&L hero */}
+
+            <div
+
+              style={{
+
+                display: "flex",
+
+                justifyContent: "space-between",
+
+                alignItems: "center",
+
+                padding: "20px 26px",
+
+                marginBottom: "18px",
+
+                border: "1px solid #292929",
+
+                borderRadius: "14px",
+
+                background:
+
+                  "linear-gradient(110deg, #151b19 0%, #101010 65%, #111111 100%)",
+
+              }}
+
+            >
+
+              <div>
+
+                <div
+
+                  style={{
+
+                    color: "#a3a3a3",
+
+                    fontSize: "11px",
+
+                    letterSpacing: "1.8px",
+
+                    marginBottom: "8px",
+
+                  }}
+
+                >
+
+                  NET PROFIT & LOSS
+
+                </div>
+
+                <div
+
+                  style={{
+
+                    fontSize: "38px",
+
+                    fontWeight: 700,
+
+                    letterSpacing: "-1.5px",
+
+                    color:
+
+                      metrics.netPnl > 0
+
+                        ? "#34d399"
+
+                        : metrics.netPnl < 0
+
+                          ? "#f87171"
+
+                          : "#f5f5f5",
+
+                  }}
+
+                >
+
+                  {money(metrics.netPnl)}
+
+                </div>
+
+              </div>
+
+
+
+              <div style={{ display: "flex", gap: "42px" }}>
+
+                {[
+
+                  { label: "WIN RATE", value: pct(metrics.winRate) },
+
+                  {
+
+                    label: "PROFIT FACTOR",
+
+                    value:
+
+                      metrics.profitFactor === null
+
+                        ? "∞"
+
+                        : metrics.profitFactor.toFixed(2),
+
+                  },
+
+                  { label: "TOTAL TRADES", value: String(metrics.tradeCount) },
+
+                ].map((item) => (
+
+                  <div key={item.label}>
+
+                    <div
+
+                      style={{
+
+                        color: "#888888",
+
+                        fontSize: "10px",
+
+                        letterSpacing: "1px",
+
+                        marginBottom: "9px",
+
+                      }}
+
+                    >
+
+                      {item.label}
+
+                    </div>
+
+                    <div style={{ fontSize: "21px", fontWeight: 600 }}>
+
+                      {item.value}
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+
+
+            {/* Compact metrics grid */}
+
+            <div
+
+              style={{
+
+                display: "grid",
+
+                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+
+                gap: "10px",
+
+                marginBottom: "18px",
+
+              }}
+
+            >
+
+              {[
+
+                {
+
+                  label: "EXPECTANCY",
+
+                  value: money(metrics.expectancy),
+
+                  color: metrics.expectancy >= 0 ? "#34d399" : "#f87171",
+
+                },
+
+                {
+
+                  label: "AVERAGE R",
+
+                  value:
+
+                    metrics.averageR === null
+
+                      ? "—"
+
+                      : `${metrics.averageR.toFixed(2)}R`,
+
+                  color: "#f5f5f5",
+
+                },
+
+                {
+
+                  label: "MAX DRAWDOWN",
+
+                  value: money(metrics.maxDrawdown),
+
+                  color: "#f87171",
+
+                },
+
+                {
+
+                  label: "TRADE RETURN RATIO",
+
+                  value:
+
+                    metrics.tradeReturnRatio == null
+
+                      ? "—"
+
+                      : metrics.tradeReturnRatio.toFixed(2),
+
+                  color: "#f5f5f5",
+
+                },
+
+                {
+
+                  label: "AVERAGE WINNER",
+
+                  value: plainMoney(metrics.avgWinner),
+
+                  color: "#34d399",
+
+                },
+
+                {
+
+                  label: "AVERAGE LOSER",
+
+                  value: `-${plainMoney(metrics.avgLoser)}`,
+
+                  color: "#f87171",
+
+                },
+
+                {
+
+                  label: "LARGEST WINNER",
+
+                  value: plainMoney(metrics.largestWin),
+
+                  color: "#34d399",
+
+                },
+
+                {
+
+                  label: "LARGEST LOSER",
+
+                  value: `-${plainMoney(Math.abs(metrics.largestLoss))}`,
+
+                  color: "#f87171",
+
+                },
+
+                {
+
+                  label: "GROSS PROFIT",
+
+                  value: plainMoney(metrics.grossProfit),
+
+                  color: "#34d399",
+
+                },
+
+                {
+
+                  label: "GROSS LOSS",
+
+                  value: `-${plainMoney(metrics.grossLoss)}`,
+
+                  color: "#f87171",
+
+                },
+
+                {
+
+                  label: "LOSING STREAK",
+
+                  value: `${metrics.longestLosingStreak} trades`,
+
+                  color: "#f5f5f5",
+
+                },
+
+                {
+
+                  label: "PLAN ADHERENCE",
+
+                  value:
+
+                    metrics.planRate === null ? "—" : pct(metrics.planRate),
+
+                  color: "#f5f5f5",
+
+                },
+
+              ].map((item) => (
+
+                <div
+
+                  key={item.label}
+
+                  style={{
+
+                    background: "#111111",
+
+                    border: "1px solid #292929",
+
+                    borderRadius: "11px",
+
+                    padding: "14px 16px",
+
+                    minHeight: "86px",
+
+                    boxSizing: "border-box",
+
+                  }}
+
+                >
+
+                  <div
+
+                    style={{
+
+                      color: "#929292",
+
+                      fontSize: "10px",
+
+                      letterSpacing: "0.8px",
+
+                      marginBottom: "12px",
+
+                    }}
+
+                  >
+
+                    {item.label}
+
+                  </div>
+
+                  <div
+
+                    style={{
+
+                      color: item.color,
+
+                      fontSize: "22px",
+
+                      fontWeight: 600,
+
+                      letterSpacing: "-0.5px",
+
+                      overflowWrap: "anywhere",
+
+                    }}
+
+                  >
+
+                    {item.value}
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+
+
+            {/* Charts side by side */}
+
+            <div
+
+              style={{
+
+                display: "grid",
+
+                gridTemplateColumns: "minmax(0, 1.65fr) minmax(0, 1fr)",
+
+                gap: "14px",
+
+                marginBottom: "18px",
+
+              }}
+
+            >
+
+              {/* Equity curve */}
+
+              <div
+
+                style={{
+
+                  background: "#101010",
+
+                  border: "1px solid #292929",
+
+                  borderRadius: "14px",
+
+                  padding: "20px",
+
+                  boxSizing: "border-box",
+
+                }}
+
+              >
+
+                <div
+
+                  style={{
+
+                    fontSize: "14px",
+
+                    fontWeight: 600,
+
+                    marginBottom: "15px",
+
+                  }}
+
+                >
+
+                  Equity curve
+
+                </div>
+
+                <EquityChart
+
+                  trades={filteredTrades}
+
+                  mode="Equity"
+
+                  width={760}
+
+                  height={190}
+
+                />
+
+              </div>
+
+
+
+              {/* Daily P&L */}
+
+              <div
+
+                style={{
+
+                  background: "#101010",
+
+                  border: "1px solid #292929",
+
+                  borderRadius: "14px",
+
+                  padding: "20px",
+
+                  boxSizing: "border-box",
+
+                }}
+
+              >
+
+                <div
+
+                  style={{
+
+                    fontSize: "14px",
+
+                    fontWeight: 600,
+
+                    marginBottom: "15px",
+
+                  }}
+
+                >
+
+                  Daily P&L
+
+                </div>
+
+
+
+                {dailyDistribution.length ? (
+
+                  <div
+
+                    style={{
+
+                      display: "flex",
+
+                      flexDirection: "column",
+
+                      gap: "10px",
+
+                    }}
+
+                  >
+
+                    {dailyDistribution.map(({ date, value }) => {
+
+                      const maxValue = Math.max(
+
+                        1,
+
+                        ...dailyDistribution.map((d) => Math.abs(d.value))
+
+                      );
+
+
+
+                      return (
+
+                        <div
+
+                          key={date}
+
+                          style={{
+
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            gap: "10px",
+
+                          }}
+
+                        >
+
+                          <span
+
+                            style={{
+
+                              width: "52px",
+
+                              flexShrink: 0,
+
+                              fontSize: "10px",
+
+                              color: "#999999",
+
+                            }}
+
+                          >
+
+                            {dateLabel(date)}
+
+                          </span>
+
+                          <div
+
+                            style={{
+
+                              height: "9px",
+
+                              flex: 1,
+
+                              borderRadius: "999px",
+
+                              background: "#1b1b1b",
+
+                              overflow: "hidden",
+
+                            }}
+
+                          >
+
+                            <div
+
+                              style={{
+
+                                height: "100%",
+
+                                width: `${(Math.abs(value) / maxValue) * 100}%`,
+
+                                background:
+
+                                  value > 0
+
+                                    ? "#34d399"
+
+                                    : value < 0
+
+                                      ? "#f87171"
+
+                                      : "#555555",
+
+                                borderRadius: "999px",
+
+                              }}
+
+                            />
+
+                          </div>
+
+                          <span
+
+                            style={{
+
+                              width: "78px",
+
+                              flexShrink: 0,
+
+                              textAlign: "right",
+
+                              fontSize: "11px",
+
+                              fontWeight: 600,
+
+                              color:
+
+                                value > 0
+
+                                  ? "#34d399"
+
+                                  : value < 0
+
+                                    ? "#f87171"
+
+                                    : "#bcbcbc",
+
+                            }}
+
+                          >
+
+                            {money(value)}
+
+                          </span>
+
+                        </div>
+
+                      );
+
+                    })}
+
+                  </div>
+
+                ) : (
+
+                  <div style={{ color: "#888888", fontSize: "12px" }}>
+
+                    No daily results recorded.
+
+                  </div>
+
+                )}
+
+              </div>
+
+            </div>
+
+
+
+            {/* Trade summary strip */}
+
+            <div
+
+              style={{
+
+                display: "grid",
+
+                gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+
+                gap: "10px",
+
+                padding: "15px 18px",
+
+                background: "#101010",
+
+                border: "1px solid #292929",
+
+                borderRadius: "12px",
+
+                marginBottom: "18px",
+
+              }}
+
+            >
+
+              {[
+
+                { label: "WINNERS", value: metrics.winners, color: "#34d399" },
+
+                { label: "LOSERS", value: metrics.losers, color: "#f87171" },
+
+                { label: "BREAKEVEN", value: metrics.breakevens, color: "#bcbcbc" },
+
+                {
+
+                  label: "FOLLOWED PLAN",
+
+                  value: metrics.followedCount,
+
+                  color: "#f5f5f5",
+
+                },
+
+                {
+
+                  label: "PLAN-BREAK P&L",
+
+                  value: money(metrics.brokenPnl),
+
+                  color: metrics.brokenPnl >= 0 ? "#34d399" : "#f87171",
+
+                },
+
+              ].map((item) => (
+
+                <div key={item.label}>
+
+                  <div
+
+                    style={{
+
+                      color: "#888888",
+
+                      fontSize: "9px",
+
+                      letterSpacing: "0.7px",
+
+                      marginBottom: "7px",
+
+                    }}
+
+                  >
+
+                    {item.label}
+
+                  </div>
+
+                  <div
+
+                    style={{
+
+                      color: item.color,
+
+                      fontSize: "16px",
+
+                      fontWeight: 600,
+
+                    }}
+
+                  >
+
+                    {item.value}
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+
+
+            {/* Footer */}
+
+            <div
+
+              style={{
+
+                borderTop: "1px solid #303030",
+
+                paddingTop: "14px",
+
+                display: "flex",
+
+                justifyContent: "space-between",
+
+                color: "#777777",
+
+                fontSize: "10px",
+
+              }}
+
+            >
+
+              <span>TradeMirror · Advanced Analytics</span>
+
+              <span>Based on saved trades for the selected period.</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
         {/* Page heading */}
+        {/* ... Unchanged below, all normal app rendering ... */}
         <header className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
           <div>
             <div className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">
@@ -773,6 +1789,15 @@ export default function AnalyticsPage() {
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.09] bg-white/[0.025] text-white/55 transition hover:bg-white/[0.07] hover:text-white"
             >
               <Activity className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={exportAnalytics}
+              disabled={loading || exporting || filteredTrades.length === 0}
+              className="flex h-9 items-center gap-2 rounded-lg border border-white/[0.12] bg-white/[0.045] px-3 text-xs font-medium text-white/80 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Download className="h-3.5 w-3.5" />
+              {exporting ? "Exporting..." : "Export PNG"}
             </button>
           </div>
         </header>
@@ -1164,12 +2189,13 @@ export default function AnalyticsPage() {
                   <Panel title="Daily P&L distribution" subtitle="Net result by trading date" icon={CalendarDays}>
                     {dailyDistribution.length ? (
                       <div className="space-y-3">
-                        {dailyDistribution.map((value, index) => {
-                          const maxValue = Math.max(...dailyDistribution.map(Math.abs), 1);
+                        {dailyDistribution.map((entry, index) => {
+                          const value = entry.value;
+                          const maxValue = Math.max(...dailyDistribution.map(d => Math.abs(d.value)), 1);
                           return (
-                            <div key={`${index}-${value}`} className="flex items-center gap-3">
+                            <div key={`${index}-${entry.date}`} className="flex items-center gap-3">
                               <span className="w-16 shrink-0 text-[10px] text-white/35">
-                                Day {index + 1}
+                                {dateLabel(entry.date)}
                               </span>
                               <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.05]">
                                 <div
